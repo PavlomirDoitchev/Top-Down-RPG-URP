@@ -5,7 +5,7 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
 {
     public class TestState : PlayerBaseState
     {
-        float timer = 5;
+
         public TestState(PlayerStateMachine playerStateMachine) : base(playerStateMachine)
         {
         }
@@ -16,18 +16,48 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
         }
         public override void UpdateState(float deltaTime)
         {
-            timer -= deltaTime;
-            if (Input.GetKeyDown(KeyCode.Space))
+            if (Input.GetKeyDown(_playerStateMachine.InputManager.GetKey("Attack")))
             {
-                _playerStateMachine.ChangeState(new TestState(_playerStateMachine));
+                Debug.Log("Player Attacked!");
             }
-            Debug.Log(timer.ToString("F1"));
+
+            PlayerMove(deltaTime);
+
         }
+
 
         public override void ExitState()
         {
             Debug.Log("TestState Exit");
         }
+        private void PlayerMove(float deltaTime)
+        {
+            Vector3 movement = CalculateMovement();
+            movement *= _playerStateMachine.BaseMovementSpeed * deltaTime;
+            _playerStateMachine.CharacterController.Move(movement);
 
+            if (movement != Vector3.zero)
+            {
+                _playerStateMachine.transform.rotation = Quaternion.Slerp(_playerStateMachine.transform.rotation,
+                    Quaternion.LookRotation(movement), _playerStateMachine.BaseRotationSpeed * deltaTime);
+            }
+        }
+
+        private Vector3 CalculateMovement() 
+        {
+            Vector3 forward = _playerStateMachine.MainCameraTransform.forward;
+            Vector3 right = _playerStateMachine.MainCameraTransform.right;
+
+            forward.y = 0;
+            right.y = 0;
+
+            forward.Normalize();
+            right.Normalize();
+
+            Vector2 moveInput = _playerStateMachine.InputManager.MoveInput;
+            Vector3 moveDirection = forward * moveInput.y + right * moveInput.x;
+            return moveDirection.normalized;
+
+        }
     }
 }
