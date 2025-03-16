@@ -8,13 +8,15 @@ public class InputManager : MonoBehaviour
     [SerializeField] private KeyCode _jumpKey = KeyCode.Space;
     [SerializeField] private KeyCode _attackKey = KeyCode.Mouse0;
     [SerializeField] private KeyCode _dashKey = KeyCode.LeftShift;
+    [SerializeField] private KeyCode _ability_1_Key = KeyCode.Alpha1;
     [SerializeField] private KeyCode _moveLeftKey = KeyCode.A;
     [SerializeField] private KeyCode _moveRightKey = KeyCode.D;
     [SerializeField] private KeyCode _moveUpKey = KeyCode.W;
     [SerializeField] private KeyCode _moveDownKey = KeyCode.S;
 
     private Dictionary<string, KeyCode> keyBindings;
-
+    public bool IsAttacking { get; private set; }
+    public bool IsUsingAbilityOne { get; private set; }
     public Vector2 MoveInput { get; private set; }
     private void Awake()
     {
@@ -23,6 +25,7 @@ public class InputManager : MonoBehaviour
             { "Jump", _jumpKey },
             { "Attack", _attackKey },
             { "Dash", _dashKey },
+            { "Ability1", _ability_1_Key},
             { "MoveLeft", _moveLeftKey },
             { "MoveRight", _moveRightKey },
             { "MoveUp", _moveUpKey },
@@ -32,10 +35,27 @@ public class InputManager : MonoBehaviour
     private void Update()
     {
         MovementInput();
+        AttackInput();
+        Ability_1();
     }
-    public KeyCode GetKey(string action)
+    private void Ability_1() 
     {
-        return keyBindings.ContainsKey(action) ? keyBindings[action] : KeyCode.None;
+        if(Input.GetKeyDown(keyBindings["Ability1"]))
+        {
+            IsUsingAbilityOne = true;
+        }
+        else
+        {
+            IsUsingAbilityOne = false;
+        }
+
+    }
+    private void AttackInput()
+    {
+        if (Input.GetKeyDown(keyBindings["Attack"]))
+            IsAttacking = true;
+        else
+            IsAttacking = false;
     }
     private void MovementInput() 
     {
@@ -43,7 +63,7 @@ public class InputManager : MonoBehaviour
         float vertical = GetAxis("Vertical");
         MoveInput = new Vector2(horizontal, vertical);
     }
-    public float GetAxis(string axis)
+    private float GetAxis(string axis)
     {
         float value = 0;
         if (axis == "Horizontal")
@@ -57,6 +77,10 @@ public class InputManager : MonoBehaviour
             if (Input.GetKey(keyBindings["MoveUp"])) value += 1;
         }
         return value;
+    }
+    public KeyCode GetKey(string action)
+    {
+        return keyBindings.ContainsKey(action) ? keyBindings[action] : KeyCode.None;
     }
     public void RebindKey(string action, KeyCode newKey)
     {

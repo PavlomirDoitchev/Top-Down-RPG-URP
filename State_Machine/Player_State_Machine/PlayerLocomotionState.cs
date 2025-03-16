@@ -3,26 +3,29 @@ using Assets.Scripts.State_Machine;
 using System;
 namespace Assets.Scripts.State_Machine.Player_State_Machine
 {
-    public class TestState : PlayerBaseState
+    public class PlayerLocomotionState : PlayerBaseState
     {
 
-        public TestState(PlayerStateMachine playerStateMachine) : base(playerStateMachine)
+        public PlayerLocomotionState(PlayerStateMachine playerStateMachine) : base(playerStateMachine)
         {
         }
 
         public override void EnterState()
         {
-            Debug.Log("EnterState Enter");
+           _playerStateMachine.Animator.CrossFadeInFixedTime("Basic_Locomotion", .1f);
         }
         public override void UpdateState(float deltaTime)
         {
-            if (Input.GetKeyDown(_playerStateMachine.InputManager.GetKey("Attack")))
+            if (_playerStateMachine.InputManager.IsAttacking)
             {
-                Debug.Log("Player Attacked!");
+                _playerStateMachine.ChangeState(new PlayerAttackState(_playerStateMachine, 0));
+                return;
             }
-
+            if (_playerStateMachine.InputManager.IsUsingAbilityOne) 
+            {
+                _playerStateMachine.ChangeState(new PlayerAbilityOne(_playerStateMachine));
+            }
             PlayerMove(deltaTime);
-
         }
 
 
@@ -33,17 +36,19 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
         private void PlayerMove(float deltaTime)
         {
             Vector3 movement = CalculateMovement();
-            movement *= _playerStateMachine.BaseMovementSpeed * deltaTime;
-            _playerStateMachine.CharacterController.Move(movement);
+           
+            Move(movement * _playerStateMachine.BaseMovementSpeed, deltaTime);
 
             if (movement != Vector3.zero)
             {
                 _playerStateMachine.transform.rotation = Quaternion.Slerp(_playerStateMachine.transform.rotation,
                     Quaternion.LookRotation(movement), _playerStateMachine.BaseRotationSpeed * deltaTime);
+                _playerStateMachine.Animator.SetFloat("LocomotionSpeed", 1, .01f, deltaTime);
             }
+            _playerStateMachine.Animator.SetFloat("LocomotionSpeed", 0, .1f, deltaTime);
         }
 
-        private Vector3 CalculateMovement() 
+        private Vector3 CalculateMovement()
         {
             Vector3 forward = _playerStateMachine.MainCameraTransform.forward;
             Vector3 right = _playerStateMachine.MainCameraTransform.right;

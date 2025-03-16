@@ -8,16 +8,19 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
         [Header("References")]
         [field: SerializeField] public InputManager InputManager { get; private set; }
         [field: SerializeField] public CharacterController CharacterController { get; private set; }
+        [field: SerializeField] public Animator Animator { get; private set; }
+        [field: SerializeField] public ForceReceiver ForceReceiver { get; private set; }
+        [field: SerializeField] public AttackData[] AttackData { get; private set; }
         public Transform MainCameraTransform { get; private set; }
 
         [Header("PlayerSettings")]
         [field: SerializeField] public float BaseMovementSpeed = 5f;
         [field: SerializeField] public float BaseRotationSpeed = 5f;
-        [field: SerializeField] public float PushPower = 2f;    
+        [field: SerializeField] public float PushObjectsForce = 2f;    
         private void Start()
         {
             MainCameraTransform = Camera.main.transform;
-            ChangeState(new TestState(this));
+            ChangeState(new PlayerLocomotionState(this));
         }
         public void OnControllerColliderHit(ControllerColliderHit hit)
         {
@@ -30,7 +33,7 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
                 return;
 
             Vector3 pushDir = new Vector3(hit.moveDirection.x, 0, hit.moveDirection.z);
-            rb.linearVelocity = pushDir * PushPower;
+            rb.linearVelocity = pushDir * PushObjectsForce;
         }
     }
 }
