@@ -7,6 +7,7 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
         private float timer = 0f;
         bool alreadyAppliedForce;
         AttackData attack;
+        
         private bool rotationLocked = false;
         private Quaternion lockedRotation;
         public PlayerAbilityOne(PlayerStateMachine stateMachine) : base(stateMachine)

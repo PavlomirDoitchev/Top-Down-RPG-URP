@@ -37,6 +37,7 @@ public class InputManager : MonoBehaviour
         MovementInput();
         AttackInput();
         Ability_1();
+        
     }
     private void Ability_1() 
     {
