@@ -11,6 +11,7 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
         [field: SerializeField] public Animator Animator { get; private set; }
         [field: SerializeField] public ForceReceiver ForceReceiver { get; private set; }
         [field: SerializeField] public AttackData[] AttackData { get; private set; }
+        [field: SerializeField] public float JumpForce = 5f;    
         public Transform MainCameraTransform { get; private set; }
 
         [Header("PlayerSettings")]

@@ -19,11 +19,16 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
             if (_playerStateMachine.InputManager.IsAttacking)
             {
                 _playerStateMachine.ChangeState(new PlayerAttackState(_playerStateMachine, 0));
-                return;
+                
             }
             if (_playerStateMachine.InputManager.IsUsingAbilityOne) 
             {
                 _playerStateMachine.ChangeState(new PlayerAbilityOne(_playerStateMachine));
+
+            }
+            if (Input.GetKeyDown(_playerStateMachine.InputManager.GetKey("Jump")) && _playerStateMachine.CharacterController.isGrounded) 
+            {
+                _playerStateMachine.ChangeState(new PlayerJumpState(_playerStateMachine));
             }
             PlayerMove(deltaTime);
         }

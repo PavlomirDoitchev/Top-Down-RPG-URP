@@ -7,6 +7,7 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
     {
          
         protected PlayerStateMachine _playerStateMachine;
+
         public PlayerBaseState(PlayerStateMachine stateMachine)
         {
             this._playerStateMachine = stateMachine;
@@ -28,6 +29,20 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
         protected void Move(float deltaTime) 
         {
             Move(Vector3.zero, deltaTime);
+        }
+        protected void RotateToMouse(float deltaTime)
+        {
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            if (Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity, LayerMask.GetMask("Ground")))
+            {
+                Vector3 targetPoint = hit.point;
+                targetPoint.y = _playerStateMachine.transform.position.y;
+                Quaternion targetRotation = Quaternion.LookRotation(targetPoint - _playerStateMachine.transform.position);
+                _playerStateMachine.transform.rotation = Quaternion.Slerp(
+                    _playerStateMachine.transform.rotation,
+                    targetRotation,
+                    _playerStateMachine.BaseRotationSpeed * 5 * deltaTime);
+            }
         }
     }
 }

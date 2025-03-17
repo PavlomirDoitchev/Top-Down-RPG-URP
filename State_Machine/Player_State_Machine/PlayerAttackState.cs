@@ -6,6 +6,8 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
         private float previousFrameTime; 
         private bool alreadyAppliedForce;   
         private AttackData attack;
+        private bool rotationLocked = false;
+        private Quaternion lockedRotation;
         public PlayerAttackState(PlayerStateMachine stateMachine, int attackId) : base(stateMachine)
         {
             attack = _playerStateMachine.AttackData[attackId];
@@ -17,6 +19,19 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
         }
         public override void UpdateState(float deltaTime)
         {
+            if (!rotationLocked)
+            {
+                RotateToMouse(deltaTime);
+            }
+            else
+            {
+                _playerStateMachine.transform.rotation = lockedRotation;
+            }
+            if (!rotationLocked && _playerStateMachine.Animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 0.2f)
+            {
+                rotationLocked = true;
+                lockedRotation = _playerStateMachine.transform.rotation;
+            }
             Move(deltaTime);
             float normalizeTime = GetNormalizedTime(_playerStateMachine.Animator);
             if (normalizeTime >= previousFrameTime && normalizeTime < 1f)

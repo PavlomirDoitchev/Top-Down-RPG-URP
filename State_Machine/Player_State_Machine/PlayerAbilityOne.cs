@@ -7,6 +7,8 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
         private float timer = 0f;
         bool alreadyAppliedForce;
         AttackData attack;
+        private bool rotationLocked = false;
+        private Quaternion lockedRotation;
         public PlayerAbilityOne(PlayerStateMachine stateMachine) : base(stateMachine)
         {
             attack = _playerStateMachine.AttackData[0];
@@ -19,10 +21,28 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
 
         public override void UpdateState(float deltaTime)
         {
+            if (!rotationLocked)
+            {
+                RotateToMouse(deltaTime);
+            }
+            else
+            {
+                _playerStateMachine.transform.rotation = lockedRotation;
+            }
+            if (!rotationLocked && _playerStateMachine.Animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 0.2f)
+            {
+                rotationLocked = true;
+                lockedRotation = _playerStateMachine.transform.rotation;
+            }
+
             Move(deltaTime);
             TryApplyForce();
-            timer += deltaTime; 
-            if(timer >= duration)
+            //timer += deltaTime;
+            //if (timer >= duration)
+            //{
+            //    _playerStateMachine.ChangeState(new PlayerLocomotionState(_playerStateMachine));
+            //}
+            if (_playerStateMachine.Animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1f)
             {
                 _playerStateMachine.ChangeState(new PlayerLocomotionState(_playerStateMachine));
             }
@@ -30,6 +50,7 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
         public override void ExitState()
         {
         }
+        
         private void TryApplyForce()
         {
             if (alreadyAppliedForce) return;
