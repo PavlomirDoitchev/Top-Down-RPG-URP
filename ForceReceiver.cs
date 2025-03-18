@@ -25,7 +25,6 @@ public class ForceReceiver : MonoBehaviour
         }
         impact = Vector3.SmoothDamp(impact, Vector3.zero, ref dampingVelocity, dragTime);
     }
-
     public void AddForce(Vector3 force)
     {
         impact += force;
@@ -33,6 +32,5 @@ public class ForceReceiver : MonoBehaviour
     public void Jump(float jumpForce)
     {
         verticalVelocity += jumpForce;
-    }
-    
+    } 
 }

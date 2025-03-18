@@ -7,8 +7,13 @@ public class CharacterStatsSO : ScriptableObject
     public int Dexterity;
     public int Intelligence;
     public int Stamina;
-    public float BaseMovementSpeed;
-    public float BaseRotationSpeed;
-    public float PushObjectsForce;
-    public float JumpForce;
+
+    public float CharactAttackSpeed;
+    public float CharacterCriticalChance;
+
+    public float CharacterBaseMovementSpeed;
+    public float CharacterBaseRotationSpeed;
+    public float CharacterPushObjectsForce;
+    public float CharacterJumpForce;
+
 }

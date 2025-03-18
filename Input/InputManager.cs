@@ -37,23 +37,17 @@ public class InputManager : MonoBehaviour
         MovementInput();
         AttackInput();
         Ability_1();
-        
     }
     private void Ability_1() 
     {
-        if(Input.GetKeyDown(keyBindings["Ability1"]))
-        {
+        if(Input.GetKey(keyBindings["Ability1"]))
             IsUsingAbilityOne = true;
-        }
         else
-        {
             IsUsingAbilityOne = false;
-        }
-
     }
     private void AttackInput()
     {
-        if (Input.GetKeyDown(keyBindings["Attack"]))
+        if (Input.GetKey(keyBindings["Attack"]))
             IsAttacking = true;
         else
             IsAttacking = false;

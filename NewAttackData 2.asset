@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: NewAttackData 2
   m_EditorClassIdentifier: 
   attackName: 2Hand-Sword-Attack3
-  damageMultiplier: 1.2
+  damageMultiplier: 0.5
   force: 15

@@ -15,8 +15,10 @@ MonoBehaviour:
   Strength: 5
   Dexterity: 1
   Intelligence: 1
-  Stamina: 0
-  BaseMovementSpeed: 5
-  BaseRotationSpeed: 50
-  PushObjectsForce: 5
-  JumpForce: 15
+  Stamina: 1
+  CharactAttackSpeed: 1.2
+  CharacterCriticalChance: 0
+  CharacterBaseMovementSpeed: 5
+  CharacterBaseRotationSpeed: 55
+  CharacterPushObjectsForce: 5
+  CharacterJumpForce: 15

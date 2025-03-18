@@ -4,19 +4,17 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
     public class PlayerAbilityOne : PlayerBaseState
     {
         private bool rotationLocked = false;
-        private Quaternion lockedRotation;
-        private int attackIndex = 1;
+        private int attackIndex = 2;
         private Vector3 force;
         public PlayerAbilityOne(PlayerStateMachine stateMachine) : base(stateMachine)
         {
-            //meleeWeapon = stateMachine.EquippedWeaponObject.GetComponentInChildren<MeleeWeapon>();
             if (meleeWeapon == null)
                 Debug.LogError("No weapon!");
         }
 
         public override void EnterState()
         {
-            _playerStateMachine.Animator.speed = _playerStateMachine.EquippedWeapon.attackSpeed;
+            _playerStateMachine.Animator.speed = _playerStateMachine.CharacterStats.CharactAttackSpeed;
             _playerStateMachine.Animator.Play("2Hand-Sword-Attack8");
             SetWeaponDamage(attackIndex);
             force = _playerStateMachine.transform.forward * _playerStateMachine.AttackData[attackIndex].force;
@@ -31,14 +29,14 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
             }
             else
             {
-                _playerStateMachine.transform.rotation = lockedRotation;
+                LockRotation();
             }
             if (!rotationLocked && _playerStateMachine.Animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 0.2f)
             {
                 _playerStateMachine.ForceReceiver.AddForce(force);
                 meleeWeapon.gameObject.SetActive(true);
                 rotationLocked = true;
-                lockedRotation = _playerStateMachine.transform.rotation;
+                SetCurrentRotation();
             }
 
             if (_playerStateMachine.Animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1f)
@@ -48,10 +46,12 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
             }
         }
 
+      
+
         public override void ExitState()
         {
-            _playerStateMachine.Animator.speed = 1f;
+            ResetAnimationSpeed();
         }
-
+  
     }
 }

@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: NewAttackData
   m_EditorClassIdentifier: 
   attackName: Ability
-  damageMultiplier: 0.5
+  damageMultiplier: 0.1
   force: 5
