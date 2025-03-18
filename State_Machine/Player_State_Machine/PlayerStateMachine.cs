@@ -5,19 +5,21 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
 {
     public class PlayerStateMachine : StateMachine
     {
+        [Header("Stats")]
+        [SerializeField] public CharacterStatsSO CharacterStats;
+        [SerializeField] public WeaponDataSO EquippedWeapon;
+
+        [Header("Attack Data")]
+        [SerializeField] public AttackDataSO[] AttackData;
         [Header("References")]
+        [field: SerializeField] public GameObject EquippedWeaponObject { get; private set; }
         [field: SerializeField] public InputManager InputManager { get; private set; }
         [field: SerializeField] public CharacterController CharacterController { get; private set; }
         [field: SerializeField] public Animator Animator { get; private set; }
-        [field: SerializeField] public ForceReceiver ForceReceiver { get; private set; }
-        [field: SerializeField] public AttackData[] AttackData { get; private set; }
-        [field: SerializeField] public float JumpForce = 5f;    
-        public Transform MainCameraTransform { get; private set; }
-
-        [Header("PlayerSettings")]
-        [field: SerializeField] public float BaseMovementSpeed = 5f;
-        [field: SerializeField] public float BaseRotationSpeed = 5f;
-        [field: SerializeField] public float PushObjectsForce = 2f;    
+        [field: SerializeField] public ForceReceiver ForceReceiver { get; private set; }   
+        public Transform MainCameraTransform { get; private set; } 
+        
+         
         private void Start()
         {
             MainCameraTransform = Camera.main.transform;
@@ -34,7 +36,8 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
                 return;
 
             Vector3 pushDir = new Vector3(hit.moveDirection.x, 0, hit.moveDirection.z);
-            rb.linearVelocity = pushDir * PushObjectsForce;
+            rb.linearVelocity = pushDir * CharacterStats.PushObjectsForce;
         }
+
     }
 }

@@ -16,19 +16,25 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
         }
         public override void UpdateState(float deltaTime)
         {
+            if (_playerStateMachine.CharacterController.velocity.y <= -10)
+            {
+                _playerStateMachine.ChangeState(new PlayerFallState(_playerStateMachine));
+                return;
+            }
+            if (Input.GetKey(_playerStateMachine.InputManager.GetKey("Jump")) && _playerStateMachine.CharacterController.isGrounded) 
+            {
+                _playerStateMachine.ChangeState(new PlayerJumpState(_playerStateMachine));
+            }
             if (_playerStateMachine.InputManager.IsAttacking)
             {
-                _playerStateMachine.ChangeState(new PlayerAttackState(_playerStateMachine, 0));
+                _playerStateMachine.ChangeState(new PlayerBasicAttackChainOne(_playerStateMachine));
                 
             }
             if (_playerStateMachine.InputManager.IsUsingAbilityOne) 
             {
                 _playerStateMachine.ChangeState(new PlayerAbilityOne(_playerStateMachine));
+                Debug.Log("Ability1 Input Detected");
 
-            }
-            if (Input.GetKeyDown(_playerStateMachine.InputManager.GetKey("Jump")) && _playerStateMachine.CharacterController.isGrounded) 
-            {
-                _playerStateMachine.ChangeState(new PlayerJumpState(_playerStateMachine));
             }
             PlayerMove(deltaTime);
         }
@@ -36,18 +42,18 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
 
         public override void ExitState()
         {
-            Debug.Log("TestState Exit");
+            
         }
         private void PlayerMove(float deltaTime)
         {
             Vector3 movement = CalculateMovement();
            
-            Move(movement * _playerStateMachine.BaseMovementSpeed, deltaTime);
+            Move(movement * _playerStateMachine.CharacterStats.BaseMovementSpeed, deltaTime);
 
             if (movement != Vector3.zero)
             {
                 _playerStateMachine.transform.rotation = Quaternion.Slerp(_playerStateMachine.transform.rotation,
-                    Quaternion.LookRotation(movement), _playerStateMachine.BaseRotationSpeed * deltaTime);
+                    Quaternion.LookRotation(movement), _playerStateMachine.CharacterStats.BaseRotationSpeed * deltaTime);
                 _playerStateMachine.Animator.SetFloat("LocomotionSpeed", 1, .01f, deltaTime);
             }
             _playerStateMachine.Animator.SetFloat("LocomotionSpeed", 0, .1f, deltaTime);

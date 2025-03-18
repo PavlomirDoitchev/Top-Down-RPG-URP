@@ -11,6 +11,8 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
 
         public override void EnterState()
         {
+            
+            _playerStateMachine.Animator.CrossFadeInFixedTime("2Hand-Sword-Fall", 0.1f);
             momentum = _playerStateMachine.CharacterController.velocity;
             momentum.y = 0;
         }
@@ -20,14 +22,16 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
             Move(momentum, deltaTime);
             if (_playerStateMachine.CharacterController.isGrounded)
             {
+                
+               // _playerStateMachine.Animator.Play("2Hand-Sword-Land");
                 _playerStateMachine.ChangeState(new PlayerLocomotionState(_playerStateMachine));
-                return;
+                //return;
             }
 
         }
         public override void ExitState()
         {
-            Debug.Log("FallState Exit");
+            //Debug.Log("FallState Exit");
         }
 
     }

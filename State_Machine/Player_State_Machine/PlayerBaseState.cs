@@ -7,14 +7,15 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
     {
          
         protected PlayerStateMachine _playerStateMachine;
-
+        protected MeleeWeapon meleeWeapon;
         public PlayerBaseState(PlayerStateMachine stateMachine)
         {
             this._playerStateMachine = stateMachine;
+            meleeWeapon = stateMachine.EquippedWeaponObject.GetComponentInChildren<MeleeWeapon>();
         }
        
         /// <summary>
-        /// Move with Input Reading
+        /// Move with Input Reading.
         /// </summary>
         /// <param name="movement"></param>
         /// <param name="deltaTime"></param>
@@ -23,13 +24,17 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
             _playerStateMachine.CharacterController.Move((movement + _playerStateMachine.ForceReceiver.Movement) * deltaTime);
         }
         /// <summary>
-        /// Move without Input Reading
+        /// Apply physics. Does not take in Input Reading.
         /// </summary>
         /// <param name="deltaTime"></param>
         protected void Move(float deltaTime) 
         {
             Move(Vector3.zero, deltaTime);
         }
+        /// <summary>
+        /// Use to make the character rotate to the mouse position.
+        /// </summary>
+        /// <param name="deltaTime"></param>
         protected void RotateToMouse(float deltaTime)
         {
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
@@ -41,8 +46,18 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
                 _playerStateMachine.transform.rotation = Quaternion.Slerp(
                     _playerStateMachine.transform.rotation,
                     targetRotation,
-                    _playerStateMachine.BaseRotationSpeed * 5 * deltaTime);
+                    _playerStateMachine.CharacterStats.BaseRotationSpeed * 5 * deltaTime);
             }
+        }
+
+        protected float CalculateDamage()
+        {
+            return 1 + (_playerStateMachine.CharacterStats.Strength * 0.1f);
+        }
+        protected void SetWeaponDamage()
+        {
+            float strengthMultiplier = CalculateDamage();
+            meleeWeapon.SetDamage(_playerStateMachine.EquippedWeapon.baseDamage, strengthMultiplier);
         }
     }
 }

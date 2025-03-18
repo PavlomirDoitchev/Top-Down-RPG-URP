@@ -1,27 +1,32 @@
+using System.Collections;
 using UnityEngine;
+
 namespace Assets.Scripts.State_Machine.Player_State_Machine
 {
-    public class PlayerAbilityOne : PlayerBaseState
+    public class PlayerBasicAttackChainOne : PlayerBaseState
     {
         private bool rotationLocked = false;
-        private Quaternion lockedRotation;
-        
-        public PlayerAbilityOne(PlayerStateMachine stateMachine) : base(stateMachine)
-        {
-            //meleeWeapon = stateMachine.EquippedWeaponObject.GetComponentInChildren<MeleeWeapon>();
-            if (meleeWeapon == null)
-                Debug.LogError("No weapon!");
-        }
 
+        private Quaternion lockedRotation;
+
+        public PlayerBasicAttackChainOne(PlayerStateMachine stateMachine) : base(stateMachine)
+        {
+
+        }
         public override void EnterState()
         {
-            _playerStateMachine.Animator.CrossFadeInFixedTime("2Hand-Sword-Attack8", .1f);
-            SetWeaponDamage();
-        }
+            _playerStateMachine.Animator.CrossFadeInFixedTime("2Hand-Sword-Attack1", .1f);
+            
 
+        }
         public override void UpdateState(float deltaTime)
         {
-            Move(deltaTime);
+            if (_playerStateMachine.InputManager.IsAttacking
+                && _playerStateMachine.Animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= .6f)
+            {
+                _playerStateMachine.ChangeState(new PlayerBasicAttackChainTwo(_playerStateMachine));
+            }
+
             if (!rotationLocked)
             {
                 RotateToMouse(deltaTime);
@@ -32,21 +37,20 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
             }
             if (!rotationLocked && _playerStateMachine.Animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 0.2f)
             {
-                meleeWeapon.gameObject.SetActive(true);
                 rotationLocked = true;
                 lockedRotation = _playerStateMachine.transform.rotation;
             }
-           
-            if (_playerStateMachine.Animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1f)
+            Move(deltaTime);
+
+            if (_playerStateMachine.Animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= .9f)
             {
-                meleeWeapon.gameObject.SetActive(false);
                 _playerStateMachine.ChangeState(new PlayerLocomotionState(_playerStateMachine));
             }
+
         }
-        
         public override void ExitState()
         {
+
         }
-        
     }
 }
