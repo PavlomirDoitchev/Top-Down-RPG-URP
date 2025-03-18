@@ -15,7 +15,7 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
         }
         public override void EnterState()
         {
-            _playerStateMachine.Animator.CrossFadeInFixedTime("2Hand-Sword-Attack3", .1f);
+            _playerStateMachine.Animator.Play("2Hand-Sword-Attack3");
         }
         public override void UpdateState(float deltaTime)
         {

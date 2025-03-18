@@ -4,7 +4,8 @@ using UnityEngine;
 public class WeaponDataSO : ScriptableObject
 {
     public string weaponName;
-    public int baseDamage;
+    public int minDamage;
+    public int maxDamage;
     public float attackSpeed;
     public float criticalChance;
 }

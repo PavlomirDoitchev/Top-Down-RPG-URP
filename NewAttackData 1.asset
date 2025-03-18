@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a887ae11b7a757b40a34e47f1c3716c6, type: 3}
   m_Name: NewAttackData 1
   m_EditorClassIdentifier: 
-  attackName: 2Hand-Sword-Attack2
-  damageMultiplier: 1.2
-  force: 2
+  attackName: Ability1
+  damageMultiplier: 0.2
+  force: 15

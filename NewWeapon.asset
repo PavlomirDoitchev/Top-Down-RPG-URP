@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: NewWeapon
   m_EditorClassIdentifier: 
   weaponName: Golem
-  baseDamage: 10
-  attackSpeed: 1
+  minDamage: 10
+  maxDamage: 30
+  attackSpeed: 2
   criticalChance: 0.2

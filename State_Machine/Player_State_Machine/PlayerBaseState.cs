@@ -5,7 +5,7 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
 {
     public abstract class PlayerBaseState : State
     {
-         
+
         protected PlayerStateMachine _playerStateMachine;
         protected MeleeWeapon meleeWeapon;
         public PlayerBaseState(PlayerStateMachine stateMachine)
@@ -13,13 +13,13 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
             this._playerStateMachine = stateMachine;
             meleeWeapon = stateMachine.EquippedWeaponObject.GetComponentInChildren<MeleeWeapon>();
         }
-       
+
         /// <summary>
         /// Move with Input Reading.
         /// </summary>
         /// <param name="movement"></param>
         /// <param name="deltaTime"></param>
-        protected void Move(Vector3 movement, float deltaTime) 
+        protected void Move(Vector3 movement, float deltaTime)
         {
             _playerStateMachine.CharacterController.Move((movement + _playerStateMachine.ForceReceiver.Movement) * deltaTime);
         }
@@ -27,7 +27,7 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
         /// Apply physics. Does not take in Input Reading.
         /// </summary>
         /// <param name="deltaTime"></param>
-        protected void Move(float deltaTime) 
+        protected void Move(float deltaTime)
         {
             Move(Vector3.zero, deltaTime);
         }
@@ -50,14 +50,22 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
             }
         }
 
-        protected float CalculateDamage()
+        protected float CalculateDamage(int index)
         {
-            return 1 + (_playerStateMachine.CharacterStats.Strength * 0.1f);
+            return 1 + (_playerStateMachine.CharacterStats.Strength * _playerStateMachine.AttackData[index].damageMultiplier);
         }
-        protected void SetWeaponDamage()
+        /// <summary>
+        /// Use the desired index of the AttackDataSO
+        /// </summary>
+        /// <param name="index"></param>
+        protected void SetWeaponDamage(int index)
         {
-            float strengthMultiplier = CalculateDamage();
-            meleeWeapon.SetDamage(_playerStateMachine.EquippedWeapon.baseDamage, strengthMultiplier);
+            float strengthMultiplier = CalculateDamage(index);
+            meleeWeapon.MeleeWeaponDamage
+                (Random.Range(_playerStateMachine.EquippedWeapon.minDamage, _playerStateMachine.EquippedWeapon.maxDamage + 1), 
+                strengthMultiplier,
+                Mathf.RoundToInt(_playerStateMachine.AttackData[index].damageMultiplier));
+            Debug.Log(_playerStateMachine.AttackData[index].attackName);
         }
     }
 }

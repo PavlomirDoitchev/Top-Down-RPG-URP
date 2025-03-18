@@ -4,7 +4,6 @@ using UnityEngine;
 public class MeleeWeapon : MonoBehaviour
 {
     int baseDamage;
-    public float attackrange;
     public LayerMask enemyLayer;
     [SerializeField] Collider myCollider;
     private List<Collider> enemyColliders = new List<Collider>();
@@ -27,7 +26,7 @@ public class MeleeWeapon : MonoBehaviour
             }
         }
     }
-    public void SetDamage(int baseDamage, float strengthMultiplier)
+    public void MeleeWeaponDamage(int baseDamage, float strengthMultiplier, int index)
     {
         this.baseDamage = Mathf.RoundToInt(baseDamage * strengthMultiplier);
     }
