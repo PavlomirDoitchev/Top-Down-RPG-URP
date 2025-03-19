@@ -1,3 +1,4 @@
+using Assets.Scripts.State_Machine.Player;
 using UnityEngine;
 namespace Assets.Scripts.State_Machine.Player_State_Machine
 {
@@ -14,7 +15,7 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
 
         public override void EnterState()
         {
-            _playerStateMachine.Animator.speed = _playerStateMachine.CharacterStats.CharactAttackSpeed;
+            _playerStateMachine.Animator.speed = _playerStateMachine.CharacterLevel[playerStats.CurrentLevel()].CharactAttackSpeed;
             _playerStateMachine.Animator.Play("2Hand-Sword-Attack8");
             SetWeaponDamage(attackIndex);
             force = _playerStateMachine.transform.forward * _playerStateMachine.AttackData[attackIndex].force;

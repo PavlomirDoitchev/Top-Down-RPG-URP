@@ -1,5 +1,6 @@
 using UnityEngine;
 using Assets.Scripts.State_Machine;
+using Assets.Scripts.State_Machine.Player;
 
 namespace Assets.Scripts.State_Machine.Player_State_Machine
 {
@@ -11,12 +12,15 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
     {
         protected PlayerStateMachine _playerStateMachine;
         protected MeleeWeapon meleeWeapon;
+        protected PlayerStats playerStats;
         private Quaternion lockedRotation;
         public PlayerBaseState(PlayerStateMachine stateMachine)
         {
             this._playerStateMachine = stateMachine;
             meleeWeapon = stateMachine.EquippedWeaponCollider.GetComponentInChildren<MeleeWeapon>();
+            playerStats = stateMachine.GetComponent<PlayerStats>();
         }
+
         /// <summary>
         /// Set animation speed back to normal playback. 
         /// Commonly used in Exit State after using an ability
@@ -42,7 +46,7 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
         {
             Move(Vector3.zero, deltaTime);
         }
-        protected void SetCurrentRotation() 
+        protected void SetCurrentRotation()
         {
             lockedRotation = _playerStateMachine.transform.rotation;
         }
@@ -65,19 +69,20 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
                 _playerStateMachine.transform.rotation = Quaternion.Slerp(
                     _playerStateMachine.transform.rotation,
                     targetRotation,
-                    _playerStateMachine.CharacterStats.CharacterBaseRotationSpeed * 5 * deltaTime);
+                    _playerStateMachine.CharacterLevel[playerStats.CurrentLevel()].CharacterBaseRotationSpeed * 5 * deltaTime);
             }
         }
         protected void PlayerMove(float deltaTime)
         {
             Vector3 movement = CalculateMovement();
 
-            Move(movement * _playerStateMachine.CharacterStats.CharacterBaseMovementSpeed, deltaTime);
+            Move(movement * _playerStateMachine.CharacterLevel[playerStats.CurrentLevel()].CharacterBaseMovementSpeed, deltaTime);
 
             if (movement != Vector3.zero)
             {
                 _playerStateMachine.transform.rotation = Quaternion.Slerp(_playerStateMachine.transform.rotation,
-                    Quaternion.LookRotation(movement), _playerStateMachine.CharacterStats.CharacterBaseRotationSpeed * deltaTime);
+                    Quaternion.LookRotation(movement), _playerStateMachine.CharacterLevel[playerStats.CurrentLevel()]
+                    .CharacterBaseRotationSpeed * deltaTime);
                 _playerStateMachine.Animator.SetFloat("LocomotionSpeed", 1, .01f, deltaTime);
             }
             _playerStateMachine.Animator.SetFloat("LocomotionSpeed", 0, .1f, deltaTime);
@@ -101,7 +106,23 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
         }
         protected float CalculateDamage(int index)
         {
-            return 1 + (_playerStateMachine.CharacterStats.Strength * _playerStateMachine.AttackData[index].damageMultiplier);
+            float rollForCrit = Random.Range(0f, 1f);
+            if (_playerStateMachine.CharacterLevel[playerStats.CurrentLevel()].CharacterCriticalChance >= rollForCrit)
+            {
+                Debug.Log("Critical!");
+                return 1 +
+                    (_playerStateMachine.CharacterLevel[playerStats.CurrentLevel()].Strength *
+                    _playerStateMachine.AttackData[index].damageMultiplier *
+                    _playerStateMachine.CharacterLevel[playerStats.CurrentLevel()].CharacterCriticalModifier
+                    );
+            }
+            else 
+            {
+                return 1 +
+                   (_playerStateMachine.CharacterLevel[playerStats.CurrentLevel()].Strength *
+                   _playerStateMachine.AttackData[index].damageMultiplier
+                   );
+            }
         }
         /// <summary>
         /// Use the desired index of the AttackDataSO
@@ -111,9 +132,9 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
         {
             float strengthMultiplier = CalculateDamage(index);
             meleeWeapon.MeleeWeaponDamage
-                (Random.Range(_playerStateMachine.EquippedWeapon.minDamage, _playerStateMachine.EquippedWeapon.maxDamage + 1), 
-                strengthMultiplier,
-                Mathf.RoundToInt(_playerStateMachine.AttackData[index].damageMultiplier));
+                 (Random.Range(_playerStateMachine.EquippedWeapon.minDamage, _playerStateMachine.EquippedWeapon.maxDamage + 1),
+                 strengthMultiplier,
+                 Mathf.RoundToInt(_playerStateMachine.AttackData[index].damageMultiplier));
             //Debug.Log(_playerStateMachine.AttackData[index].attackName);
         }
     }

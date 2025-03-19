@@ -1,3 +1,4 @@
+using Assets.Scripts.State_Machine.Player_State_Machine;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -30,4 +31,5 @@ public class MeleeWeapon : MonoBehaviour
     {
         this.baseDamage = Mathf.RoundToInt(baseDamage * strengthMultiplier);
     }
+   
 }
