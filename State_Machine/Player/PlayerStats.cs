@@ -1,11 +1,11 @@
 using Assets.Scripts.State_Machine.Player_State_Machine;
-using Unity.VisualScripting;
 using UnityEngine;
 
 namespace Assets.Scripts.State_Machine.Player
 {
     public class PlayerStats : MonoBehaviour
     {
+        public static PlayerStats Instance;
         [Header("Player Stats")]
         [SerializeField] int level = 0;
         [Tooltip("Set automatically in Start")]
@@ -27,6 +27,13 @@ namespace Assets.Scripts.State_Machine.Player
         private void Awake()
         {
             stateMachine = GetComponent<PlayerStateMachine>();
+            if (Instance != null && Instance != this)
+            {
+                Destroy(gameObject);
+                return;
+            }
+            Instance = this;
+            DontDestroyOnLoad(gameObject);
         }
         private void Start()
         {

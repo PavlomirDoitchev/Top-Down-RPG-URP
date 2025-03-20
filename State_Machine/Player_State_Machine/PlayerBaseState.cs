@@ -13,7 +13,7 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
     {
         protected PlayerStateMachine _playerStateMachine;
         protected MeleeWeapon meleeWeapon;
-        protected PlayerStats playerStats;
+        //protected PlayerStats playerStats;
         protected readonly int activeLayer = 7;
         protected readonly int inactiveLayer = 3;
         private Quaternion lockedRotation;
@@ -21,7 +21,7 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
         {
             this._playerStateMachine = stateMachine;
             //meleeWeapon = stateMachine.EquippedWeaponCollider.GetComponentInChildren<MeleeWeapon>();
-            playerStats = stateMachine.GetComponent<PlayerStats>();
+            //playerStats = stateMachine.GetComponent<PlayerStats>();
         }
         public override void EnterState()
         {
@@ -94,7 +94,7 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
                 _playerStateMachine.transform.rotation = Quaternion.Slerp(
                     _playerStateMachine.transform.rotation,
                     targetRotation,
-                    _playerStateMachine.CharacterLevelDataSO[playerStats.CurrentLevel()].CharacterBaseRotationSpeed * 10 * deltaTime);
+                    _playerStateMachine.CharacterLevelDataSO[PlayerStats.Instance.CurrentLevel()].CharacterBaseRotationSpeed * 10 * deltaTime);
             }
         }
         /// <summary>
@@ -105,12 +105,12 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
         {
             Vector3 movement = CalculateMovement();
 
-            Move(movement * _playerStateMachine.CharacterLevelDataSO[playerStats.CurrentLevel()].CharacterBaseMovementSpeed, deltaTime);
+            Move(movement * _playerStateMachine.CharacterLevelDataSO[PlayerStats.Instance.CurrentLevel()].CharacterBaseMovementSpeed, deltaTime);
 
             if (movement != Vector3.zero)
             {
                 _playerStateMachine.transform.rotation = Quaternion.Slerp(_playerStateMachine.transform.rotation,
-                    Quaternion.LookRotation(movement), _playerStateMachine.CharacterLevelDataSO[playerStats.CurrentLevel()]
+                    Quaternion.LookRotation(movement), _playerStateMachine.CharacterLevelDataSO[PlayerStats.Instance.CurrentLevel()]
                     .CharacterBaseRotationSpeed * deltaTime);
                 _playerStateMachine.Animator.SetFloat("LocomotionSpeed", 1, .01f, deltaTime);
             }
@@ -137,19 +137,19 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
         protected float CalculateDamage(int index)
         {
             float rollForCrit = Random.Range(0f, 1f);
-            if (_playerStateMachine.CharacterLevelDataSO[playerStats.CurrentLevel()].CharacterCriticalChance >= rollForCrit)
+            if (_playerStateMachine.CharacterLevelDataSO[PlayerStats.Instance.CurrentLevel()].CharacterCriticalChance >= rollForCrit)
             {
                 //Debug.Log("Critical!");
                 return 1 +
-                    (_playerStateMachine.CharacterLevelDataSO[playerStats.CurrentLevel()].Strength *
+                    (_playerStateMachine.CharacterLevelDataSO[PlayerStats.Instance.CurrentLevel()].Strength *
                     _playerStateMachine.AbilityDataSO[index].damageMultiplier *
-                    _playerStateMachine.CharacterLevelDataSO[playerStats.CurrentLevel()].CharacterCriticalModifier
+                    _playerStateMachine.CharacterLevelDataSO[PlayerStats.Instance.CurrentLevel()].CharacterCriticalModifier
                     );
             }
             else 
             {
                 return 1 +
-                   (_playerStateMachine.CharacterLevelDataSO[playerStats.CurrentLevel()].Strength *
+                   (_playerStateMachine.CharacterLevelDataSO[PlayerStats.Instance.CurrentLevel()].Strength *
                    _playerStateMachine.AbilityDataSO[index].damageMultiplier
                    );
             }

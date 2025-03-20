@@ -22,7 +22,7 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
         [field: SerializeField] public CharacterController CharacterController { get; private set; }
         [field: SerializeField] public Animator Animator { get; private set; }
         [field: SerializeField] public ForceReceiver ForceReceiver { get; private set; }
-        [field: SerializeField] public PlayerStats PlayerStats { get; private set; }
+        //[field: SerializeField] public PlayerStats PlayerStats { get; private set; }
         //[field: SerializeField] public Ragdoll Ragdoll { get; private set; }
         public Transform MainCameraTransform { get; private set; }
         private void Start()
@@ -42,7 +42,7 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
                 return;
 
             Vector3 pushDir = new Vector3(hit.moveDirection.x, 0, hit.moveDirection.z);
-            rb.linearVelocity = pushDir * CharacterLevelDataSO[PlayerStats.CurrentLevel()].CharacterPushObjectsForce;
+            rb.linearVelocity = pushDir * CharacterLevelDataSO[PlayerStats.Instance.CurrentLevel()].CharacterPushObjectsForce;
         }
         public void EquipNewWeapon(WeaponDataSO newWeaponData, GameObject weaponPrefab)
         {

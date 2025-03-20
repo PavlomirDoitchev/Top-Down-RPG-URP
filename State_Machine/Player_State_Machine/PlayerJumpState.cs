@@ -1,3 +1,4 @@
+using Assets.Scripts.State_Machine.Player;
 using UnityEngine;
 
 namespace Assets.Scripts.State_Machine.Player_State_Machine
@@ -12,7 +13,7 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
         public override void EnterState()
         {
             _playerStateMachine.Animator.CrossFadeInFixedTime("2Hand-Sword-Jump", .1f);
-            _playerStateMachine.ForceReceiver.Jump(_playerStateMachine.CharacterLevelDataSO[playerStats.CurrentLevel()].CharacterJumpForce);
+            _playerStateMachine.ForceReceiver.Jump(_playerStateMachine.CharacterLevelDataSO[PlayerStats.Instance.CurrentLevel()].CharacterJumpForce);
             momentum = _playerStateMachine.CharacterController.velocity;
             momentum.y = 0;
         }

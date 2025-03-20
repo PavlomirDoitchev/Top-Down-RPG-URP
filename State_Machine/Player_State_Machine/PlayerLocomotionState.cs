@@ -32,7 +32,6 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
             if (_playerStateMachine.InputManager.IsUsingAbilityOne) 
             {
                 _playerStateMachine.ChangeState(new PlayerAbilityOne(_playerStateMachine));
-               // Debug.Log("Ability1 Input Detected");
             }
             PlayerMove(deltaTime);
         }

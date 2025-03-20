@@ -4,6 +4,7 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
     public class PlayerDeathState : PlayerBaseState
     {
         private Vector3 momentum;
+        float timer = 1f;
         public PlayerDeathState(PlayerStateMachine stateMachine) : base(stateMachine)
         {
         }
@@ -18,6 +19,10 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
         public override void UpdateState(float deltaTime)
         {
             Move(momentum, deltaTime);
+            timer -= deltaTime;
+            if (timer <= 0f)
+                timer = 0f;
+            momentum.y -= timer;
             if (_playerStateMachine.CharacterController.isGrounded)
             {
                 momentum = new Vector3(0, 0, 0);

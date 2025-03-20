@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class InputManager : MonoBehaviour
 {
+    //public static InputManager Instance;
     [Header("Key Bindings")]
     [SerializeField] private KeyCode _jumpKey = KeyCode.Space;
     [SerializeField] private KeyCode _attackKey = KeyCode.Mouse0;
