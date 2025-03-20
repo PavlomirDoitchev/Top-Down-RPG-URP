@@ -3,6 +3,7 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "New Character Level", menuName = "New Character Level/Create New Character Level")]
 public class CharacterLevelSO : ScriptableObject
 {
+    public string Class;
     public int Strength = 5;
     public int Dexterity = 5;
     public int Intelligence = 5;

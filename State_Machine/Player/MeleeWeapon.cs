@@ -19,7 +19,7 @@ public class MeleeWeapon : MonoBehaviour
         if (other.gameObject.layer == LayerMask.NameToLayer("Enemy"))
         {
             enemyColliders.Add(other);
-            Debug.Log($"Enemy colliders: {enemyColliders.Count}");
+            //Debug.Log($"Enemy colliders: {enemyColliders.Count}");
             EnemyHealth enemy = other.GetComponent<EnemyHealth>();
             if (enemy != null)
             {
@@ -34,6 +34,6 @@ public class MeleeWeapon : MonoBehaviour
     public void ClearHitEnemies()
     {
         enemyColliders.Clear();
-        Debug.Log($"Enemy colliders {enemyColliders.Count}");
+        //Debug.Log($"Enemy colliders {enemyColliders.Count}");
     }
 }

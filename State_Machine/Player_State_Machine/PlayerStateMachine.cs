@@ -5,20 +5,19 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
 {
     public class PlayerStateMachine : StateMachine
     {
-        [Header("Equipped Items")]
+        [Header("-----Equipped Items-----")]
         [SerializeField] public WeaponDataSO EquippedWeaponDataSO;
         [field: SerializeField] public GameObject EquippedWeapon { get; private set; }
 
-        [Header("All Character Levels")]
+        [Header("-----Character Levels-----")]
         [SerializeField] public CharacterLevelSO[] CharacterLevelDataSO;
         
-        [Header("Ability Data")]
+        [Header("-----Ability Data-----")]
         [SerializeField] public AbilityDataSO[] AbilityDataSO;
 
-        [Header("References")]
+        [Header("-----References-----")]
         [SerializeField] private GameObject rightHandEquipSlot;
         [SerializeField] private GameObject leftHandEquipSlot;
-        
         [field: SerializeField] public InputManager InputManager { get; private set; }
         [field: SerializeField] public CharacterController CharacterController { get; private set; }
         [field: SerializeField] public Animator Animator { get; private set; }
