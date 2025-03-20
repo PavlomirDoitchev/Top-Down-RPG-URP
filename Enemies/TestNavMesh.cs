@@ -10,7 +10,7 @@ public class TestNavMesh : MonoBehaviour
     {
         agent = GetComponent<NavMeshAgent>();
     }
-    private void Start()
+    private void Update()
     {
         agent.SetDestination(target.gameObject.transform.position);
     }

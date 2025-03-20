@@ -7,22 +7,31 @@ namespace Assets.Scripts.State_Machine.Player
     {
         [Header("Player Stats")]
         [SerializeField] int level = 0;
+        [Tooltip("Set automatically in Start")]
         [SerializeField] int maxLevel = 1;
-        [SerializeField] int XP = 0;
+        [Tooltip("Required XP listed in LevelsSO")]
+        [SerializeField] int currentXP = 0;
         [SerializeField] float maxHealth = 100;
         [SerializeField] float currentHealth;
         [SerializeField] float staminaStatModifier = 1.66f; 
         //[SerializeField] int mana = 100;
+
         [Header("References")]
         [SerializeField] PlayerStateMachine stateMachine;
+        [SerializeField] ParticleSystem levelUpEffect;
+
+        [SerializeField] WeaponDataSO weaponDataSO;
+        [SerializeField] GameObject weapon;
+       
         private void Awake()
         {
             stateMachine = GetComponent<PlayerStateMachine>();
         }
         private void Start()
         {
-            maxHealth += Mathf.RoundToInt(stateMachine.CharacterLevel[CurrentLevel()].Stamina * staminaStatModifier);
+            maxHealth += Mathf.RoundToInt(stateMachine.CharacterLevelDataSO[CurrentLevel()].Stamina * staminaStatModifier);
             currentHealth = maxHealth;
+            maxLevel = stateMachine.CharacterLevelDataSO.Length - 1;
         }
         private void Update()
         {
@@ -32,10 +41,11 @@ namespace Assets.Scripts.State_Machine.Player
                 {
                     return;
                 }
-                XP++;
-                if (XP >= stateMachine.CharacterLevel[CurrentLevel()].XpRequired)
+                currentXP++;
+                if (currentXP >= stateMachine.CharacterLevelDataSO[CurrentLevel()].XpRequired)
                 {
                     LevelUp();
+                    stateMachine.EquipNewWeapon(weaponDataSO, weapon);
                 }
             }
         }
@@ -56,16 +66,20 @@ namespace Assets.Scripts.State_Machine.Player
         {
             if (level >= maxLevel)
                 return;
-            XP += amount;
-            if (XP >= stateMachine.CharacterLevel[CurrentLevel()].XpRequired)
+            currentXP += amount;
+            if (currentXP >= stateMachine.CharacterLevelDataSO[CurrentLevel()].XpRequired)
                 LevelUp();
         }
         private void LevelUp()
         {
-            XP = 0;
+            currentXP = 0;
             level++;
-
-            maxHealth += Mathf.RoundToInt(stateMachine.CharacterLevel[CurrentLevel()].Stamina * staminaStatModifier);
+            if (!levelUpEffect.isPlaying) 
+            {
+                Instantiate(levelUpEffect, transform.position, Quaternion.identity);
+            }
+            
+            maxHealth += Mathf.RoundToInt(stateMachine.CharacterLevelDataSO[CurrentLevel()].Stamina * staminaStatModifier);
             currentHealth = maxHealth;
 
             Debug.Log($"Leveled up to {level}!");

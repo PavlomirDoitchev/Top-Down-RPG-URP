@@ -6,20 +6,20 @@ public class MeleeWeapon : MonoBehaviour
 {
     int baseDamage;
     public LayerMask enemyLayer;
-    [SerializeField] Collider myCollider;
     private List<Collider> enemyColliders = new List<Collider>();
-    private void OnEnable()
-    {
-        enemyColliders.Clear();
-    }
+    //private void OnEnable()
+    //{
+    //    enemyColliders.Clear();
+    //}
     private void OnTriggerEnter(Collider other)
     {
-        if (other == myCollider) return;
+        if (gameObject.layer == 3) return; //Ignore if weapon is set to the Inactive layer
         if (enemyColliders.Contains(other)) return;
 
-        enemyColliders.Add(other);
-        if (other.gameObject.layer == LayerMask.NameToLayer("Enemy")) 
+        if (other.gameObject.layer == LayerMask.NameToLayer("Enemy"))
         {
+            enemyColliders.Add(other);
+            Debug.Log($"Enemy colliders: {enemyColliders.Count}");
             EnemyHealth enemy = other.GetComponent<EnemyHealth>();
             if (enemy != null)
             {
@@ -31,5 +31,9 @@ public class MeleeWeapon : MonoBehaviour
     {
         this.baseDamage = Mathf.RoundToInt(baseDamage * strengthMultiplier);
     }
-   
+    public void ClearHitEnemies()
+    {
+        enemyColliders.Clear();
+        Debug.Log($"Enemy colliders {enemyColliders.Count}");
+    }
 }

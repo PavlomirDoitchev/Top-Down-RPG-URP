@@ -5,41 +5,57 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
 {
     public class PlayerStateMachine : StateMachine
     {
-        //TODO: Add Character modifyable character stats. Add them in a script that can be changed.
-        //SO will modify those stats. 
+        [Header("Equipped Items")]
+        [SerializeField] public WeaponDataSO EquippedWeaponDataSO;
+        [field: SerializeField] public GameObject EquippedWeapon { get; private set; }
+
         [Header("All Character Levels")]
-        [SerializeField] public CharacterLevelSO[] CharacterLevel;
-        [SerializeField] public WeaponDataSO EquippedWeapon;
+        [SerializeField] public CharacterLevelSO[] CharacterLevelDataSO;
         
-        [Header("Attack Data")]
-        [SerializeField] public AbilityDataSO[] AttackData;
+        [Header("Ability Data")]
+        [SerializeField] public AbilityDataSO[] AbilityDataSO;
 
         [Header("References")]
-        [field: SerializeField] public GameObject EquippedWeaponCollider { get; private set; }
+        [SerializeField] private GameObject rightHandEquipSlot;
+        [SerializeField] private GameObject leftHandEquipSlot;
+        
         [field: SerializeField] public InputManager InputManager { get; private set; }
         [field: SerializeField] public CharacterController CharacterController { get; private set; }
         [field: SerializeField] public Animator Animator { get; private set; }
         [field: SerializeField] public ForceReceiver ForceReceiver { get; private set; }
         [field: SerializeField] public PlayerStats PlayerStats { get; private set; }
+        //[field: SerializeField] public Ragdoll Ragdoll { get; private set; }
         public Transform MainCameraTransform { get; private set; }
-        
         private void Start()
         {
             MainCameraTransform = Camera.main.transform;
             ChangeState(new PlayerLocomotionState(this));
         }
+
         public void OnControllerColliderHit(ControllerColliderHit hit)
         {
-           Rigidbody rb = hit.collider.attachedRigidbody;
+            Rigidbody rb = hit.collider.attachedRigidbody;
 
             if (rb == null || rb.isKinematic)
                 return;
 
             if (hit.moveDirection.y < -0.3f)
                 return;
-            
+
             Vector3 pushDir = new Vector3(hit.moveDirection.x, 0, hit.moveDirection.z);
-            rb.linearVelocity = pushDir * CharacterLevel[PlayerStats.CurrentLevel()].CharacterPushObjectsForce;
+            rb.linearVelocity = pushDir * CharacterLevelDataSO[PlayerStats.CurrentLevel()].CharacterPushObjectsForce;
+        }
+        public void EquipNewWeapon(WeaponDataSO newWeaponData, GameObject weaponPrefab)
+        {
+            if (EquippedWeaponDataSO != null)
+            {
+;                Destroy(EquippedWeapon);
+            }
+            //GameObject newWeapon = Instantiate(weaponPrefab, rightHandEquipSlot.transform.position,
+            //    Quaternion.identity, rightHandEquipSlot.transform);
+            GameObject newWeapon = Instantiate(weaponPrefab, Animator.GetBoneTransform(HumanBodyBones.RightIndexProximal));
+            EquippedWeaponDataSO = newWeaponData;
+            EquippedWeapon = newWeapon;
         }
     }
 }

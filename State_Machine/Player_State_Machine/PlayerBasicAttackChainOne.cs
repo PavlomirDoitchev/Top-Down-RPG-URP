@@ -1,4 +1,5 @@
 using System.Collections;
+using Unity.VisualScripting;
 using UnityEngine;
 
 namespace Assets.Scripts.State_Machine.Player_State_Machine
@@ -10,15 +11,17 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
 
         public PlayerBasicAttackChainOne(PlayerStateMachine stateMachine) : base(stateMachine)
         {
-            if (meleeWeapon == null)
-                Debug.LogError("No weapon!");
+            //if (meleeWeapon == null)
+            //    Debug.LogError("No weapon!");
         }
         public override void EnterState()
         {
-            _playerStateMachine.Animator.speed = _playerStateMachine.CharacterLevel[playerStats.CurrentLevel()].CharactAttackSpeed;
+            base.EnterState();
+            SetWeaponActive(false);
+            _playerStateMachine.Animator.speed = _playerStateMachine.CharacterLevelDataSO[playerStats.CurrentLevel()].CharactAttackSpeed;
             _playerStateMachine.Animator.Play("2Hand-Sword-Attack1");
             SetWeaponDamage(attackIndex);
-
+            
         }
         public override void UpdateState(float deltaTime)
         {
@@ -26,7 +29,7 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
             if (_playerStateMachine.InputManager.IsAttacking
                 && _playerStateMachine.Animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= .6f)
             {
-                meleeWeapon.gameObject.SetActive(false);
+                SetWeaponActive(false);
                 _playerStateMachine.ChangeState(new PlayerBasicAttackChainTwo(_playerStateMachine));
             }
 
@@ -40,14 +43,14 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
             }
             if (!rotationLocked && _playerStateMachine.Animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 0.2f)
             {
-                meleeWeapon.gameObject.SetActive(true);
+                SetWeaponActive(true);
                 rotationLocked = true;
                 SetCurrentRotation();
             }
 
             if (_playerStateMachine.Animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1f)
             {
-                meleeWeapon.gameObject.SetActive(false);
+                SetWeaponActive(false);
                 _playerStateMachine.ChangeState(new PlayerLocomotionState(_playerStateMachine));
             }
 
