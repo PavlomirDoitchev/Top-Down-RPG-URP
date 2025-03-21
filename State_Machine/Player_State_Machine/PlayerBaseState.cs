@@ -12,6 +12,7 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
     public abstract class PlayerBaseState : State
     {
         protected PlayerStateMachine _playerStateMachine;
+        
         protected MeleeWeapon meleeWeapon;
         //protected PlayerStats playerStats;
         protected readonly int activeLayer = 7;
@@ -20,8 +21,8 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
         public PlayerBaseState(PlayerStateMachine stateMachine)
         {
             this._playerStateMachine = stateMachine;
-            //meleeWeapon = stateMachine.EquippedWeaponCollider.GetComponentInChildren<MeleeWeapon>();
-            //playerStats = stateMachine.GetComponent<PlayerStats>();
+            
+
         }
         public override void EnterState()
         {
@@ -55,7 +56,7 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
             _playerStateMachine.Animator.speed = 1f;
         }
         /// <summary>
-        /// Move with Input Reading.
+        /// Preserve momentum. Used in PlayerMove().
         /// </summary>
         /// <param name="movement"></param>
         /// <param name="deltaTime"></param>
@@ -64,7 +65,7 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
             _playerStateMachine.CharacterController.Move((movement + _playerStateMachine.ForceReceiver.Movement) * deltaTime);
         }
         /// <summary>
-        /// Apply physics. Does not take in Input Reading.
+        /// Apply physics. Sets Vector3 to 0.
         /// </summary>
         /// <param name="deltaTime"></param>
         protected void Move(float deltaTime)

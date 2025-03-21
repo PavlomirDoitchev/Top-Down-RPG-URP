@@ -23,6 +23,7 @@ public class ForceReceiver : MonoBehaviour
             verticalVelocity *= (1 - inAirDrag);
             verticalVelocity = Mathf.Max(verticalVelocity, maxFallSpeed);
         }
+
         impact = Vector3.SmoothDamp(impact, Vector3.zero, ref dampingVelocity, dragTime);
     }
     public void AddForce(Vector3 force)
@@ -32,5 +33,5 @@ public class ForceReceiver : MonoBehaviour
     public void Jump(float jumpForce)
     {
         verticalVelocity += jumpForce;
-    } 
+    }
 }

@@ -17,7 +17,7 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
         public override void EnterState()
         {
             base.EnterState();
-            SetWeaponActive(false);
+            //SetWeaponActive(false);
             _playerStateMachine.Animator.speed = _playerStateMachine.CharacterLevelDataSO[PlayerStats.Instance.CurrentLevel()].CharactAttackSpeed;
             _playerStateMachine.Animator.Play("2Hand-Sword-Attack1");
             SetWeaponDamage(attackIndex);
@@ -29,7 +29,7 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
             if (_playerStateMachine.InputManager.IsAttacking
                 && _playerStateMachine.Animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= .6f)
             {
-                SetWeaponActive(false);
+                //SetWeaponActive(false);
                 _playerStateMachine.ChangeState(new PlayerBasicAttackChainTwo(_playerStateMachine));
             }
 
@@ -50,7 +50,7 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
 
             if (_playerStateMachine.Animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1f)
             {
-                SetWeaponActive(false);
+                //SetWeaponActive(false);
                 _playerStateMachine.ChangeState(new PlayerLocomotionState(_playerStateMachine));
             }
 

@@ -22,8 +22,8 @@ namespace Assets.Scripts.State_Machine.Player
         private int maxResource;
 
         [Header("References")]
-        [SerializeField] PlayerStateMachine stateMachine;
         [SerializeField] ParticleSystem levelUpEffect;
+        public PlayerStateMachine playerStateMachine;
 
         [SerializeField] WeaponDataSO weaponDataSO;
         [SerializeField] GameObject weapon;
@@ -31,7 +31,7 @@ namespace Assets.Scripts.State_Machine.Player
         private void Awake()
         {
             
-            stateMachine = GetComponent<PlayerStateMachine>();
+            playerStateMachine = GetComponent<PlayerStateMachine>();
             if (Instance != null && Instance != this)
             {
                 Destroy(gameObject);
@@ -42,15 +42,17 @@ namespace Assets.Scripts.State_Machine.Player
         }
         private void Start()
         {
-            stateMachine.CharacterLevelDataSO[CurrentLevel()].ApplyClassModifiers();
+            playerStateMachine.CharacterLevelDataSO[CurrentLevel()].ApplyClassModifiers();
+            
             ApplyCharacterData();
-            Debug.Log($"Loaded Class: {stateMachine.CharacterLevelDataSO[CurrentLevel()].GetCharacterClass()}");
-            maxHealth += Mathf.RoundToInt(stateMachine.CharacterLevelDataSO[CurrentLevel()].Stamina * staminaStatModifier);
+            Debug.Log($"Loaded Class: {playerStateMachine.CharacterLevelDataSO[CurrentLevel()].GetCharacterClass()}");
+            maxHealth += Mathf.RoundToInt(playerStateMachine.CharacterLevelDataSO[CurrentLevel()].Stamina * staminaStatModifier);
             currentHealth = maxHealth;
-            maxLevel = stateMachine.CharacterLevelDataSO.Length - 1;
+            maxLevel = playerStateMachine.CharacterLevelDataSO.Length - 1;
         }
         private void Update()
         {
+            currentResource -= Mathf.RoundToInt(Time.deltaTime);
             if (Input.GetKeyDown(KeyCode.UpArrow))
             {
                 if (level == maxLevel)
@@ -58,10 +60,10 @@ namespace Assets.Scripts.State_Machine.Player
                     return;
                 }
                 currentXP++;
-                if (currentXP >= stateMachine.CharacterLevelDataSO[CurrentLevel()].XpRequired)
+                if (currentXP >= playerStateMachine.CharacterLevelDataSO[CurrentLevel()].XpRequired)
                 {
                     LevelUp();
-                    stateMachine.EquipNewWeapon(weaponDataSO, weapon);
+                    playerStateMachine.EquipNewWeapon(weaponDataSO, weapon);
                 }
             }
         }
@@ -71,7 +73,7 @@ namespace Assets.Scripts.State_Machine.Player
             currentHealth -= damage;
             RegainResource(Mathf.RoundToInt(damage * 0.1f));
             if (currentHealth <= 0)
-                stateMachine.ChangeState(new PlayerDeathState(stateMachine));
+                playerStateMachine.ChangeState(new PlayerDeathState(playerStateMachine));
         }
         public int CurrentLevel()
         {
@@ -82,7 +84,7 @@ namespace Assets.Scripts.State_Machine.Player
             if (level >= maxLevel)
                 return;
             currentXP += amount;
-            if (currentXP >= stateMachine.CharacterLevelDataSO[CurrentLevel()].XpRequired)
+            if (currentXP >= playerStateMachine.CharacterLevelDataSO[CurrentLevel()].XpRequired)
                 LevelUp();
         }
         private void LevelUp()
@@ -94,16 +96,16 @@ namespace Assets.Scripts.State_Machine.Player
                 Instantiate(levelUpEffect, transform.position, Quaternion.identity);
             }
 
-            maxHealth += Mathf.RoundToInt(stateMachine.CharacterLevelDataSO[CurrentLevel()].Stamina * staminaStatModifier);
+            maxHealth += Mathf.RoundToInt(playerStateMachine.CharacterLevelDataSO[CurrentLevel()].Stamina * staminaStatModifier);
             currentHealth = maxHealth;
 
             Debug.Log($"Leveled up to {level}!");
         }
         private void ApplyCharacterData() 
         {
-            resourceType = stateMachine.CharacterLevelDataSO[CurrentLevel()].GetResourceType();
-            maxResource = stateMachine.CharacterLevelDataSO[CurrentLevel()].maxResource;
-            currentResource = stateMachine.CharacterLevelDataSO[CurrentLevel()].maxResource;
+            resourceType = playerStateMachine.CharacterLevelDataSO[CurrentLevel()].GetResourceType();
+            maxResource = playerStateMachine.CharacterLevelDataSO[CurrentLevel()].maxResource;
+            currentResource = playerStateMachine.CharacterLevelDataSO[CurrentLevel()].maxResource;
             Debug.Log($"Player resource type set to: {resourceType}, Max Resource: {maxResource}");
         }
         public void UseResource(int amount)

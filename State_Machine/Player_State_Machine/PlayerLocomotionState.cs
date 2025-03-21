@@ -12,7 +12,8 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
 
         public override void EnterState()
         {
-           _playerStateMachine.Animator.CrossFadeInFixedTime("Basic_Locomotion", .1f);
+            base.EnterState();
+            _playerStateMachine.Animator.CrossFadeInFixedTime("Basic_Locomotion", .1f);
         }
         public override void UpdateState(float deltaTime)
         {
@@ -21,7 +22,14 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
                 _playerStateMachine.ChangeState(new PlayerFallState(_playerStateMachine));
                 return;
             }
-            if (Input.GetKey(_playerStateMachine.InputManager.GetKey("Jump")) && _playerStateMachine.CharacterController.isGrounded) 
+            if (Input.GetKey(_playerStateMachine.InputManager.GetKey("Dash")))
+            {
+                if (_playerStateMachine.CharacterController.velocity.x != 0 || _playerStateMachine.CharacterController.velocity.z != 0)
+                {
+                    _playerStateMachine.ChangeState(new PlayerDashState(_playerStateMachine));
+                }
+            }
+            if (Input.GetKey(_playerStateMachine.InputManager.GetKey("Jump")) && _playerStateMachine.CharacterController.isGrounded)
             {
                 _playerStateMachine.ChangeState(new PlayerJumpState(_playerStateMachine));
             }
@@ -29,7 +37,7 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
             {
                 _playerStateMachine.ChangeState(new PlayerBasicAttackChainOne(_playerStateMachine));
             }
-            if (_playerStateMachine.InputManager.IsUsingAbilityOne) 
+            if (_playerStateMachine.InputManager.IsUsingAbilityOne)
             {
                 _playerStateMachine.ChangeState(new PlayerAbilityOne(_playerStateMachine));
             }
@@ -39,8 +47,8 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
 
         public override void ExitState()
         {
-            
+
         }
-      
+
     }
 }
