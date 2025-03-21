@@ -30,7 +30,7 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
             MainCameraTransform = Camera.main.transform;
             ChangeState(new PlayerLocomotionState(this));
         }
-
+        
         public void OnControllerColliderHit(ControllerColliderHit hit)
         {
             Rigidbody rb = hit.collider.attachedRigidbody;

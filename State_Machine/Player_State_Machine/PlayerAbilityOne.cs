@@ -9,12 +9,15 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
         private Vector3 force;
         public PlayerAbilityOne(PlayerStateMachine stateMachine) : base(stateMachine)
         {
-            if (meleeWeapon == null)
-                Debug.LogError("No weapon!");
+            //if (meleeWeapon == null)
+            //    Debug.LogError("No weapon!");
         }
 
         public override void EnterState()
         {
+            base.EnterState();
+            SetWeaponActive(false);
+            PlayerStats.Instance.UseResource(1);
             _playerStateMachine.Animator.speed = _playerStateMachine.CharacterLevelDataSO[PlayerStats.Instance.CurrentLevel()].CharactAttackSpeed;
             _playerStateMachine.Animator.Play("2Hand-Sword-Attack8");
             SetWeaponDamage(attackIndex);
@@ -35,14 +38,16 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
             if (!rotationLocked && _playerStateMachine.Animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 0.2f)
             {
                 _playerStateMachine.ForceReceiver.AddForce(force);
-                meleeWeapon.gameObject.SetActive(true);
+                SetWeaponActive(true);
+                //meleeWeapon.gameObject.SetActive(true);
                 rotationLocked = true;
                 SetCurrentRotation();
             }
 
             if (_playerStateMachine.Animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1f)
             {
-                meleeWeapon.gameObject.SetActive(false);
+                //meleeWeapon.gameObject.SetActive(false);
+                SetWeaponActive(false);
                 _playerStateMachine.ChangeState(new PlayerLocomotionState(_playerStateMachine));
             }
         }

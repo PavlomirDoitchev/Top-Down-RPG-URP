@@ -15,7 +15,11 @@ namespace Assets.Scripts.State_Machine.Player
         [SerializeField] float maxHealth = 100;
         [SerializeField] float currentHealth;
         [SerializeField] float staminaStatModifier = 1.66f;
-        //[SerializeField] int mana = 100;
+        
+        [Header("Resource Info")]
+        private CharacterLevelSO.ResourceType resourceType;
+        [SerializeField] private int currentResource;
+        private int maxResource;
 
         [Header("References")]
         [SerializeField] PlayerStateMachine stateMachine;
@@ -26,6 +30,7 @@ namespace Assets.Scripts.State_Machine.Player
 
         private void Awake()
         {
+            
             stateMachine = GetComponent<PlayerStateMachine>();
             if (Instance != null && Instance != this)
             {
@@ -37,6 +42,9 @@ namespace Assets.Scripts.State_Machine.Player
         }
         private void Start()
         {
+            stateMachine.CharacterLevelDataSO[CurrentLevel()].ApplyClassModifiers();
+            ApplyCharacterData();
+            Debug.Log($"Loaded Class: {stateMachine.CharacterLevelDataSO[CurrentLevel()].GetCharacterClass()}");
             maxHealth += Mathf.RoundToInt(stateMachine.CharacterLevelDataSO[CurrentLevel()].Stamina * staminaStatModifier);
             currentHealth = maxHealth;
             maxLevel = stateMachine.CharacterLevelDataSO.Length - 1;
@@ -61,10 +69,7 @@ namespace Assets.Scripts.State_Machine.Player
         public void PlayerTakeDamage(int damage)
         {
             currentHealth -= damage;
-            if (stateMachine.CharacterLevelDataSO[CurrentLevel()].Class == "Fighter")
-            { 
-                //Add Rage
-            }
+            RegainResource(Mathf.RoundToInt(damage * 0.1f));
             if (currentHealth <= 0)
                 stateMachine.ChangeState(new PlayerDeathState(stateMachine));
         }
@@ -93,6 +98,35 @@ namespace Assets.Scripts.State_Machine.Player
             currentHealth = maxHealth;
 
             Debug.Log($"Leveled up to {level}!");
+        }
+        private void ApplyCharacterData() 
+        {
+            resourceType = stateMachine.CharacterLevelDataSO[CurrentLevel()].GetResourceType();
+            maxResource = stateMachine.CharacterLevelDataSO[CurrentLevel()].maxResource;
+            currentResource = stateMachine.CharacterLevelDataSO[CurrentLevel()].maxResource;
+            Debug.Log($"Player resource type set to: {resourceType}, Max Resource: {maxResource}");
+        }
+        public void UseResource(int amount)
+        {
+            if (currentResource >= amount)
+            {
+                currentResource -= amount;
+                Debug.Log($"Used {amount} {resourceType}. Remaining: {currentResource}");
+            }
+            else
+            {
+                Debug.LogWarning("Not enough resource!");
+            }
+        }
+        public void RegainResource(int amount)
+        {
+            currentResource = Mathf.Min(currentResource + amount, maxResource);
+            Debug.Log($"Regained {amount} {resourceType}. Current: {currentResource}");
+        }
+
+        public CharacterLevelSO.ResourceType GetResourceType()
+        {
+            return resourceType;
         }
     }
 }
