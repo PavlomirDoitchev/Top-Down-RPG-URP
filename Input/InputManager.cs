@@ -39,9 +39,9 @@ public class InputManager : MonoBehaviour
         AttackInput();
         Ability_1();
     }
-    private void Ability_1() 
+    private void Ability_1()
     {
-        if(Input.GetKey(keyBindings["Ability1"]))
+        if (Input.GetKey(keyBindings["Ability1"]))
             IsUsingAbilityOne = true;
         else
             IsUsingAbilityOne = false;
@@ -53,7 +53,7 @@ public class InputManager : MonoBehaviour
         else
             IsAttacking = false;
     }
-    private void MovementInput() 
+    private void MovementInput()
     {
         float horizontal = GetAxis("Horizontal");
         float vertical = GetAxis("Vertical");

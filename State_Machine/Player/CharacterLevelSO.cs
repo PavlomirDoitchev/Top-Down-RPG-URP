@@ -5,7 +5,7 @@ public class CharacterLevelSO : ScriptableObject
 {
     public enum CharacterClass
     {
-        Warrior,
+        Fighter,
         Rogue,
         Mage
     }
@@ -44,7 +44,7 @@ public class CharacterLevelSO : ScriptableObject
     {
         switch (characterClass)
         {
-            case CharacterClass.Warrior:
+            case CharacterClass.Fighter:
                 resourceType = ResourceType.Rage;
                 break;
 

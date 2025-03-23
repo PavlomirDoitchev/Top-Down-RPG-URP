@@ -9,11 +9,8 @@ public class EnemyHealth : MonoBehaviour
     public int maxHealth = 100;
     [SerializeField] private int currentHealth;
     Vector3 force;
-    PlayerStats playerStats;
-    private void Start()
+    private void Awake()
     {
-        playerStats = PlayerStats.Instance;
-        force = transform.position - playerStats.transform.position;
         currentHealth = maxHealth;
 
 
@@ -26,10 +23,11 @@ public class EnemyHealth : MonoBehaviour
     {
         if (other.gameObject.CompareTag("Player"))
         {
-            playerStats.PlayerTakeDamage(DealDamage());
+            PlayerStats.Instance.PlayerTakeDamage(DealDamage());
             if (timer <= 0)
             {
-                playerStats.playerStateMachine.ForceReceiver.AddForce((other.transform.position - this.transform.position).normalized * 15);
+                force = transform.position - PlayerStats.Instance.transform.position;
+                PlayerStats.Instance.playerStateMachine.ForceReceiver.AddForce((other.transform.position - this.transform.position).normalized * 15);
                 timer = coolDown;
             }
         }
@@ -51,7 +49,7 @@ public class EnemyHealth : MonoBehaviour
     private void Die()
     {
         currentHealth = maxHealth;
-        playerStats.GainXP(1);
+        PlayerStats.Instance.GainXP(1);
         //playerStats.GainXP(1);
         //Debug.Log(gameObject.name + " has died!");
         //Destroy(gameObject);

@@ -12,7 +12,6 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
     public abstract class PlayerBaseState : State
     {
         protected PlayerStateMachine _playerStateMachine;
-        
         protected MeleeWeapon meleeWeapon;
         //protected PlayerStats playerStats;
         protected readonly int activeLayer = 7;
@@ -21,17 +20,17 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
         public PlayerBaseState(PlayerStateMachine stateMachine)
         {
             this._playerStateMachine = stateMachine;
-            
+
 
         }
         public override void EnterState()
         {
-            base.EnterState(); 
+            base.EnterState();
             InitializeWeapon();
             SetWeaponActive(false);
             meleeWeapon.ClearHitEnemies();
         }
-        protected void SetWeaponActive(bool isActive) 
+        protected void SetWeaponActive(bool isActive)
         {
             meleeWeapon.gameObject.layer = isActive ? activeLayer : inactiveLayer;
         }
@@ -120,21 +119,22 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
 
         private Vector3 CalculateMovement()
         {
-            Vector3 forward = _playerStateMachine.MainCameraTransform.forward;
-            Vector3 right = _playerStateMachine.MainCameraTransform.right;
 
-            forward.y = 0;
-            right.y = 0;
+            //Vector3 forward = _playerStateMachine.MainCameraTransform.forward;
+            //Vector3 right = _playerStateMachine.MainCameraTransform.right;
 
-            forward.Normalize();
-            right.Normalize();
+            //forward.y = 0;
+            //right.y = 0;
+
+            //forward.Normalize();
+            //right.Normalize();
 
             Vector2 moveInput = _playerStateMachine.InputManager.MoveInput;
-            Vector3 moveDirection = forward * moveInput.y + right * moveInput.x;
+            Vector3 moveDirection = new Vector3(moveInput.x, 0, moveInput.y);
+            //Vector3 moveDirection = forward moveInput.y + right moveInput.x;
             return moveDirection.normalized;
-
         }
-        
+
         protected float CalculateDamage(int index)
         {
             float rollForCrit = Random.Range(0f, 1f);
@@ -147,7 +147,7 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
                     _playerStateMachine.CharacterLevelDataSO[PlayerStats.Instance.CurrentLevel()].CharacterCriticalModifier
                     );
             }
-            else 
+            else
             {
                 return 1 +
                    (_playerStateMachine.CharacterLevelDataSO[PlayerStats.Instance.CurrentLevel()].Strength *

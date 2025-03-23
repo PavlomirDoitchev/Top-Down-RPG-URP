@@ -17,7 +17,7 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
         {
             base.EnterState();
             SetWeaponActive(false);
-            PlayerStats.Instance.UseResource(15);
+            //PlayerStats.Instance.UseResource(15);
             _playerStateMachine.Animator.speed = _playerStateMachine.CharacterLevelDataSO[PlayerStats.Instance.CurrentLevel()].CharactAttackSpeed;
             _playerStateMachine.Animator.Play("2Hand-Sword-Attack8");
             SetWeaponDamage(attackIndex);

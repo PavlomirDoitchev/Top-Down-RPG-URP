@@ -5,7 +5,7 @@ using UnityEngine;
 public class MeleeWeapon : MonoBehaviour
 {
     int baseDamage;
-    public LayerMask enemyLayer;
+    //public LayerMask enemyLayer;
     private List<Collider> enemyColliders = new List<Collider>();
     //private void OnEnable()
     //{

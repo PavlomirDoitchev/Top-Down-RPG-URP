@@ -22,13 +22,14 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
         [field: SerializeField] public CharacterController CharacterController { get; private set; }
         [field: SerializeField] public Animator Animator { get; private set; }
         [field: SerializeField] public ForceReceiver ForceReceiver { get; private set; }
-        //[field: SerializeField] public PlayerStats PlayerStats { get; private set; }
+        public PlayerStats _PlayerStats { get; private set; }
         //[field: SerializeField] public Ragdoll Ragdoll { get; private set; }
         public Transform MainCameraTransform { get; private set; }
         private void Start()
         {
             MainCameraTransform = Camera.main.transform;
             ChangeState(new PlayerLocomotionState(this));
+            _PlayerStats = PlayerStats.Instance;
         }
         
         public void OnControllerColliderHit(ControllerColliderHit hit)

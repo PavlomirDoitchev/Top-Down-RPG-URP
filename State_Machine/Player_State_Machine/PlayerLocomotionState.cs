@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using Assets.Scripts.State_Machine;
 using System;
+using Assets.Scripts.State_Machine.Player;
 namespace Assets.Scripts.State_Machine.Player_State_Machine
 {
     public class PlayerLocomotionState : PlayerBaseState
@@ -39,7 +40,8 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
             }
             if (_playerStateMachine.InputManager.IsUsingAbilityOne)
             {
-                _playerStateMachine.ChangeState(new PlayerAbilityOne(_playerStateMachine));
+                if(PlayerStats.Instance.CanUseSkill(15))
+                    _playerStateMachine.ChangeState(new PlayerAbilityOne(_playerStateMachine));
             }
             PlayerMove(deltaTime);
         }

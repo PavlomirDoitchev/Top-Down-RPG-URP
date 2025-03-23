@@ -1,4 +1,5 @@
 using Assets.Scripts.State_Machine.Player_State_Machine;
+using Unity.VisualScripting;
 using UnityEngine;
 
 namespace Assets.Scripts.State_Machine.Player
@@ -15,12 +16,12 @@ namespace Assets.Scripts.State_Machine.Player
         [SerializeField] float maxHealth = 100;
         [SerializeField] float currentHealth;
         [SerializeField] float staminaStatModifier = 1.66f;
-        
+
         [Header("Resource Info")]
         private CharacterLevelSO.ResourceType resourceType;
+        [SerializeField] private int maxResource;
         [SerializeField] private int currentResource;
-        private int maxResource;
-
+        bool canUseSkill = false;
         [Header("References")]
         [SerializeField] ParticleSystem levelUpEffect;
         public PlayerStateMachine playerStateMachine;
@@ -30,7 +31,7 @@ namespace Assets.Scripts.State_Machine.Player
 
         private void Awake()
         {
-            
+
             playerStateMachine = GetComponent<PlayerStateMachine>();
             if (Instance != null && Instance != this)
             {
@@ -43,7 +44,7 @@ namespace Assets.Scripts.State_Machine.Player
         private void Start()
         {
             playerStateMachine.CharacterLevelDataSO[CurrentLevel()].ApplyClassModifiers();
-            
+
             ApplyCharacterData();
             Debug.Log($"Loaded Class: {playerStateMachine.CharacterLevelDataSO[CurrentLevel()].GetCharacterClass()}");
             maxHealth += Mathf.RoundToInt(playerStateMachine.CharacterLevelDataSO[CurrentLevel()].Stamina * staminaStatModifier);
@@ -52,7 +53,7 @@ namespace Assets.Scripts.State_Machine.Player
         }
         private void Update()
         {
-            currentResource -= Mathf.RoundToInt(Time.deltaTime);
+            
             if (Input.GetKeyDown(KeyCode.UpArrow))
             {
                 if (level == maxLevel)
@@ -101,24 +102,25 @@ namespace Assets.Scripts.State_Machine.Player
 
             Debug.Log($"Leveled up to {level}!");
         }
-        private void ApplyCharacterData() 
+        private void ApplyCharacterData()
         {
             resourceType = playerStateMachine.CharacterLevelDataSO[CurrentLevel()].GetResourceType();
-            maxResource = playerStateMachine.CharacterLevelDataSO[CurrentLevel()].maxResource;
-            currentResource = playerStateMachine.CharacterLevelDataSO[CurrentLevel()].maxResource;
-            Debug.Log($"Player resource type set to: {resourceType}, Max Resource: {maxResource}");
+            currentResource = maxResource;
+            Debug.Log($"Player resource type set to: {resourceType}");
         }
-        public void UseResource(int amount)
+        public bool CanUseSkill(int cost) 
         {
-            if (currentResource >= amount)
-            {
-                currentResource -= amount;
-                Debug.Log($"Used {amount} {resourceType}. Remaining: {currentResource}");
+            if (currentResource >= cost) {
+                UseResource(cost);
+                Debug.Log($"Used {cost} {resourceType}. Remaining: {currentResource}");
+                return canUseSkill = true;
             }
             else
-            {
-                Debug.LogWarning("Not enough resource!");
-            }
+                return canUseSkill = false;
+        }
+        public int UseResource(int amount)
+        {
+            return currentResource -= amount;
         }
         public void RegainResource(int amount)
         {
