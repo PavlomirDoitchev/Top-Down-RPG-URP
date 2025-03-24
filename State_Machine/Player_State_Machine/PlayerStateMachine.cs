@@ -1,6 +1,6 @@
 using UnityEngine;
 using Assets.Scripts.State_Machine;
-using Assets.Scripts.State_Machine.Player;
+using Assets.Scripts.Player;
 namespace Assets.Scripts.State_Machine.Player_State_Machine
 {
     public class PlayerStateMachine : StateMachine
@@ -28,8 +28,11 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
         private void Start()
         {
             MainCameraTransform = Camera.main.transform;
-            ChangeState(new PlayerLocomotionState(this));
-            _PlayerStats = PlayerStats.Instance;
+            _PlayerStats = GetComponent<PlayerStats>();
+            if (_PlayerStats.GetResourceType() == CharacterLevelSO.ResourceType.Rage)
+                ChangeState(new FighterLocomotionState(this));
+            else if (_PlayerStats.GetResourceType() == CharacterLevelSO.ResourceType.Mana)
+                Debug.Log("where is the mage?!");
         }
         
         public void OnControllerColliderHit(ControllerColliderHit hit)
@@ -43,7 +46,7 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
                 return;
 
             Vector3 pushDir = new Vector3(hit.moveDirection.x, 0, hit.moveDirection.z);
-            rb.linearVelocity = pushDir * CharacterLevelDataSO[PlayerStats.Instance.CurrentLevel()].CharacterPushObjectsForce;
+            rb.linearVelocity = pushDir * CharacterLevelDataSO[_PlayerStats.CurrentLevel()].CharacterPushObjectsForce;
         }
         public void EquipNewWeapon(WeaponDataSO newWeaponData, GameObject weaponPrefab)
         {

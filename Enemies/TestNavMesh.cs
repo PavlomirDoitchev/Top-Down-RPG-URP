@@ -1,4 +1,4 @@
-using Assets.Scripts.State_Machine.Player;
+using Assets.Scripts.Player;
 using Assets.Scripts.State_Machine.Player_State_Machine;
 using UnityEngine;
 using UnityEngine.AI;
@@ -13,7 +13,7 @@ public class TestNavMesh : MonoBehaviour
    
     private void Update()
     {
-        agent.SetDestination(PlayerStats.Instance.gameObject.transform.position);
+        //agent.SetDestination(PlayerStats.Instance.gameObject.transform.position);
     }
 
 }

@@ -1,21 +1,21 @@
-using Assets.Scripts.State_Machine.Player;
+using Assets.Scripts.Player;
 using System.Collections;
 using UnityEngine;
 
 namespace Assets.Scripts.State_Machine.Player_State_Machine
 {
-    public class PlayerBasicAttackChainTwo : PlayerBaseState
+    public class FighterBasicAttackChainTwo : PlayerBaseState
     {
         private bool rotationLocked = false;
         private int attackIndex = 0;
-        public PlayerBasicAttackChainTwo(PlayerStateMachine stateMachine) : base(stateMachine)
+        public FighterBasicAttackChainTwo(PlayerStateMachine stateMachine) : base(stateMachine)
         {
            
         }
         public override void EnterState()
         {
             base.EnterState();
-            _playerStateMachine.Animator.speed = _playerStateMachine.CharacterLevelDataSO[PlayerStats.Instance.CurrentLevel()].CharactAttackSpeed;
+            _playerStateMachine.Animator.speed = _playerStateMachine.CharacterLevelDataSO[_playerStateMachine._PlayerStats.CurrentLevel()].CharactAttackSpeed;
             _playerStateMachine.Animator.Play("2Hand-Sword-Attack2");
             SetWeaponDamage(attackIndex);
         }
@@ -26,7 +26,7 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
                 && _playerStateMachine.Animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= .6f)
             {
                 SetWeaponActive(false);
-                _playerStateMachine.ChangeState(new PlayerBasicAttackChainThree(_playerStateMachine));
+                _playerStateMachine.ChangeState(new FighterBasicAttackChainThree(_playerStateMachine));
             }
 
             if (!rotationLocked)
@@ -47,7 +47,7 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
             if (_playerStateMachine.Animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1f)
             {
                 SetWeaponActive(false);
-                _playerStateMachine.ChangeState(new PlayerLocomotionState(_playerStateMachine));
+                _playerStateMachine.ChangeState(new FighterLocomotionState(_playerStateMachine));
             }
 
         }

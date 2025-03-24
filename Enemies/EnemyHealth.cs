@@ -1,5 +1,5 @@
 using UnityEngine;
-using Assets.Scripts.State_Machine.Player;
+using Assets.Scripts.Player;
 
 public class EnemyHealth : MonoBehaviour
 {
@@ -9,10 +9,11 @@ public class EnemyHealth : MonoBehaviour
     public int maxHealth = 100;
     [SerializeField] private int currentHealth;
     Vector3 force;
+    PlayerManager playerManager;
     private void Awake()
     {
         currentHealth = maxHealth;
-
+        playerManager = PlayerManager.Instance;
 
     }
     private void Update()
@@ -23,11 +24,14 @@ public class EnemyHealth : MonoBehaviour
     {
         if (other.gameObject.CompareTag("Player"))
         {
-            PlayerStats.Instance.PlayerTakeDamage(DealDamage());
+            var playerStats = playerManager.playerStateMachine._PlayerStats;
+            playerStats.PlayerTakeDamage(DealDamage());
+            if (playerStats.GetResourceType() == CharacterLevelSO.ResourceType.Rage)
+                playerStats.RegainResource(Mathf.RoundToInt(damage * 0.1f));
             if (timer <= 0)
             {
-                force = transform.position - PlayerStats.Instance.transform.position;
-                PlayerStats.Instance.playerStateMachine.ForceReceiver.AddForce((other.transform.position - this.transform.position).normalized * 15);
+                force = transform.position - playerManager.transform.position;
+                playerManager.playerStateMachine.ForceReceiver.AddForce((other.transform.position - this.transform.position).normalized * 15);
                 timer = coolDown;
             }
         }
@@ -49,7 +53,7 @@ public class EnemyHealth : MonoBehaviour
     private void Die()
     {
         currentHealth = maxHealth;
-        PlayerStats.Instance.GainXP(1);
+        playerManager.playerStateMachine._PlayerStats.GainXP(1);
         //playerStats.GainXP(1);
         //Debug.Log(gameObject.name + " has died!");
         //Destroy(gameObject);

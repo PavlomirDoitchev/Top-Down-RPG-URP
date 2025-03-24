@@ -1,13 +1,13 @@
 ﻿using UnityEngine;
 using Assets.Scripts.State_Machine;
 using System;
-using Assets.Scripts.State_Machine.Player;
+using Assets.Scripts.Player;
 namespace Assets.Scripts.State_Machine.Player_State_Machine
 {
-    public class PlayerLocomotionState : PlayerBaseState
+    public class FighterLocomotionState : PlayerBaseState
     {
 
-        public PlayerLocomotionState(PlayerStateMachine playerStateMachine) : base(playerStateMachine)
+        public FighterLocomotionState(PlayerStateMachine playerStateMachine) : base(playerStateMachine)
         {
         }
 
@@ -27,7 +27,7 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
             {
                 if (_playerStateMachine.CharacterController.velocity.x != 0 || _playerStateMachine.CharacterController.velocity.z != 0)
                 {
-                    _playerStateMachine.ChangeState(new PlayerDashState(_playerStateMachine));
+                    _playerStateMachine.ChangeState(new FighterRollState(_playerStateMachine));
                 }
             }
             if (Input.GetKey(_playerStateMachine.InputManager.GetKey("Jump")) && _playerStateMachine.CharacterController.isGrounded)
@@ -36,12 +36,11 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
             }
             if (_playerStateMachine.InputManager.IsAttacking)
             {
-                _playerStateMachine.ChangeState(new PlayerBasicAttackChainOne(_playerStateMachine));
+                _playerStateMachine.ChangeState(new FighterBasicAttackChainOne(_playerStateMachine));
             }
             if (_playerStateMachine.InputManager.IsUsingAbilityOne)
             {
-                if(PlayerStats.Instance.CanUseSkill(15))
-                    _playerStateMachine.ChangeState(new PlayerAbilityOne(_playerStateMachine));
+                if (SkillManager.Instance.fighterQ.CanUseSkill()) { }
             }
             PlayerMove(deltaTime);
         }

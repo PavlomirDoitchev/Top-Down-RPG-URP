@@ -1,6 +1,6 @@
 using UnityEngine;
 using Assets.Scripts.State_Machine;
-using Assets.Scripts.State_Machine.Player;
+using Assets.Scripts.Player;
 
 namespace Assets.Scripts.State_Machine.Player_State_Machine
 {
@@ -20,8 +20,6 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
         public PlayerBaseState(PlayerStateMachine stateMachine)
         {
             this._playerStateMachine = stateMachine;
-
-
         }
         public override void EnterState()
         {
@@ -94,7 +92,8 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
                 _playerStateMachine.transform.rotation = Quaternion.Slerp(
                     _playerStateMachine.transform.rotation,
                     targetRotation,
-                    _playerStateMachine.CharacterLevelDataSO[PlayerStats.Instance.CurrentLevel()].CharacterBaseRotationSpeed * 10 * deltaTime);
+                    _playerStateMachine.CharacterLevelDataSO[PlayerManager.Instance.playerStateMachine._PlayerStats.CurrentLevel()].
+                    CharacterBaseRotationSpeed * 10 * deltaTime);
             }
         }
         /// <summary>
@@ -105,12 +104,12 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
         {
             Vector3 movement = CalculateMovement();
 
-            Move(movement * _playerStateMachine.CharacterLevelDataSO[PlayerStats.Instance.CurrentLevel()].CharacterBaseMovementSpeed, deltaTime);
+            Move(movement * _playerStateMachine.CharacterLevelDataSO[_playerStateMachine._PlayerStats.CurrentLevel()].CharacterBaseMovementSpeed, deltaTime);
 
             if (movement != Vector3.zero)
             {
                 _playerStateMachine.transform.rotation = Quaternion.Slerp(_playerStateMachine.transform.rotation,
-                    Quaternion.LookRotation(movement), _playerStateMachine.CharacterLevelDataSO[PlayerStats.Instance.CurrentLevel()]
+                    Quaternion.LookRotation(movement), _playerStateMachine.CharacterLevelDataSO[PlayerManager.Instance.playerStateMachine._PlayerStats.CurrentLevel()]
                     .CharacterBaseRotationSpeed * deltaTime);
                 _playerStateMachine.Animator.SetFloat("LocomotionSpeed", 1, .01f, deltaTime);
             }
@@ -138,19 +137,19 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
         protected float CalculateDamage(int index)
         {
             float rollForCrit = Random.Range(0f, 1f);
-            if (_playerStateMachine.CharacterLevelDataSO[PlayerStats.Instance.CurrentLevel()].CharacterCriticalChance >= rollForCrit)
+            if (_playerStateMachine.CharacterLevelDataSO[PlayerManager.Instance.playerStateMachine._PlayerStats.CurrentLevel()].CharacterCriticalChance >= rollForCrit)
             {
                 //Debug.Log("Critical!");
                 return 1 +
-                    (_playerStateMachine.CharacterLevelDataSO[PlayerStats.Instance.CurrentLevel()].Strength *
+                    (_playerStateMachine.CharacterLevelDataSO[PlayerManager.Instance.playerStateMachine._PlayerStats.CurrentLevel()].Strength *
                     _playerStateMachine.AbilityDataSO[index].damageMultiplier *
-                    _playerStateMachine.CharacterLevelDataSO[PlayerStats.Instance.CurrentLevel()].CharacterCriticalModifier
+                    _playerStateMachine.CharacterLevelDataSO[PlayerManager.Instance.playerStateMachine._PlayerStats.CurrentLevel()].CharacterCriticalModifier
                     );
             }
             else
             {
                 return 1 +
-                   (_playerStateMachine.CharacterLevelDataSO[PlayerStats.Instance.CurrentLevel()].Strength *
+                   (_playerStateMachine.CharacterLevelDataSO[PlayerManager.Instance.playerStateMachine._PlayerStats.CurrentLevel()].Strength *
                    _playerStateMachine.AbilityDataSO[index].damageMultiplier
                    );
             }

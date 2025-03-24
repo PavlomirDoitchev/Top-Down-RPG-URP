@@ -1,0 +1,19 @@
+﻿using Assets.Scripts.State_Machine.Player_State_Machine;
+using UnityEngine;
+
+namespace Assets.Scripts.Player
+{
+    public class FighterQ : Skills
+    {
+        public override void UseSkill()
+        {
+            base.UseSkill();
+            var playerStats = PlayerManager.Instance.playerStateMachine._PlayerStats;
+            var playerState = PlayerManager.Instance.playerStateMachine;
+            playerStats.UseResource(GetSkillCost());
+            Debug.Log($"Used Q {GetSkillCost()}. Remaining {playerStats.GetResourceType()}: {playerStats.GetCurrentResource()}");
+
+            playerState.ChangeState(new FighterAbilityQState(playerState));
+        }
+    }
+}

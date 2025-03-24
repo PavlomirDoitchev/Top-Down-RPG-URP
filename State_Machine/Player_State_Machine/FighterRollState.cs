@@ -1,14 +1,14 @@
-﻿using Assets.Scripts.State_Machine.Player;
+﻿using Assets.Scripts.Player;
 using UnityEngine;
 
 namespace Assets.Scripts.State_Machine.Player_State_Machine
 {
-    public class PlayerDashState : PlayerBaseState
+    public class FighterRollState : PlayerBaseState
     {
         Vector3 dashDirection;
         Vector3 dashVelocity;
         float dashSpeed = 10f;
-        public PlayerDashState(PlayerStateMachine stateMachine) : base(stateMachine)
+        public FighterRollState(PlayerStateMachine stateMachine) : base(stateMachine)
         {
         }
 
@@ -19,7 +19,7 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
             _playerStateMachine.Animator.Play("2Hand-Sword-DiveRoll-Forward1");
             Physics.IgnoreLayerCollision(10, _playerStateMachine.gameObject.layer, true);
             dashDirection = _playerStateMachine.transform.forward;
-            dashVelocity = dashDirection * _playerStateMachine.CharacterLevelDataSO[PlayerStats.Instance.CurrentLevel()].CharacterBaseMovementSpeed;
+            dashVelocity = dashDirection * _playerStateMachine.CharacterLevelDataSO[_playerStateMachine._PlayerStats.CurrentLevel()].CharacterBaseMovementSpeed;
             dashVelocity.y = Physics.gravity.y;
 
         }
@@ -30,7 +30,7 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
             Move(dashVelocity, deltaTime);   
             if (_playerStateMachine.Animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 0.8f) 
             {
-                _playerStateMachine.ChangeState(new PlayerLocomotionState(_playerStateMachine));
+                _playerStateMachine.ChangeState(new FighterLocomotionState(_playerStateMachine));
             }
 
         }

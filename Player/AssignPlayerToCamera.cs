@@ -1,4 +1,4 @@
-using Assets.Scripts.State_Machine.Player;
+using Assets.Scripts.Player;
 using Unity.Cinemachine;
 using UnityEngine;
 
