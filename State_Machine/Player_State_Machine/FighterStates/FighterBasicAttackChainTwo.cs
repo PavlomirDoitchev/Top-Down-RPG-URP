@@ -4,24 +4,20 @@ using UnityEngine;
 
 namespace Assets.Scripts.State_Machine.Player_State_Machine
 {
-    public class FighterBasicAttackChainOne : PlayerBaseState
+    public class FighterBasicAttackChainTwo : PlayerBaseState
     {
         private bool rotationLocked = false;
-        private int attackIndex = 0;
-
-        public FighterBasicAttackChainOne(PlayerStateMachine stateMachine) : base(stateMachine)
+        public FighterBasicAttackChainTwo(PlayerStateMachine stateMachine) : base(stateMachine)
         {
-            //if (meleeWeapon == null)
-            //    Debug.LogError("No weapon!");
+           
         }
         public override void EnterState()
         {
             base.EnterState();
-            //SetWeaponActive(false);
-            _playerStateMachine.Animator.speed = _playerStateMachine.CharacterLevelDataSO[_playerStateMachine._PlayerStats.CurrentLevel()].CharactAttackSpeed;
-            _playerStateMachine.Animator.Play("2Hand-Sword-Attack1");
-            SetWeaponDamage(attackIndex);
-            
+            int rank = _playerStateMachine.BasicAbilityRank;
+            _playerStateMachine.Animator.speed = _playerStateMachine._PlayerStats.AttackSpeed;
+            _playerStateMachine.Animator.Play("2Hand-Sword-Attack2");
+            SetMeleeDamage(rank, AbilityType.BasicAttack, PlayerStatType.Strength);
         }
         public override void UpdateState(float deltaTime)
         {
@@ -29,8 +25,7 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
             if (_playerStateMachine.InputManager.IsAttacking
                 && _playerStateMachine.Animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= .6f)
             {
-                //SetWeaponActive(false);
-                _playerStateMachine.ChangeState(new FighterBasicAttackChainTwo(_playerStateMachine));
+                _playerStateMachine.ChangeState(new FighterBasicAttackChainThree(_playerStateMachine));
             }
 
             if (!rotationLocked)
@@ -50,7 +45,6 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
 
             if (_playerStateMachine.Animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1f)
             {
-                //SetWeaponActive(false);
                 _playerStateMachine.ChangeState(new FighterLocomotionState(_playerStateMachine));
             }
 

@@ -11,10 +11,16 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
 
         [Header("-----Character Levels-----")]
         [SerializeField] public CharacterLevelSO[] CharacterLevelDataSO;
-        
-        [Header("-----Ability Data-----")]
-        [SerializeField] public AbilityDataSO[] AbilityDataSO;
 
+        [Header("-----Ability Data-----")]
+        [Header("Basic Attack")]
+        [SerializeField] public Basic_Ability_SO[] basicAbilityData;
+        [field: SerializeField] public int BasicAbilityRank { get; set; }
+
+        [Tooltip("Value must be above 0 to be unlocked!")]
+        [Header("Q Ability Ranks")]
+        [SerializeField] public Q_Ability_SO[] qAbilityData;
+        [field: SerializeField] public int QAbilityRank { get; set; }   
         [Header("-----References-----")]
         [SerializeField] private GameObject rightHandEquipSlot;
         [SerializeField] private GameObject leftHandEquipSlot;
@@ -23,18 +29,20 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
         [field: SerializeField] public Animator Animator { get; private set; }
         [field: SerializeField] public ForceReceiver ForceReceiver { get; private set; }
         public PlayerStats _PlayerStats { get; private set; }
+        //public PlayerManager playerManager;
+        //public Skills skills;
         //[field: SerializeField] public Ragdoll Ragdoll { get; private set; }
         public Transform MainCameraTransform { get; private set; }
         private void Start()
         {
             MainCameraTransform = Camera.main.transform;
             _PlayerStats = GetComponent<PlayerStats>();
-            if (_PlayerStats.GetResourceType() == CharacterLevelSO.ResourceType.Rage)
+            if (_PlayerStats.GetClassType() == CharacterLevelSO.CharacterClass.Fighter)
                 ChangeState(new FighterLocomotionState(this));
-            else if (_PlayerStats.GetResourceType() == CharacterLevelSO.ResourceType.Mana)
+            else if (_PlayerStats.GetClassType() == CharacterLevelSO.CharacterClass.Mage)
                 Debug.Log("where is the mage?!");
         }
-        
+
         public void OnControllerColliderHit(ControllerColliderHit hit)
         {
             Rigidbody rb = hit.collider.attachedRigidbody;
@@ -52,7 +60,7 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
         {
             if (EquippedWeaponDataSO != null)
             {
-;                Destroy(EquippedWeapon);
+                ; Destroy(EquippedWeapon);
             }
             //GameObject newWeapon = Instantiate(weaponPrefab, rightHandEquipSlot.transform.position,
             //    Quaternion.identity, rightHandEquipSlot.transform);

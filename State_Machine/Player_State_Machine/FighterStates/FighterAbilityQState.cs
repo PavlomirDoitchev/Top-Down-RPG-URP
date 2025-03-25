@@ -1,34 +1,28 @@
 using Assets.Scripts.Player;
-using System.Collections;
 using UnityEngine;
-
 namespace Assets.Scripts.State_Machine.Player_State_Machine
 {
-    public class FighterBasicAttackChainTwo : PlayerBaseState
+    public class FighterAbilityQState : PlayerBaseState
     {
         private bool rotationLocked = false;
-        private int attackIndex = 0;
-        public FighterBasicAttackChainTwo(PlayerStateMachine stateMachine) : base(stateMachine)
+        private Vector3 force;
+        public FighterAbilityQState(PlayerStateMachine stateMachine) : base(stateMachine)
         {
-           
         }
+
         public override void EnterState()
         {
             base.EnterState();
-            _playerStateMachine.Animator.speed = _playerStateMachine.CharacterLevelDataSO[_playerStateMachine._PlayerStats.CurrentLevel()].CharactAttackSpeed;
-            _playerStateMachine.Animator.Play("2Hand-Sword-Attack2");
-            SetWeaponDamage(attackIndex);
+            int rank = _playerStateMachine.QAbilityRank;
+            _playerStateMachine.Animator.speed = _playerStateMachine._PlayerStats.AttackSpeed;
+            _playerStateMachine.Animator.Play("2Hand-Sword-Attack8");
+            SetMeleeDamage(rank, AbilityType.AbilityQ, PlayerStatType.Strength);
+            force = _playerStateMachine.transform.forward * _playerStateMachine.qAbilityData[rank].force;
         }
+
         public override void UpdateState(float deltaTime)
         {
             Move(deltaTime);
-            if (_playerStateMachine.InputManager.IsAttacking
-                && _playerStateMachine.Animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= .6f)
-            {
-                SetWeaponActive(false);
-                _playerStateMachine.ChangeState(new FighterBasicAttackChainThree(_playerStateMachine));
-            }
-
             if (!rotationLocked)
             {
                 RotateToMouse(deltaTime);
@@ -39,6 +33,7 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
             }
             if (!rotationLocked && _playerStateMachine.Animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 0.2f)
             {
+                _playerStateMachine.ForceReceiver.AddForce(force);
                 SetWeaponActive(true);
                 rotationLocked = true;
                 SetCurrentRotation();
@@ -46,14 +41,16 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
 
             if (_playerStateMachine.Animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1f)
             {
-                SetWeaponActive(false);
                 _playerStateMachine.ChangeState(new FighterLocomotionState(_playerStateMachine));
             }
-
         }
+
+      
+
         public override void ExitState()
         {
             ResetAnimationSpeed();
         }
+  
     }
 }

@@ -3,12 +3,12 @@ using UnityEngine;
 
 namespace Assets.Scripts.State_Machine.Player_State_Machine
 {
-    public class FighterRollState : PlayerBaseState
+    public class FighterDodgeState : PlayerBaseState
     {
         Vector3 dashDirection;
         Vector3 dashVelocity;
-        float dashSpeed = 10f;
-        public FighterRollState(PlayerStateMachine stateMachine) : base(stateMachine)
+        //float dashSpeed = 10f;
+        public FighterDodgeState(PlayerStateMachine stateMachine) : base(stateMachine)
         {
         }
 

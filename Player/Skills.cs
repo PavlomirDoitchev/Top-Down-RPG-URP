@@ -4,16 +4,17 @@ namespace Assets.Scripts.Player
 {
     public class Skills : MonoBehaviour
     {
+        [SerializeField] protected int cost;
         [SerializeField] protected float coolDown;
         protected float cooldownTimer;
-        [SerializeField] int cost;
+
         public virtual void Update() 
         {
             cooldownTimer -= Time.deltaTime;
         }
         public virtual bool CanUseSkill() 
         {
-            if (cooldownTimer < 0 && cost <= PlayerManager.Instance.playerStateMachine._PlayerStats.GetCurrentResource()) 
+            if (cooldownTimer <= 0 && cost <= PlayerManager.Instance.playerStateMachine._PlayerStats.GetCurrentResource())
             {
                 UseSkill();
                 cooldownTimer = coolDown;
@@ -21,13 +22,7 @@ namespace Assets.Scripts.Player
             }
             return false;
         }
-        public virtual void UseSkill() 
-        {
-
-        }
-        public int GetSkillCost() 
-        {
-            return this.cost;
-        }
+        public virtual void UseSkill() { }
+        public int GetSkillCost() => this.cost;
     }
 }

@@ -13,7 +13,6 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
     {
         protected PlayerStateMachine _playerStateMachine;
         protected MeleeWeapon meleeWeapon;
-        //protected PlayerStats playerStats;
         protected readonly int activeLayer = 7;
         protected readonly int inactiveLayer = 3;
         private Quaternion lockedRotation;
@@ -133,39 +132,96 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
             //Vector3 moveDirection = forward moveInput.y + right moveInput.x;
             return moveDirection.normalized;
         }
-
-        protected float CalculateDamage(int index)
+        public enum PlayerStatType
         {
-            float rollForCrit = Random.Range(0f, 1f);
-            if (_playerStateMachine.CharacterLevelDataSO[PlayerManager.Instance.playerStateMachine._PlayerStats.CurrentLevel()].CharacterCriticalChance >= rollForCrit)
+            Strength,
+            Dexterity,
+            Intellect
+        }
+        public enum AbilityType
+        {
+            BasicAttack,
+            AbilityQ,
+            AbilityE,
+            AbilityR
+        }
+        private float GetStatValue(PlayerStatType statType)
+        {
+            switch (statType)
             {
-                //Debug.Log("Critical!");
-                return 1 +
-                    (_playerStateMachine.CharacterLevelDataSO[PlayerManager.Instance.playerStateMachine._PlayerStats.CurrentLevel()].Strength *
-                    _playerStateMachine.AbilityDataSO[index].damageMultiplier *
-                    _playerStateMachine.CharacterLevelDataSO[PlayerManager.Instance.playerStateMachine._PlayerStats.CurrentLevel()].CharacterCriticalModifier
-                    );
-            }
-            else
-            {
-                return 1 +
-                   (_playerStateMachine.CharacterLevelDataSO[PlayerManager.Instance.playerStateMachine._PlayerStats.CurrentLevel()].Strength *
-                   _playerStateMachine.AbilityDataSO[index].damageMultiplier
-                   );
+                case PlayerStatType.Strength:
+                    return _playerStateMachine._PlayerStats.Strength;
+                case PlayerStatType.Dexterity:
+                    return _playerStateMachine._PlayerStats.Dexterity;
+                case PlayerStatType.Intellect:
+                    return _playerStateMachine._PlayerStats.Intellect;
+                default:
+                    return 0;
             }
         }
         /// <summary>
-        /// Use the desired index of the AbilityDataSO
+        /// Determine whether the attack should apply critical strike modifiers.
         /// </summary>
-        /// <param name="index"></param>
-        protected void SetWeaponDamage(int index)
+        /// <returns></returns>
+        private bool CriticalStrikeSuccessfull() 
         {
-            float strengthMultiplier = CalculateDamage(index);
+            float rollForCrit = Random.Range(0f, 1f);
+            if (_playerStateMachine._PlayerStats.CriticalChance >= rollForCrit) 
+            {
+                Debug.Log("Critical!");
+                return true;
+            }
+            return false;
+        }
+        protected float CalculateMeleeDamage(AbilityType abilityType, PlayerStatType statType)
+        {
+            int rank = GetAbilityRank(abilityType);
+            float statValue = GetStatValue(statType);
+            float damageMultiplier = GetAbilityMultiplier(abilityType, rank);
+            float baseDamage = 1 + (statValue *
+                           damageMultiplier);
+            if (CriticalStrikeSuccessfull())
+            {
+                baseDamage *= _playerStateMachine._PlayerStats.CriticalModifier;
+            }
+            return baseDamage;
+        }
+        private int GetAbilityRank(AbilityType abilityType)
+        {
+            switch (abilityType)
+            {
+                case AbilityType.BasicAttack:
+                    return _playerStateMachine.BasicAbilityRank;
+                case AbilityType.AbilityQ:
+                    return _playerStateMachine.QAbilityRank;
+                // Add more abilities as needed
+                default:
+                    return 0;
+            }
+        }
+        private float GetAbilityMultiplier(AbilityType abilityType, int rank)
+        {
+            switch (abilityType)
+            {
+                case AbilityType.BasicAttack:
+                    return _playerStateMachine.basicAbilityData[rank].damageMultiplier;
+                case AbilityType.AbilityQ:
+                    return _playerStateMachine.qAbilityData[rank].damageMultiplier;
+                // Add cases for AbilityE and AbilityR if needed
+                default:
+                    return 1f; // Default multiplier
+            }
+        }
+        protected void SetMeleeDamage(int abilityRank, AbilityType abilityType, PlayerStatType statType)
+        {
+            float multiplier = CalculateMeleeDamage(abilityType, statType);
+            //Debug.Log($"Using {statType} as a modifier");
             meleeWeapon.MeleeWeaponDamage
                  (Random.Range(_playerStateMachine.EquippedWeaponDataSO.minDamage, _playerStateMachine.EquippedWeaponDataSO.maxDamage + 1),
-                 strengthMultiplier,
-                 Mathf.RoundToInt(_playerStateMachine.AbilityDataSO[index].damageMultiplier));
-            //Debug.Log(_playerStateMachine.AttackData[index].attackName);
+                 multiplier, 
+                 abilityRank);
         }
+        //TODO:
+        //Add meleeweapon SO to weapon 
     }
 }

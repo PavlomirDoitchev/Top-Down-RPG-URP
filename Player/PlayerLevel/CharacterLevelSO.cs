@@ -1,4 +1,4 @@
-using UnityEngine;
+ using UnityEngine;
 
 [CreateAssetMenu(fileName = "New Character Level", menuName = "New Character Level/Create New Character Level")]
 public class CharacterLevelSO : ScriptableObject
@@ -37,10 +37,10 @@ public class CharacterLevelSO : ScriptableObject
     public int maxResource = 100;
     private void OnValidate()
     {
-        ApplyClassModifiers(); 
+        ApplyClassResourceType(); 
     }
 
-    public void ApplyClassModifiers()
+    public void ApplyClassResourceType()
     {
         switch (characterClass)
         {
@@ -65,7 +65,7 @@ public class CharacterLevelSO : ScriptableObject
     public void SetCharacterClass(CharacterClass newClass)
     {
         characterClass = newClass;
-        ApplyClassModifiers();
+        ApplyClassResourceType();
     }
 
     public CharacterClass GetCharacterClass()

@@ -5,40 +5,56 @@ namespace Assets.Scripts.Player
 {
     public class PlayerStats : MonoBehaviour
     {
-        //public static PlayerStats Instance;
-        [Header("Player Stats")]
+        [Header("Player Level")]
         [SerializeField] int level = 0;
         [Tooltip("Set automatically in Start")]
         [SerializeField] int maxLevel = 1;
         [Tooltip("Required XP listed in LevelsSO")]
         [SerializeField] int currentXP = 0;
+
+        [Header("Base Stats")]
+        [field: SerializeField] public int Stamina { get; private set; }
+        [field: SerializeField] public int Strength { get; private set; }
+        [field: SerializeField] public int Dexterity { get; private set; }
+        [field: SerializeField] public int Intellect { get; private set; }
+        [field: SerializeField] public int Wisdom { get; private set; }
+        [field: SerializeField] public float BaseMovementSpeed { get; private set; }
+        [field: SerializeField] public float RotationSpeed { get; private set; }
+        [field: SerializeField] public float PushObjectsForce { get; private set; }
+        [field: SerializeField] public float JumpForce { get; private set; }
+
+        [Header("Secondary Stats")]
         [SerializeField] int maxHealth = 100;
         [SerializeField] int currentHealth;
         [SerializeField] float staminaStatModifier = 1.66f;
-        //[SerializeField] float attackSpeed = 1f;
-        //[SerializeField] float currentAttackSpeed = 1f;
+        [field: SerializeField] public float AttackSpeed { get; private set; }
+        [field: SerializeField]
+        [field:Range(0,1)]public float CriticalChance { get; private set; }
+        [field: SerializeField]
+        [field:Range(1, 5)] public float CriticalModifier { get; private set; }
+
 
         [Header("Resource Info")]
         private CharacterLevelSO.ResourceType resourceType;
+        private CharacterLevelSO.CharacterClass characterClass;
         [SerializeField] private int maxResource;
         [SerializeField] private int currentResource;
-        bool canUseSkill = false;
+        //bool canUseSkill = false;
 
         [Header("References")]
         [SerializeField] ParticleSystem levelUpEffect;
-        [SerializeField] WeaponDataSO weaponDataSO;
-        [SerializeField] GameObject weapon;
+        //[SerializeField] WeaponDataSO weaponDataSO; //activate to test level up and equipping a new weapon. Delete once inventory system exists
+        //[SerializeField] GameObject weapon;
         PlayerManager playerManager;
-
         private void Start()
         {
             playerManager = PlayerManager.Instance;
-            playerManager.playerStateMachine.CharacterLevelDataSO[CurrentLevel()].ApplyClassModifiers();
+            playerManager.playerStateMachine.CharacterLevelDataSO[CurrentLevel()].ApplyClassResourceType();
             ApplyCharacterData();
             Debug.Log($"Loaded Class: {playerManager.playerStateMachine.CharacterLevelDataSO[CurrentLevel()].GetCharacterClass()}");
             maxHealth += Mathf.RoundToInt(playerManager.playerStateMachine.CharacterLevelDataSO[CurrentLevel()].Stamina * staminaStatModifier);
             currentHealth = maxHealth;
-            maxLevel = playerManager.playerStateMachine.CharacterLevelDataSO.Length - 1;
+            SetMaxLevel();
         }
         //private void Update()
         //{
@@ -79,8 +95,10 @@ namespace Assets.Scripts.Player
         }
         private void LevelUp()
         {
-            currentXP = 0;
+            if (level >= maxLevel)
+                return;
             level++;
+            currentXP = 0;
             if (!levelUpEffect.isPlaying)
             {
                 Instantiate(levelUpEffect, transform.position, Quaternion.identity);
@@ -109,7 +127,10 @@ namespace Assets.Scripts.Player
             currentResource = Mathf.Min(currentResource + amount, maxResource);
             Debug.Log($"Regained {amount} {resourceType}. Current: {currentResource}");
         }
-
+        public CharacterLevelSO.CharacterClass GetClassType() 
+        {
+            return characterClass;
+        }
         public CharacterLevelSO.ResourceType GetResourceType()
         {
             return resourceType;
@@ -125,6 +146,10 @@ namespace Assets.Scripts.Player
         public int GetMaxHealth()
         {
             return maxHealth;
+        }
+        private void SetMaxLevel()
+        {
+            maxLevel = playerManager.playerStateMachine.CharacterLevelDataSO.Length - 1;
         }
     }
 }

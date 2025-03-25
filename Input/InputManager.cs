@@ -8,8 +8,8 @@ public class InputManager : MonoBehaviour
     [Header("Key Bindings")]
     [SerializeField] private KeyCode _jumpKey = KeyCode.Space;
     [SerializeField] private KeyCode _attackKey = KeyCode.Mouse0;
-    [SerializeField] private KeyCode _dashKey = KeyCode.LeftShift;
-    [SerializeField] private KeyCode _ability_1_Key = KeyCode.Alpha1;
+    [SerializeField] private KeyCode _dodgeKey = KeyCode.LeftShift;
+    [SerializeField] private KeyCode _ability_Q_Key = KeyCode.Alpha1;
     [SerializeField] private KeyCode _moveLeftKey = KeyCode.A;
     [SerializeField] private KeyCode _moveRightKey = KeyCode.D;
     [SerializeField] private KeyCode _moveUpKey = KeyCode.W;
@@ -17,7 +17,7 @@ public class InputManager : MonoBehaviour
 
     private Dictionary<string, KeyCode> keyBindings;
     public bool IsAttacking { get; private set; }
-    public bool IsUsingAbilityOne { get; private set; }
+    public bool IsUsingAbility_Q { get; private set; }
     public Vector2 MoveInput { get; private set; }
     private void Awake()
     {
@@ -25,8 +25,8 @@ public class InputManager : MonoBehaviour
         {
             { "Jump", _jumpKey },
             { "Attack", _attackKey },
-            { "Dash", _dashKey },
-            { "Ability1", _ability_1_Key},
+            { "Dodge", _dodgeKey },
+            { "AbilityQ", _ability_Q_Key},
             { "MoveLeft", _moveLeftKey },
             { "MoveRight", _moveRightKey },
             { "MoveUp", _moveUpKey },
@@ -37,14 +37,14 @@ public class InputManager : MonoBehaviour
     {
         MovementInput();
         AttackInput();
-        Ability_1();
+        Ability_Q();
     }
-    private void Ability_1()
+    private void Ability_Q()
     {
-        if (Input.GetKey(keyBindings["Ability1"]))
-            IsUsingAbilityOne = true;
+        if (Input.GetKey(keyBindings["AbilityQ"]))
+            IsUsingAbility_Q = true;
         else
-            IsUsingAbilityOne = false;
+            IsUsingAbility_Q = false;
     }
     private void AttackInput()
     {

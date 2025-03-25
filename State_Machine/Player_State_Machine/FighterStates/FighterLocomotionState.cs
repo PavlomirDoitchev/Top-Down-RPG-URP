@@ -23,11 +23,11 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
                 _playerStateMachine.ChangeState(new PlayerFallState(_playerStateMachine));
                 return;
             }
-            if (Input.GetKey(_playerStateMachine.InputManager.GetKey("Dash")))
+            if (Input.GetKey(_playerStateMachine.InputManager.GetKey("Dodge")))
             {
                 if (_playerStateMachine.CharacterController.velocity.x != 0 || _playerStateMachine.CharacterController.velocity.z != 0)
                 {
-                    _playerStateMachine.ChangeState(new FighterRollState(_playerStateMachine));
+                    _playerStateMachine.ChangeState(new FighterDodgeState(_playerStateMachine));
                 }
             }
             if (Input.GetKey(_playerStateMachine.InputManager.GetKey("Jump")) && _playerStateMachine.CharacterController.isGrounded)
@@ -36,9 +36,9 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
             }
             if (_playerStateMachine.InputManager.IsAttacking)
             {
-                _playerStateMachine.ChangeState(new FighterBasicAttackChainOne(_playerStateMachine));
+                if (SkillManager.Instance.fighterBasicAttack.CanUseSkill()) { }
             }
-            if (_playerStateMachine.InputManager.IsUsingAbilityOne)
+            if (_playerStateMachine.InputManager.IsUsingAbility_Q && _playerStateMachine.QAbilityRank > 0)
             {
                 if (SkillManager.Instance.fighterQ.CanUseSkill()) { }
             }

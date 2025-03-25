@@ -7,7 +7,6 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
     public class FighterBasicAttackChainThree : PlayerBaseState
     {
         private bool rotationLocked = false;
-        private int attackIndex = 1;
         public FighterBasicAttackChainThree(PlayerStateMachine stateMachine) : base(stateMachine)
         {
             
@@ -15,9 +14,10 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
         public override void EnterState()
         {
             base.EnterState();
-            _playerStateMachine.Animator.speed = _playerStateMachine.CharacterLevelDataSO[_playerStateMachine._PlayerStats.CurrentLevel()].CharactAttackSpeed;
+            int rank = _playerStateMachine.BasicAbilityRank;
+            _playerStateMachine.Animator.speed = _playerStateMachine._PlayerStats.AttackSpeed;
             _playerStateMachine.Animator.Play("2Hand-Sword-Attack3");
-            SetWeaponDamage(attackIndex);
+            SetMeleeDamage(rank, AbilityType.BasicAttack, PlayerStatType.Strength);
         }
         public override void UpdateState(float deltaTime)
         {
@@ -25,7 +25,6 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
             if (_playerStateMachine.InputManager.IsAttacking
                 && _playerStateMachine.Animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= .6f)
             {
-                SetWeaponActive(false);
                 _playerStateMachine.ChangeState(new FighterBasicAttackChainOne(_playerStateMachine));
             }
             if (!rotationLocked)
@@ -45,7 +44,6 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
 
             if (_playerStateMachine.Animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1f)
             {
-                SetWeaponActive(false);
                 _playerStateMachine.ChangeState(new FighterLocomotionState(_playerStateMachine));
             }
         }

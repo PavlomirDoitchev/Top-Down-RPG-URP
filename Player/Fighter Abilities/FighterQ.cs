@@ -10,8 +10,9 @@ namespace Assets.Scripts.Player
             base.UseSkill();
             var playerStats = PlayerManager.Instance.playerStateMachine._PlayerStats;
             var playerState = PlayerManager.Instance.playerStateMachine;
+            var skillManager = SkillManager.Instance;
             playerStats.UseResource(GetSkillCost());
-            Debug.Log($"Used Q {GetSkillCost()}. Remaining {playerStats.GetResourceType()}: {playerStats.GetCurrentResource()}");
+            Debug.Log($"Used {playerState.qAbilityData[playerState.QAbilityRank].name} Rank: {playerState.QAbilityRank} Cost: {cost}. Remaining {playerStats.GetResourceType()}: {playerStats.GetCurrentResource()}");
 
             playerState.ChangeState(new FighterAbilityQState(playerState));
         }
