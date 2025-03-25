@@ -217,7 +217,7 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
             float multiplier = CalculateMeleeDamage(abilityType, statType);
             //Debug.Log($"Using {statType} as a modifier");
             meleeWeapon.MeleeWeaponDamage
-                 (Random.Range(_playerStateMachine.EquippedWeaponDataSO.minDamage, _playerStateMachine.EquippedWeaponDataSO.maxDamage + 1),
+                 (Random.Range(meleeWeapon.EquippedWeaponDataSO.minDamage, meleeWeapon.EquippedWeaponDataSO.maxDamage + 1),
                  multiplier, 
                  abilityRank);
         }

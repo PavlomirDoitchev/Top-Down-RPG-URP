@@ -43,8 +43,7 @@ namespace Assets.Scripts.Player
 
         [Header("References")]
         [SerializeField] ParticleSystem levelUpEffect;
-        //[SerializeField] WeaponDataSO weaponDataSO; //activate to test level up and equipping a new weapon. Delete once inventory system exists
-        //[SerializeField] GameObject weapon;
+        [SerializeField] GameObject weapon;
         PlayerManager playerManager;
         private void Start()
         {
@@ -56,23 +55,23 @@ namespace Assets.Scripts.Player
             currentHealth = maxHealth;
             SetMaxLevel();
         }
-        //private void Update()
-        //{
+        private void Update()
+        {
 
-        //    if (Input.GetKeyDown(KeyCode.UpArrow))
-        //    {
-        //        if (level == maxLevel)
-        //        {
-        //            return;
-        //        }
-        //        currentXP++;
-        //        if (currentXP >= playerStateMachine.CharacterLevelDataSO[CurrentLevel()].XpRequired)
-        //        {
-        //            LevelUp();
-        //            playerStateMachine.EquipNewWeapon(weaponDataSO, weapon);
-        //        }
-        //    }
-        //}
+            if (Input.GetKeyDown(KeyCode.UpArrow))
+            {
+                if (level == maxLevel)
+                {
+                    return;
+                }
+                currentXP++;
+                if (currentXP >= playerManager.playerStateMachine.CharacterLevelDataSO[CurrentLevel()].XpRequired)
+                {
+                    LevelUp();
+                    playerManager.playerStateMachine.EquipNewWeapon(weapon);
+                }
+            }
+        }
 
         public void PlayerTakeDamage(int damage)
         {

@@ -6,8 +6,8 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
     public class PlayerStateMachine : StateMachine
     {
         [Header("-----Equipped Items-----")]
-        [SerializeField] public WeaponDataSO EquippedWeaponDataSO;
-        [field: SerializeField] public GameObject EquippedWeapon { get; private set; }
+        //[SerializeField] public WeaponDataSO EquippedWeaponDataSO;
+        public GameObject EquippedWeapon;
 
         [Header("-----Character Levels-----")]
         [SerializeField] public CharacterLevelSO[] CharacterLevelDataSO;
@@ -56,16 +56,15 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
             Vector3 pushDir = new Vector3(hit.moveDirection.x, 0, hit.moveDirection.z);
             rb.linearVelocity = pushDir * CharacterLevelDataSO[_PlayerStats.CurrentLevel()].CharacterPushObjectsForce;
         }
-        public void EquipNewWeapon(WeaponDataSO newWeaponData, GameObject weaponPrefab)
+        public void EquipNewWeapon(GameObject weaponPrefab)
         {
-            if (EquippedWeaponDataSO != null)
+            if (EquippedWeapon != null)
             {
-                ; Destroy(EquippedWeapon);
+                Destroy(EquippedWeapon);
             }
             //GameObject newWeapon = Instantiate(weaponPrefab, rightHandEquipSlot.transform.position,
             //    Quaternion.identity, rightHandEquipSlot.transform);
             GameObject newWeapon = Instantiate(weaponPrefab, Animator.GetBoneTransform(HumanBodyBones.RightIndexProximal));
-            EquippedWeaponDataSO = newWeaponData;
             EquippedWeapon = newWeapon;
         }
     }

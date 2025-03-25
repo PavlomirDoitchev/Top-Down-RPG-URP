@@ -5,8 +5,8 @@ using UnityEngine;
 
 public class MeleeWeapon : MonoBehaviour
 {
+    [SerializeField] public WeaponDataSO EquippedWeaponDataSO;
     int baseDamage;
-    //public LayerMask enemyLayer;
     private List<Collider> enemyColliders = new List<Collider>();
     
     private void OnTriggerEnter(Collider other)
