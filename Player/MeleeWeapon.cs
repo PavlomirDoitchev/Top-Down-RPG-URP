@@ -8,7 +8,6 @@ public class MeleeWeapon : MonoBehaviour
     [SerializeField] public WeaponDataSO EquippedWeaponDataSO;
     int baseDamage;
     private List<Collider> enemyColliders = new List<Collider>();
-    
     private void OnTriggerEnter(Collider other)
     {
         if (gameObject.layer == 3) return; //Ignore if weapon is set to the Inactive layer

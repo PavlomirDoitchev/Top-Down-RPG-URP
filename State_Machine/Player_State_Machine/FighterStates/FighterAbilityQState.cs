@@ -13,6 +13,7 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
         public override void EnterState()
         {
             base.EnterState();
+            
             int rank = _playerStateMachine.QAbilityRank;
             _playerStateMachine.Animator.speed = _playerStateMachine._PlayerStats.AttackSpeed;
             _playerStateMachine.Animator.Play("2Hand-Sword-Attack8");
@@ -22,10 +23,14 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
 
         public override void UpdateState(float deltaTime)
         {
-            Move(deltaTime);
+            PlayerMove(deltaTime);
+            //Move(deltaTime);
+            //PlayerMove(deltaTime);
+            //RotateToMouse(deltaTime);
             if (!rotationLocked)
             {
                 RotateToMouse(deltaTime);
+                
             }
             else
             {
@@ -33,12 +38,17 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
             }
             if (!rotationLocked && _playerStateMachine.Animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 0.2f)
             {
-                _playerStateMachine.ForceReceiver.AddForce(force);
                 SetWeaponActive(true);
+                _playerStateMachine.ForceReceiver.AddForce(force);
                 rotationLocked = true;
                 SetCurrentRotation();
             }
-
+            //if (Input.GetKeyUp(KeyCode.Q)) 
+            //{
+            //    //SetCurrentRotation();
+            //    //LockRotation();
+            //    _playerStateMachine.ChangeState(new FighterLocomotionState(_playerStateMachine));
+            //}
             if (_playerStateMachine.Animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1f)
             {
                 _playerStateMachine.ChangeState(new FighterLocomotionState(_playerStateMachine));
@@ -50,6 +60,7 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
         public override void ExitState()
         {
             ResetAnimationSpeed();
+            //_playerStateMachine.Animator.StopPlayback();
         }
   
     }

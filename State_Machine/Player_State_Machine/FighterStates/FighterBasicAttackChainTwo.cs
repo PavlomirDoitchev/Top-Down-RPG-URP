@@ -23,7 +23,7 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
         {
             Move(deltaTime);
             if (_playerStateMachine.InputManager.IsAttacking
-                && _playerStateMachine.Animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= .6f)
+                && _playerStateMachine.Animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= .75f)
             {
                 _playerStateMachine.ChangeState(new FighterBasicAttackChainThree(_playerStateMachine));
             }
