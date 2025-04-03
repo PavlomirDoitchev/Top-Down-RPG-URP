@@ -5,7 +5,7 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
 {
     public class FighterAbilityQState : PlayerBaseState
     {
-        private bool rotationLocked = false;
+        //private bool rotationLocked = false;
         private Vector3 force;
         private Coroutine qCoroutine;
         int cost = 10;
