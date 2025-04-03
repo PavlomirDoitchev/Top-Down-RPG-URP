@@ -27,7 +27,7 @@ public class EnemyHealth : MonoBehaviour
             var playerStats = playerManager.playerStateMachine._PlayerStats;
             playerStats.PlayerTakeDamage(DealDamage());
             if (playerStats.GetResourceType() == CharacterLevelSO.ResourceType.Rage)
-                playerStats.RegainResource(Mathf.RoundToInt(damage * 0.1f));
+                playerStats.RegainResource(5);
             if (timer <= 0)
             {
                 force = transform.position - playerManager.transform.position;

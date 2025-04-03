@@ -22,7 +22,7 @@ public class MeleeWeapon : MonoBehaviour
             {
                 if (PlayerManager.Instance.playerStateMachine._PlayerStats.GetResourceType() == CharacterLevelSO.ResourceType.Rage)
                 {
-                    PlayerManager.Instance.playerStateMachine._PlayerStats.RegainResource(Mathf.RoundToInt(baseDamage * 0.1f));
+                    PlayerManager.Instance.playerStateMachine._PlayerStats.RegainResource(3);
                 }
                 enemy.TakeDamage(baseDamage);
             }
@@ -37,4 +37,5 @@ public class MeleeWeapon : MonoBehaviour
         enemyColliders.Clear();
         //Debug.Log($"Enemy colliders {enemyColliders.Count}");
     }
+    
 }

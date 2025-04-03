@@ -18,23 +18,12 @@ public class CharacterLevelSO : ScriptableObject
     [Header("Character Info")]
     public CharacterClass characterClass;
     public ResourceType resourceType;
-
-    [Header("Stats")]
-    public int Strength;
-    public int Dexterity;
-    public int Intelligence;
-    public int Stamina;
-    public int XpRequired;
-    public float CharactAttackSpeed;
-    [Range(0, 1)] public float CharacterCriticalChance;
-    [Range(1, 5)] public float CharacterCriticalModifier;
-    public float CharacterBaseMovementSpeed;
-    public float CharacterBaseRotationSpeed;
-    public float CharacterPushObjectsForce;
-    public float CharacterJumpForce;
+    
 
     [Header("Resource Settings")]
     public int maxResource = 100;
+    [Header("XP TO NEXT LEVEL")]
+    public int XpRequired;
     private void OnValidate()
     {
         ApplyClassResourceType(); 

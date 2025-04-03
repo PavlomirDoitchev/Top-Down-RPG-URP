@@ -6,5 +6,7 @@ public class Basic_Ability_SO : ScriptableObject
     public string abilityName;
     public float damageMultiplier;
     public float force;
+    public Buff[] buffs;
+    public AbilityDebuff[] debuffs;  
     //public ParticleSystem VFX;
 }

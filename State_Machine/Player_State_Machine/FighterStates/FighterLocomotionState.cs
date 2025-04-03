@@ -6,7 +6,7 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
 {
     public class FighterLocomotionState : PlayerBaseState
     {
-
+        ParticleSystem particleTornado;
         public FighterLocomotionState(PlayerStateMachine playerStateMachine) : base(playerStateMachine)
         {
         }
@@ -14,6 +14,8 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
         public override void EnterState()
         {
             base.EnterState();
+            particleTornado = SkillManager.Instance.fighterQ.particle;
+            particleTornado.Stop();
             _playerStateMachine.Animator.CrossFadeInFixedTime("Basic_Locomotion", .1f);
         }
         public override void UpdateState(float deltaTime)

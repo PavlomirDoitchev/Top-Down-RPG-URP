@@ -19,7 +19,7 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
 
         [Tooltip("Value must be above 0 to be unlocked!")]
         [Header("Q Ability Ranks")]
-        [SerializeField] public Q_Ability_SO[] qAbilityData;
+        [SerializeField] public Basic_Ability_SO[] qAbilityData;
         [field: SerializeField] public int QAbilityRank { get; set; }   
         [Header("-----References-----")]
         [SerializeField] private GameObject rightHandEquipSlot;
@@ -29,9 +29,6 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
         [field: SerializeField] public Animator Animator { get; private set; }
         [field: SerializeField] public ForceReceiver ForceReceiver { get; private set; }
         public PlayerStats _PlayerStats { get; private set; }
-        //public PlayerManager playerManager;
-        //public Skills skills;
-        //[field: SerializeField] public Ragdoll Ragdoll { get; private set; }
         public Transform MainCameraTransform { get; private set; }
         private void Start()
         {
@@ -54,7 +51,7 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
                 return;
 
             Vector3 pushDir = new Vector3(hit.moveDirection.x, 0, hit.moveDirection.z);
-            rb.linearVelocity = pushDir * CharacterLevelDataSO[_PlayerStats.CurrentLevel()].CharacterPushObjectsForce;
+            rb.linearVelocity = pushDir * _PlayerStats.PushObjectsForce;
         }
         public void EquipNewWeapon(GameObject weaponPrefab)
         {

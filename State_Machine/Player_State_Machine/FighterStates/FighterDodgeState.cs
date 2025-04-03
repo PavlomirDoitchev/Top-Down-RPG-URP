@@ -19,7 +19,7 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
             _playerStateMachine.Animator.Play("2Hand-Sword-DiveRoll-Forward1");
             Physics.IgnoreLayerCollision(10, _playerStateMachine.gameObject.layer, true);
             dashDirection = _playerStateMachine.transform.forward;
-            dashVelocity = dashDirection * _playerStateMachine.CharacterLevelDataSO[_playerStateMachine._PlayerStats.CurrentLevel()].CharacterBaseMovementSpeed;
+            dashVelocity = dashDirection * _playerStateMachine._PlayerStats.BaseMovementSpeed;
             dashVelocity.y = Physics.gravity.y;
 
         }

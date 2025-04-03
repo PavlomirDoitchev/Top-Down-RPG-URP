@@ -42,7 +42,6 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
 
             if (!rotationLocked && _playerStateMachine.Animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 0.2f)
             {
-                //SpawnSlashEffect(rank);
                 SetWeaponActive(true);
                 rotationLocked = true;
                 SetCurrentRotation();
@@ -57,23 +56,6 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
         {
             ResetAnimationSpeed();
         }
-        //private void SpawnSlashEffect(int abilityRank)
-        //{
-            
-        //}
-        //private void SpawnSlashEffect(int abilityRank)
-        //{
-        //    if (_playerStateMachine.basicAbilityData != null && _playerStateMachine.basicAbilityData[abilityRank] != null)
-        //    {
-        //        // Get the sword's position
-        //        Transform swordTransform = meleeWeapon.transform; // Ensure this is set in PlayerStateMachine
-        //        if (swordTransform == null) return;
-
-        //        // Instantiate the effect at the sword's position
-        //        ParticleSystem effect = GameObject.Instantiate(_playerStateMachine.basicAbilityData[abilityRank].VFX, swordTransform.position, Quaternion.identity, swordTransform);
-        //        effect.Play(); // Play the effect immediately
-        //        GameObject.Destroy(effect.gameObject, effect.main.duration); // Destroy after duration
-        //    }
-        //}
+        
     }
 }

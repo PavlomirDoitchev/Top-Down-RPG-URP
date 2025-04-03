@@ -91,8 +91,7 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
                 _playerStateMachine.transform.rotation = Quaternion.Slerp(
                     _playerStateMachine.transform.rotation,
                     targetRotation,
-                    _playerStateMachine.CharacterLevelDataSO[PlayerManager.Instance.playerStateMachine._PlayerStats.CurrentLevel()].
-                    CharacterBaseRotationSpeed * 10 * deltaTime);
+                    _playerStateMachine._PlayerStats.RotationSpeed * deltaTime);
             }
         }
         /// <summary>
@@ -103,13 +102,12 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
         {
             Vector3 movement = CalculateMovement();
 
-            Move(movement * _playerStateMachine.CharacterLevelDataSO[_playerStateMachine._PlayerStats.CurrentLevel()].CharacterBaseMovementSpeed, deltaTime);
+            Move(movement * _playerStateMachine._PlayerStats.BaseMovementSpeed, deltaTime);
 
             if (movement != Vector3.zero)
             {
                 _playerStateMachine.transform.rotation = Quaternion.Slerp(_playerStateMachine.transform.rotation,
-                    Quaternion.LookRotation(movement), _playerStateMachine.CharacterLevelDataSO[PlayerManager.Instance.playerStateMachine._PlayerStats.CurrentLevel()]
-                    .CharacterBaseRotationSpeed * deltaTime);
+                    Quaternion.LookRotation(movement), _playerStateMachine._PlayerStats.RotationSpeed * deltaTime);
                 _playerStateMachine.Animator.SetFloat("LocomotionSpeed", 1, .01f, deltaTime);
             }
             _playerStateMachine.Animator.SetFloat("LocomotionSpeed", 0, .1f, deltaTime);
@@ -207,9 +205,26 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
                     return _playerStateMachine.basicAbilityData[rank].damageMultiplier;
                 case AbilityType.AbilityQ:
                     return _playerStateMachine.qAbilityData[rank].damageMultiplier;
-                // Add cases for AbilityE and AbilityR if needed
+                // Add cases for AbilityE and AbilityR 
                 default:
-                    return 1f; // Default multiplier
+                    return 1f; 
+            }
+        }
+        private Basic_Ability_SO GetAbilityData(AbilityType abilityType)
+        {
+            switch (abilityType)
+            {
+                case AbilityType.BasicAttack:
+                    return _playerStateMachine.basicAbilityData[_playerStateMachine.BasicAbilityRank];
+
+                case AbilityType.AbilityQ:
+                    return _playerStateMachine.qAbilityData[_playerStateMachine.QAbilityRank];
+
+                
+
+                default:
+                    Debug.LogWarning($"AbilityType {abilityType} not found!");
+                    return null;
             }
         }
         protected void SetMeleeDamage(int abilityRank, AbilityType abilityType, PlayerStatType statType)
@@ -218,10 +233,25 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
             //Debug.Log($"Using {statType} as a modifier");
             meleeWeapon.MeleeWeaponDamage
                  (Random.Range(meleeWeapon.EquippedWeaponDataSO.minDamage, meleeWeapon.EquippedWeaponDataSO.maxDamage + 1),
-                 multiplier, 
+                 multiplier,
                  abilityRank);
+            //ApplyAbilityEffects(abilityType);
         }
-        //TODO:
-        //Add meleeweapon SO to weapon 
+        //private void ApplyAbilityEffects(AbilityType abilityType)
+        //{
+        //    Basic_Ability_SO ability = GetAbilityData(abilityType);
+
+        //    if (ability == null) return;
+
+        //    foreach (var buff in ability.buffs)
+        //    {
+        //        _playerStateMachine._PlayerStats.ApplyBuff(new Buff(buff.Type, buff.Duration, buff.EffectStrength));
+        //    }
+
+        //    foreach (var debuff in ability.debuffs)
+        //    {
+        //        _playerStateMachine._PlayerStats.ApplyDebuff(new Debuff(debuff.debuffType, debuff.duration, debuff.effectStrength));
+        //    }
+        //}
     }
 }

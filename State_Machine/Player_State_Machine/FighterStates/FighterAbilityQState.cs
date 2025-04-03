@@ -1,4 +1,5 @@
 using Assets.Scripts.Player;
+using System.Collections;
 using UnityEngine;
 namespace Assets.Scripts.State_Machine.Player_State_Machine
 {
@@ -6,6 +7,8 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
     {
         private bool rotationLocked = false;
         private Vector3 force;
+        private Coroutine qCoroutine;
+        int cost = 10;
         public FighterAbilityQState(PlayerStateMachine stateMachine) : base(stateMachine)
         {
         }
@@ -13,55 +16,62 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
         public override void EnterState()
         {
             base.EnterState();
-            
+            Debug.Log("Q Ability State");
             int rank = _playerStateMachine.QAbilityRank;
             _playerStateMachine.Animator.speed = _playerStateMachine._PlayerStats.AttackSpeed;
             _playerStateMachine.Animator.Play("2Hand-Sword-Attack8");
             SetMeleeDamage(rank, AbilityType.AbilityQ, PlayerStatType.Strength);
             force = _playerStateMachine.transform.forward * _playerStateMachine.qAbilityData[rank].force;
+            qCoroutine = _playerStateMachine.StartCoroutine(QAbilityRoutine());
         }
-
         public override void UpdateState(float deltaTime)
         {
             PlayerMove(deltaTime);
-            //Move(deltaTime);
-            //PlayerMove(deltaTime);
-            //RotateToMouse(deltaTime);
-            if (!rotationLocked)
-            {
-                RotateToMouse(deltaTime);
-                
-            }
-            else
-            {
-                LockRotation();
-            }
-            if (!rotationLocked && _playerStateMachine.Animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 0.2f)
-            {
-                SetWeaponActive(true);
-                _playerStateMachine.ForceReceiver.AddForce(force);
-                rotationLocked = true;
-                SetCurrentRotation();
-            }
-            //if (Input.GetKeyUp(KeyCode.Q)) 
-            //{
-            //    //SetCurrentRotation();
-            //    //LockRotation();
-            //    _playerStateMachine.ChangeState(new FighterLocomotionState(_playerStateMachine));
-            //}
-            if (_playerStateMachine.Animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1f)
-            {
-                _playerStateMachine.ChangeState(new FighterLocomotionState(_playerStateMachine));
-            }
         }
+        //public override void UpdateState(float deltaTime)
+        //{
+        //    Move(deltaTime);
+        //    if (!rotationLocked)
+        //    {
+        //        RotateToMouse(deltaTime);
 
-      
+        //    }
+        //    else
+        //    {
+        //        LockRotation();
+        //    }
+        //    if (!rotationLocked && _playerStateMachine.Animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 0.2f)
+        //    {
+        //        SetWeaponActive(true);
+        //        _playerStateMachine.ForceReceiver.AddForce(force);
+        //        rotationLocked = true;
+        //        SetCurrentRotation();
+        //    }
+        //    
+        //if (_playerStateMachine.Animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1f)
+        //{
+        //    _playerStateMachine.ChangeState(new FighterLocomotionState(_playerStateMachine));
+        //}
+        // }
+
+
 
         public override void ExitState()
         {
+            _playerStateMachine.Animator.StopPlayback();
             ResetAnimationSpeed();
-            //_playerStateMachine.Animator.StopPlayback();
         }
-  
+        private IEnumerator QAbilityRoutine()
+        {
+            while (_playerStateMachine.InputManager.IsUsingAbility_Q && _playerStateMachine._PlayerStats.GetCurrentResource() >= cost)
+            {
+                SetWeaponActive(true);
+                _playerStateMachine._PlayerStats.UseResource(cost);
+                meleeWeapon.ClearHitEnemies();
+
+                yield return new WaitForSeconds(_playerStateMachine._PlayerStats.AttackSpeed);
+            }
+            _playerStateMachine.ChangeState(new FighterLocomotionState(_playerStateMachine));
+        }
     }
 }
