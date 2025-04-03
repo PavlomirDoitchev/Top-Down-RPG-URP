@@ -2,7 +2,7 @@ using Assets.Scripts.Player.Inventory;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "New Weapon", menuName = "Item/Create New Weapon")]
-public class WeaponDataSO : ScriptableObject, IItem
+public class WeaponDataSO : ScriptableObject, IPlayerItems
 {
 
     public enum WeaponType
@@ -19,9 +19,9 @@ public class WeaponDataSO : ScriptableObject, IItem
         Halberd,
         Shield
     }
-    public IItem.ItemType itemType;
+    public IPlayerItems.ItemType itemType;
     public WeaponType weaponType;
-    public IItem.ItemRarity rarity;
+    public IPlayerItems.ItemRarity rarity;
     public string weaponName;
     public int minDamage;
     public int maxDamage;
@@ -29,6 +29,8 @@ public class WeaponDataSO : ScriptableObject, IItem
     public float criticalChance;
     public int price;
 
+    [field: SerializeField] public bool IsStackable { get; set; } = false;
+    [field: SerializeField] public bool IsEquippable { get; set; } = true;
 
     public void ItemName(string name)
     {
@@ -40,12 +42,12 @@ public class WeaponDataSO : ScriptableObject, IItem
         price = cost;
     }
 
-    public void SetItemRarity(IItem.ItemRarity itemRarity)
+    public void SetItemRarity(IPlayerItems.ItemRarity itemRarity)
     {
         rarity = itemRarity;
     }
 
-    public void SetItemType(IItem.ItemType type)
+    public void SetItemType(IPlayerItems.ItemType type)
     {
         itemType = type;
     }

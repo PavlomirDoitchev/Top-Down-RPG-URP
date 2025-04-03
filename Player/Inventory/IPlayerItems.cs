@@ -1,6 +1,6 @@
 ﻿namespace Assets.Scripts.Player.Inventory
 {
-    public interface IItem
+    public interface IPlayerItems
     {
         public enum ItemType
         {
@@ -18,6 +18,8 @@
             Epic,
             Legendary
         }
+        public bool IsStackable { get; set; }
+        public bool IsEquippable { get; set; }
         public void ItemName(string name);  
         public void SetItemType(ItemType type);    
         public void SetItemRarity(ItemRarity itemRarity);

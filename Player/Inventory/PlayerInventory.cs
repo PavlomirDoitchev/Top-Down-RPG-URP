@@ -7,6 +7,7 @@ namespace Assets.Scripts.Player.Inventory
     {
         public static PlayerInventory Instance;
         //public InventoryUI inventoryUI { get; private set; }
+        public List<IPlayerItems> inventoryItems = new List<IPlayerItems>();
         private void Awake()
         {
             if (Instance != null)
@@ -15,6 +16,7 @@ namespace Assets.Scripts.Player.Inventory
                 Instance = this;
             //inventoryUI = FindFirstObjectByType<InventoryUI>();
         }
+
     }
 }
 

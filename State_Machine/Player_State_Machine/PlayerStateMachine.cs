@@ -10,16 +10,16 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
         public GameObject EquippedWeapon;
 
         [Header("-----Character Levels-----")]
-        [SerializeField] public CharacterLevelSO[] CharacterLevelDataSO;
+        public CharacterLevelSO[] CharacterLevelDataSO;
 
         [Header("-----Ability Data-----")]
         [Header("Basic Attack")]
-        [SerializeField] public Basic_Ability_SO[] basicAbilityData;
+        public Fighter_Ability_SO[] basicAbilityData;
         [field: SerializeField] public int BasicAbilityRank { get; set; }
 
         [Tooltip("Value must be above 0 to be unlocked!")]
         [Header("Q Ability Ranks")]
-        [SerializeField] public Basic_Ability_SO[] qAbilityData;
+        [SerializeField] public Fighter_Ability_SO[] qAbilityData;
         [field: SerializeField] public int QAbilityRank { get; set; }   
         [Header("-----References-----")]
         [SerializeField] private GameObject rightHandEquipSlot;

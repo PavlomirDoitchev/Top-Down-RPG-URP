@@ -9,8 +9,8 @@ namespace Assets.Scripts.Player
         public override void UseSkill()
         {
             base.UseSkill();
-            var playerStats = PlayerManager.Instance.playerStateMachine._PlayerStats;
-            var playerState = PlayerManager.Instance.playerStateMachine;
+            var playerStats = PlayerManager.Instance.PlayerStateMachine._PlayerStats;
+            var playerState = PlayerManager.Instance.PlayerStateMachine;
             var skillManager = SkillManager.Instance;
             if (particle.isPlaying) 
             {

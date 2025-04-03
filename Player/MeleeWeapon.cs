@@ -20,9 +20,9 @@ public class MeleeWeapon : MonoBehaviour
             EnemyHealth enemy = other.GetComponent<EnemyHealth>();
             if (enemy != null)
             {
-                if (PlayerManager.Instance.playerStateMachine._PlayerStats.GetResourceType() == CharacterLevelSO.ResourceType.Rage)
+                if (PlayerManager.Instance.PlayerStateMachine._PlayerStats.GetResourceType() == CharacterLevelSO.ResourceType.Rage)
                 {
-                    PlayerManager.Instance.playerStateMachine._PlayerStats.RegainResource(3);
+                    PlayerManager.Instance.PlayerStateMachine._PlayerStats.RegainResource(3);
                 }
                 enemy.TakeDamage(baseDamage);
             }

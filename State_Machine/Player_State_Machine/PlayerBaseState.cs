@@ -210,23 +210,6 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
                     return 1f; 
             }
         }
-        private Basic_Ability_SO GetAbilityData(AbilityType abilityType)
-        {
-            switch (abilityType)
-            {
-                case AbilityType.BasicAttack:
-                    return _playerStateMachine.basicAbilityData[_playerStateMachine.BasicAbilityRank];
-
-                case AbilityType.AbilityQ:
-                    return _playerStateMachine.qAbilityData[_playerStateMachine.QAbilityRank];
-
-                
-
-                default:
-                    Debug.LogWarning($"AbilityType {abilityType} not found!");
-                    return null;
-            }
-        }
         protected void SetMeleeDamage(int abilityRank, AbilityType abilityType, PlayerStatType statType)
         {
             float multiplier = CalculateMeleeDamage(abilityType, statType);
@@ -237,6 +220,20 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
                  abilityRank);
             //ApplyAbilityEffects(abilityType);
         }
+        //private Basic_Ability_SO GetAbilityData(AbilityType abilityType)
+        //{
+        //    switch (abilityType)
+        //    {
+        //        case AbilityType.BasicAttack:
+        //            return _playerStateMachine.basicAbilityData[_playerStateMachine.BasicAbilityRank];
+
+        //        case AbilityType.AbilityQ:
+        //            return _playerStateMachine.qAbilityData[_playerStateMachine.QAbilityRank];
+        //        default:
+        //            Debug.LogWarning($"AbilityType {abilityType} not found!");
+        //            return null;
+        //    }
+        //}
         //private void ApplyAbilityEffects(AbilityType abilityType)
         //{
         //    Basic_Ability_SO ability = GetAbilityData(abilityType);

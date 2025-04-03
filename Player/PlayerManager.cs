@@ -6,16 +6,16 @@ namespace Assets.Scripts.Player
     public class PlayerManager : MonoBehaviour
     {
         public static PlayerManager Instance;
-        public PlayerStateMachine playerStateMachine { get; private set; }
-        public PlayerInventory inventory { get; private set; }
+        public PlayerStateMachine PlayerStateMachine { get; private set; }
+        public PlayerInventory Inventory { get; private set; }
         private void Awake()
         {
             if (Instance != null)
                 Destroy(Instance.gameObject);
             else
                 Instance = this;
-            playerStateMachine = FindFirstObjectByType<PlayerStateMachine>();
-            inventory = FindFirstObjectByType<PlayerInventory>();
+            PlayerStateMachine = FindFirstObjectByType<PlayerStateMachine>();
+            Inventory = FindFirstObjectByType<PlayerInventory>();
         }
     }
 }

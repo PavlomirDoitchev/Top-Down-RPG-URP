@@ -18,17 +18,17 @@ namespace Assets.Scripts.Player
         }
         private void Start()
         {
-            if (PlayerManager.Instance.playerStateMachine.CharacterLevelDataSO[0].characterClass == CharacterLevelSO.CharacterClass.Fighter)
+            if (PlayerManager.Instance.PlayerStateMachine.CharacterLevelDataSO[0].characterClass == CharacterLevelSO.CharacterClass.Fighter)
             {
                 fighterQ = GetComponent<FighterQ>();
                 fighterBasicAttack = GetComponent<FighterBasicAttack>();
             }
-            else if (PlayerManager.Instance.playerStateMachine.CharacterLevelDataSO[0].characterClass == CharacterLevelSO.CharacterClass.Mage)
+            else if (PlayerManager.Instance.PlayerStateMachine.CharacterLevelDataSO[0].characterClass == CharacterLevelSO.CharacterClass.Mage)
             {
                 //TODO:Add Mage skills
 
             }
-            else if (PlayerManager.Instance.playerStateMachine.CharacterLevelDataSO[0].characterClass == CharacterLevelSO.CharacterClass.Rogue) 
+            else if (PlayerManager.Instance.PlayerStateMachine.CharacterLevelDataSO[0].characterClass == CharacterLevelSO.CharacterClass.Rogue) 
             {
                 //Add Rogue Skills
             

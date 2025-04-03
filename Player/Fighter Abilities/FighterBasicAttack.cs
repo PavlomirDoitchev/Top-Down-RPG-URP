@@ -8,18 +8,18 @@ namespace Assets.Scripts.Player
         public override void UseSkill()
         {
             base.UseSkill();
-            var playerStats = PlayerManager.Instance.playerStateMachine._PlayerStats;
-            var playerState = PlayerManager.Instance.playerStateMachine;
+            var playerStats = PlayerManager.Instance.PlayerStateMachine._PlayerStats;
+            var playerState = PlayerManager.Instance.PlayerStateMachine;
             playerStats.UseResource(GetSkillCost());
             playerState.ChangeState(new FighterBasicAttackChainOne(playerState));
         }
         void TrailRendererEnabled() 
         {
-            PlayerManager.Instance.playerStateMachine.EquippedWeapon.GetComponent<TrailRenderer>().emitting = true;
+            PlayerManager.Instance.PlayerStateMachine.EquippedWeapon.GetComponent<TrailRenderer>().emitting = true;
         }
         void TrailRendererDisabled()
         {
-            PlayerManager.Instance.playerStateMachine.EquippedWeapon.GetComponent<TrailRenderer>().emitting = false;
+            PlayerManager.Instance.PlayerStateMachine.EquippedWeapon.GetComponent<TrailRenderer>().emitting = false;
         }
     }
 }

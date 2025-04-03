@@ -24,14 +24,14 @@ public class EnemyHealth : MonoBehaviour
     {
         if (other.gameObject.CompareTag("Player"))
         {
-            var playerStats = playerManager.playerStateMachine._PlayerStats;
+            var playerStats = playerManager.PlayerStateMachine._PlayerStats;
             playerStats.PlayerTakeDamage(DealDamage());
             if (playerStats.GetResourceType() == CharacterLevelSO.ResourceType.Rage)
                 playerStats.RegainResource(5);
             if (timer <= 0)
             {
                 force = transform.position - playerManager.transform.position;
-                playerManager.playerStateMachine.ForceReceiver.AddForce((other.transform.position - this.transform.position).normalized * 15);
+                playerManager.PlayerStateMachine.ForceReceiver.AddForce((other.transform.position - this.transform.position).normalized * 15);
                 timer = coolDown;
             }
         }
@@ -53,7 +53,7 @@ public class EnemyHealth : MonoBehaviour
     private void Die()
     {
         currentHealth = maxHealth;
-        playerManager.playerStateMachine._PlayerStats.GainXP(1);
+        playerManager.PlayerStateMachine._PlayerStats.GainXP(1);
         //playerStats.GainXP(1);
         //Debug.Log(gameObject.name + " has died!");
         //Destroy(gameObject);

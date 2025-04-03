@@ -62,9 +62,9 @@ namespace Assets.Scripts.Player
         {
             LevelUp();
             playerManager = PlayerManager.Instance;
-            playerManager.playerStateMachine.CharacterLevelDataSO[CurrentLevel()].ApplyClassResourceType();
+            playerManager.PlayerStateMachine.CharacterLevelDataSO[CurrentLevel()].ApplyClassResourceType();
             ApplyCharacterData();
-            Debug.Log($"Loaded Class: {playerManager.playerStateMachine.CharacterLevelDataSO[CurrentLevel()].GetCharacterClass()}");
+            Debug.Log($"Loaded Class: {playerManager.PlayerStateMachine.CharacterLevelDataSO[CurrentLevel()].GetCharacterClass()}");
             maxHealth *= (Stamina / 10);
             currentHealth = maxHealth;
             SetMaxLevel();
@@ -79,10 +79,10 @@ namespace Assets.Scripts.Player
                     return;
                 }
                 currentXP++;
-                if (currentXP >= playerManager.playerStateMachine.CharacterLevelDataSO[CurrentLevel()].XpRequired)
+                if (currentXP >= playerManager.PlayerStateMachine.CharacterLevelDataSO[CurrentLevel()].XpRequired)
                 {
                     LevelUp();
-                    playerManager.playerStateMachine.EquipNewWeapon(weapon);
+                    playerManager.PlayerStateMachine.EquipNewWeapon(weapon);
                 }
             }
         }
@@ -92,7 +92,7 @@ namespace Assets.Scripts.Player
             currentHealth -= damage;
             Debug.Log($"Player has taken {damage}!");
             if (currentHealth <= 0)
-                playerManager.playerStateMachine.ChangeState(new PlayerDeathState(playerManager.playerStateMachine));
+                playerManager.PlayerStateMachine.ChangeState(new PlayerDeathState(playerManager.PlayerStateMachine));
         }
         public int CurrentLevel()
         {
@@ -103,7 +103,7 @@ namespace Assets.Scripts.Player
             if (level >= maxLevel)
                 return;
             currentXP += amount;
-            if (currentXP >= playerManager.playerStateMachine.CharacterLevelDataSO[CurrentLevel()].XpRequired)
+            if (currentXP >= playerManager.PlayerStateMachine.CharacterLevelDataSO[CurrentLevel()].XpRequired)
                 LevelUp();
         }
         private void LevelUp()
@@ -123,7 +123,7 @@ namespace Assets.Scripts.Player
         }
         private void ApplyCharacterData()
         {
-            resourceType = playerManager.playerStateMachine.CharacterLevelDataSO[CurrentLevel()].GetResourceType();
+            resourceType = playerManager.PlayerStateMachine.CharacterLevelDataSO[CurrentLevel()].GetResourceType();
             currentResource = maxResource;
             Debug.Log($"Player resource type set to: {resourceType}");
         }
@@ -161,7 +161,7 @@ namespace Assets.Scripts.Player
         }
         private void SetMaxLevel()
         {
-            maxLevel = playerManager.playerStateMachine.CharacterLevelDataSO.Length - 1;
+            maxLevel = playerManager.PlayerStateMachine.CharacterLevelDataSO.Length - 1;
         }
         //public void ApplyBuff(Buff buff)
         //{
