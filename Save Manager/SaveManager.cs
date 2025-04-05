@@ -14,14 +14,12 @@ namespace Assets.Scripts.Save_Manager
 
         private void Awake()
         {
-            if (Instance != null)
+            if (Instance != null && Instance != this)
             {
-                Destroy(Instance.gameObject);
+                Destroy(gameObject);
+                return;
             }
-            else 
-            {
-                Instance = this;
-            }
+            Instance = this;
         }
 
         private void Start()
@@ -41,8 +39,7 @@ namespace Assets.Scripts.Save_Manager
                 saveManager.SaveData(ref gameData);
             }
             dataHandler.Save(gameData);
-            //string json = JsonUtility.ToJson(gameData);
-            //System.IO.File.WriteAllText(Application.persistentDataPath + "/savefile.json", json);
+            
         }
 
         public void LoadGame()
@@ -58,16 +55,7 @@ namespace Assets.Scripts.Save_Manager
             {
                 saveManager.LoadData(gameData);
             }
-            //string path = Application.persistentDataPath + "/savefile.json";
-            //if (System.IO.File.Exists(path))
-            //{
-            //    string json = System.IO.File.ReadAllText(path);
-            //    gameData = JsonUtility.FromJson<GameData>(json);
-            //}
-            //else
-            //{
-            //    gameData = new GameData();
-            //}
+            
         }
         private void OnApplicationQuit()
         {

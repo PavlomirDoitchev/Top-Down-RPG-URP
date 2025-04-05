@@ -16,7 +16,11 @@ namespace Assets.Scripts.Save_Manager
         public void Save(GameData _data)
         {
             string fullPath = Path.Combine(dataDirPath, dataFileName);
-
+            string backupPath = fullPath + ".bak";
+            if (File.Exists(fullPath))
+            {
+                File.Copy(fullPath, backupPath, overwrite: true);
+            }
             try
             {
                 Directory.CreateDirectory(Path.GetDirectoryName(fullPath));
@@ -27,6 +31,7 @@ namespace Assets.Scripts.Save_Manager
                     using (StreamWriter writer = new StreamWriter(stream))
                     {
                         writer.Write(dataToStore);
+                        Debug.Log("Saving to: " + fullPath);
                     }
                 }
             }
