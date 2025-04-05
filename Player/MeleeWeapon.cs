@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class MeleeWeapon : MonoBehaviour
 {
-    [SerializeField] public WeaponDataSO EquippedWeaponDataSO;
+    public WeaponDataSO EquippedWeaponDataSO;
     int baseDamage;
     private List<Collider> enemyColliders = new List<Collider>();
     private void OnTriggerEnter(Collider other)
@@ -16,16 +16,18 @@ public class MeleeWeapon : MonoBehaviour
         if (other.gameObject.layer == LayerMask.NameToLayer("Enemy"))
         {
             enemyColliders.Add(other);
-            //Debug.Log($"Enemy colliders: {enemyColliders.Count}");
-            EnemyHealth enemy = other.GetComponent<EnemyHealth>();
-            if (enemy != null)
+            other.BroadcastMessage("TakeDamage", baseDamage, SendMessageOptions.DontRequireReceiver);
+            if (PlayerManager.Instance.PlayerStateMachine._PlayerStats.GetResourceType() == CharacterLevelSO.ResourceType.Rage)
             {
-                if (PlayerManager.Instance.PlayerStateMachine._PlayerStats.GetResourceType() == CharacterLevelSO.ResourceType.Rage)
-                {
-                    PlayerManager.Instance.PlayerStateMachine._PlayerStats.RegainResource(3);
-                }
-                enemy.TakeDamage(baseDamage);
+                PlayerManager.Instance.PlayerStateMachine._PlayerStats.RegainResource(3);
             }
+            //Debug.Log($"Enemy colliders: {enemyColliders.Count}");
+            //EnemyHealth enemy = other.GetComponent<EnemyHealth>();
+            //if (enemy != null)
+            //{
+                
+            //    enemy.TakeDamage(baseDamage);
+            //}
         }
     }
     public void MeleeWeaponDamage(int baseDamage, float multiplier, int index)

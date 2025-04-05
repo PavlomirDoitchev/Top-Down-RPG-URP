@@ -1,7 +1,8 @@
 using UnityEngine;
 using Assets.Scripts.Player;
+using Assets.Scripts.Combat_Logic;
 
-public class EnemyHealth : MonoBehaviour
+public class EnemyHealth : MonoBehaviour, IDamagable
 {
     int damage = 15;
     int coolDown = 1;
