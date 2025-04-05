@@ -7,7 +7,7 @@ public class MeleeWeapon : MonoBehaviour
 {
     public WeaponDataSO EquippedWeaponDataSO;
     int baseDamage;
-    private List<Collider> enemyColliders = new List<Collider>();
+    private readonly List<Collider> enemyColliders = new List<Collider>();
     private void OnTriggerEnter(Collider other)
     {
         if (gameObject.layer == 3) return; //Ignore if weapon is set to the Inactive layer
@@ -17,9 +17,9 @@ public class MeleeWeapon : MonoBehaviour
         {
             enemyColliders.Add(other);
             other.BroadcastMessage("TakeDamage", baseDamage, SendMessageOptions.DontRequireReceiver);
-            if (PlayerManager.Instance.PlayerStateMachine._PlayerStats.GetResourceType() == CharacterLevelSO.ResourceType.Rage)
+            if (PlayerManager.Instance.PlayerStateMachine.PlayerStats.GetResourceType() == CharacterLevelSO.ResourceType.Rage)
             {
-                PlayerManager.Instance.PlayerStateMachine._PlayerStats.RegainResource(3);
+                PlayerManager.Instance.PlayerStateMachine.PlayerStats.RegainResource(3);
             }
             //Debug.Log($"Enemy colliders: {enemyColliders.Count}");
             //EnemyHealth enemy = other.GetComponent<EnemyHealth>();

@@ -14,15 +14,15 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
         public override void EnterState()
         {
             base.EnterState();
-            int rank = _playerStateMachine.BasicAbilityRank;
-            _playerStateMachine.Animator.speed = _playerStateMachine._PlayerStats.AttackSpeed;
+            int rank = _playerStateMachine.BasicAttackRank;
+            _playerStateMachine.Animator.speed = _playerStateMachine.PlayerStats.AttackSpeed;
             _playerStateMachine.Animator.Play("2Hand-Sword-Attack1");
 
             SetMeleeDamage(rank, AbilityType.BasicAttack, PlayerStatType.Strength);
         }
         public override void UpdateState(float deltaTime)
         {
-            int rank = _playerStateMachine.BasicAbilityRank;
+            int rank = _playerStateMachine.BasicAttackRank;
 
             Move(deltaTime);
             if (_playerStateMachine.InputManager.IsAttacking

@@ -18,7 +18,7 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
             base.EnterState();
             Debug.Log("Q Ability State");
             int rank = _playerStateMachine.QAbilityRank;
-            _playerStateMachine.Animator.speed = _playerStateMachine._PlayerStats.AttackSpeed;
+            _playerStateMachine.Animator.speed = _playerStateMachine.PlayerStats.AttackSpeed;
             _playerStateMachine.Animator.Play("2Hand-Sword-Attack8");
             SetMeleeDamage(rank, AbilityType.AbilityQ, PlayerStatType.Strength);
             force = _playerStateMachine.transform.forward * _playerStateMachine.qAbilityData[rank].force;
@@ -63,13 +63,13 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
         }
         private IEnumerator QAbilityRoutine()
         {
-            while (_playerStateMachine.InputManager.IsUsingAbility_Q && _playerStateMachine._PlayerStats.GetCurrentResource() >= cost)
+            while (_playerStateMachine.InputManager.IsUsingAbility_Q && _playerStateMachine.PlayerStats.GetCurrentResource() >= cost)
             {
                 SetWeaponActive(true);
-                _playerStateMachine._PlayerStats.UseResource(cost);
+                _playerStateMachine.PlayerStats.UseResource(cost);
                 meleeWeapon.ClearHitEnemies();
 
-                yield return new WaitForSeconds(_playerStateMachine._PlayerStats.AttackSpeed);
+                yield return new WaitForSeconds(_playerStateMachine.PlayerStats.AttackSpeed);
             }
             _playerStateMachine.ChangeState(new FighterLocomotionState(_playerStateMachine));
         }

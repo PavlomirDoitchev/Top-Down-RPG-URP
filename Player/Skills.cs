@@ -14,7 +14,7 @@ namespace Assets.Scripts.Player
         }
         public virtual bool CanUseSkill() 
         {
-            if (cooldownTimer <= 0 && cost <= PlayerManager.Instance.PlayerStateMachine._PlayerStats.GetCurrentResource())
+            if (cooldownTimer <= 0 && cost <= PlayerManager.Instance.PlayerStateMachine.PlayerStats.GetCurrentResource())
             {
                 UseSkill();
                 cooldownTimer = coolDown;

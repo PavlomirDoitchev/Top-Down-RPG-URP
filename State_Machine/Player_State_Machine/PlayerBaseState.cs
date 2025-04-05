@@ -91,7 +91,7 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
                 _playerStateMachine.transform.rotation = Quaternion.Slerp(
                     _playerStateMachine.transform.rotation,
                     targetRotation,
-                    _playerStateMachine._PlayerStats.RotationSpeed * deltaTime);
+                    _playerStateMachine.PlayerStats.RotationSpeed * deltaTime);
             }
         }
         /// <summary>
@@ -102,12 +102,12 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
         {
             Vector3 movement = CalculateMovement();
 
-            Move(movement * _playerStateMachine._PlayerStats.BaseMovementSpeed, deltaTime);
+            Move(movement * _playerStateMachine.PlayerStats.BaseMovementSpeed, deltaTime);
 
             if (movement != Vector3.zero)
             {
                 _playerStateMachine.transform.rotation = Quaternion.Slerp(_playerStateMachine.transform.rotation,
-                    Quaternion.LookRotation(movement), _playerStateMachine._PlayerStats.RotationSpeed * deltaTime);
+                    Quaternion.LookRotation(movement), _playerStateMachine.PlayerStats.RotationSpeed * deltaTime);
                 _playerStateMachine.Animator.SetFloat("LocomotionSpeed", 1, .01f, deltaTime);
             }
             _playerStateMachine.Animator.SetFloat("LocomotionSpeed", 0, .1f, deltaTime);
@@ -148,11 +148,11 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
             switch (statType)
             {
                 case PlayerStatType.Strength:
-                    return _playerStateMachine._PlayerStats.Strength;
+                    return _playerStateMachine.PlayerStats.Strength;
                 case PlayerStatType.Dexterity:
-                    return _playerStateMachine._PlayerStats.Dexterity;
+                    return _playerStateMachine.PlayerStats.Dexterity;
                 case PlayerStatType.Intellect:
-                    return _playerStateMachine._PlayerStats.Intellect;
+                    return _playerStateMachine.PlayerStats.Intellect;
                 default:
                     return 0;
             }
@@ -164,7 +164,7 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
         private bool CriticalStrikeSuccessfull() 
         {
             float rollForCrit = Random.Range(0f, 1f);
-            if (_playerStateMachine._PlayerStats.CriticalChance >= rollForCrit) 
+            if (_playerStateMachine.PlayerStats.CriticalChance >= rollForCrit) 
             {
                 Debug.Log("Critical!");
                 return true;
@@ -180,7 +180,7 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
                            damageMultiplier);
             if (CriticalStrikeSuccessfull())
             {
-                baseDamage *= _playerStateMachine._PlayerStats.CriticalModifier;
+                baseDamage *= _playerStateMachine.PlayerStats.CriticalModifier;
             }
             return baseDamage;
         }
@@ -189,7 +189,7 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
             switch (abilityType)
             {
                 case AbilityType.BasicAttack:
-                    return _playerStateMachine.BasicAbilityRank;
+                    return _playerStateMachine.BasicAttackRank;
                 case AbilityType.AbilityQ:
                     return _playerStateMachine.QAbilityRank;
                 // Add more abilities as needed

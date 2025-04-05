@@ -31,10 +31,10 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
             {
                 if (maxFallSpeed < -20f)
                 {
-                    fallDamage = Mathf.RoundToInt(Mathf.Abs((maxFallSpeed * _playerStateMachine._PlayerStats.GetMaxHealth()) * 0.02f));
-                    _playerStateMachine._PlayerStats.PlayerTakeDamage(fallDamage);
+                    fallDamage = Mathf.RoundToInt(Mathf.Abs((maxFallSpeed * _playerStateMachine.PlayerStats.GetMaxHealth()) * 0.02f));
+                    _playerStateMachine.PlayerStats.PlayerTakeDamage(fallDamage);
                 }
-                if (_playerStateMachine._PlayerStats.GetCurrentHealth() > 0)
+                if (_playerStateMachine.PlayerStats.GetCurrentHealth() > 0)
                 {
                     //_playerStateMachine.Animator.Play("2Hand-Sword-Land");
                     _playerStateMachine.ChangeState(new FighterLocomotionState(_playerStateMachine));

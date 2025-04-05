@@ -15,11 +15,11 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
         [Header("-----Ability Data-----")]
         [Header("Basic Attack")]
         public Fighter_Ability_SO[] basicAbilityData;
-        [field: SerializeField] public int BasicAbilityRank { get; set; }
+        [field: SerializeField] public int BasicAttackRank { get; set; }
 
         [Tooltip("Value must be above 0 to be unlocked!")]
         [Header("Q Ability Ranks")]
-        [SerializeField] public Fighter_Ability_SO[] qAbilityData;
+        public Fighter_Ability_SO[] qAbilityData;
         [field: SerializeField] public int QAbilityRank { get; set; }   
         [Header("-----References-----")]
         [SerializeField] private GameObject rightHandEquipSlot;
@@ -28,15 +28,15 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
         [field: SerializeField] public CharacterController CharacterController { get; private set; }
         [field: SerializeField] public Animator Animator { get; private set; }
         [field: SerializeField] public ForceReceiver ForceReceiver { get; private set; }
-        public PlayerStats _PlayerStats { get; private set; }
+        public PlayerStats PlayerStats { get; private set; }
         public Transform MainCameraTransform { get; private set; }
         private void Start()
         {
             MainCameraTransform = Camera.main.transform;
-            _PlayerStats = GetComponent<PlayerStats>();
-            if (_PlayerStats.GetClassType() == CharacterLevelSO.CharacterClass.Fighter)
+            PlayerStats = GetComponent<PlayerStats>();
+            if (PlayerStats.GetClassType() == CharacterLevelSO.CharacterClass.Fighter)
                 ChangeState(new FighterLocomotionState(this));
-            else if (_PlayerStats.GetClassType() == CharacterLevelSO.CharacterClass.Mage)
+            else if (PlayerStats.GetClassType() == CharacterLevelSO.CharacterClass.Mage)
                 Debug.Log("where is the mage?!");
         }
 
@@ -51,7 +51,7 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
                 return;
 
             Vector3 pushDir = new Vector3(hit.moveDirection.x, 0, hit.moveDirection.z);
-            rb.linearVelocity = pushDir * _PlayerStats.PushObjectsForce;
+            rb.linearVelocity = pushDir * PlayerStats.PushObjectsForce;
         }
         public void EquipNewWeapon(GameObject weaponPrefab)
         {

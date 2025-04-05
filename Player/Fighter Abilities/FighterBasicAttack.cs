@@ -8,7 +8,7 @@ namespace Assets.Scripts.Player
         public override void UseSkill()
         {
             base.UseSkill();
-            var playerStats = PlayerManager.Instance.PlayerStateMachine._PlayerStats;
+            var playerStats = PlayerManager.Instance.PlayerStateMachine.PlayerStats;
             var playerState = PlayerManager.Instance.PlayerStateMachine;
             playerStats.UseResource(GetSkillCost());
             playerState.ChangeState(new FighterBasicAttackChainOne(playerState));
