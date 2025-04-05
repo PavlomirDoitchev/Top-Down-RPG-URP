@@ -20,9 +20,7 @@
         }
         public bool IsStackable { get; set; }
         public bool IsEquippable { get; set; }
-        public void ItemName(string name);  
-        public void SetItemType(ItemType type);    
-        public void SetItemRarity(ItemRarity itemRarity);
-        public void ItemPrice(int cost);
+        public string ItemName { get; set; }
+        public int ItemPrice { get; set; }  
     }
 }

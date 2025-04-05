@@ -3,11 +3,30 @@ using System.Collections.Generic;
 using System;
 using UnityEngine;
 using System.Collections;
+using Assets.Scripts.Save_Manager;
 
 namespace Assets.Scripts.Player
 {
-    public class PlayerStats : MonoBehaviour
+    public class PlayerStats : MonoBehaviour, ISaveManager
     {
+        public void LoadData(GameData _data)
+        {
+            this.level = _data.playerLevel;
+            currentXP = _data.playerExperience;
+            //currentHealth = _data.currentHealth;
+            //currentResource = _data.currentResource;
+        }
+
+        public void SaveData(ref GameData _data)
+        {
+            _data.playerLevel = this.level;
+            _data.playerExperience = currentXP;
+            //_data.currentHealth = currentHealth;
+            //_data.currentResource = currentResource;
+        }
+
+        // Buff and Debuff system (commented out for now)
+    
         //public event Action<Buff> OnBuffApplied;
         //public event Action<Buff> OnBuffExpired;
 
@@ -60,7 +79,6 @@ namespace Assets.Scripts.Player
         PlayerManager playerManager;
         private void Start()
         {
-            LevelUp();
             playerManager = PlayerManager.Instance;
             playerManager.PlayerStateMachine.CharacterLevelDataSO[CurrentLevel()].ApplyClassResourceType();
             ApplyCharacterData();

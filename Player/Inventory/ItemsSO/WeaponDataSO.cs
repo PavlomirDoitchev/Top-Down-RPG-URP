@@ -1,24 +1,21 @@
 using Assets.Scripts.Player.Inventory;
+using UnityEditor;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "New Weapon", menuName = "Item/Create New Weapon")]
 public class WeaponDataSO : ScriptableObject, IPlayerItems
 {
-
-    public enum WeaponType
+    public string itemId;
+    private void OnValidate()
     {
-        Sword,
-        Bow,
-        Staff,
-        Dagger,
-        Axe,
-        Warhammer,
-        Spear,
-        Crossbow,
-        Scythe,
-        Halberd,
-        Shield
+#if UNITY_EDITOR
+        string path = AssetDatabase.GetAssetPath(this);
+        itemId = AssetDatabase.AssetPathToGUID(path);
+#endif
     }
+    
+    [field: SerializeField] public string ItemName { get; set; }
+    [field: SerializeField] public int ItemPrice { get; set; }
     public IPlayerItems.ItemType itemType;
     public WeaponType weaponType;
     public IPlayerItems.ItemRarity rarity;
@@ -27,28 +24,20 @@ public class WeaponDataSO : ScriptableObject, IPlayerItems
     public int maxDamage;
     public float attackSpeed;
     public float criticalChance;
-    public int price;
 
     [field: SerializeField] public bool IsStackable { get; set; } = false;
     [field: SerializeField] public bool IsEquippable { get; set; } = true;
-
-    public void ItemName(string name)
+    public enum WeaponType
     {
-        weaponName = name;
-    }
-
-    public void ItemPrice(int cost)
-    {
-        price = cost;
-    }
-
-    public void SetItemRarity(IPlayerItems.ItemRarity itemRarity)
-    {
-        rarity = itemRarity;
-    }
-
-    public void SetItemType(IPlayerItems.ItemType type)
-    {
-        itemType = type;
+        Sword,
+        Axe,
+        Warhammer,
+        Spear,
+        Dagger,
+        Bow,
+        Crossbow,
+        Scythe,
+        Staff,
+        Shield
     }
 }
