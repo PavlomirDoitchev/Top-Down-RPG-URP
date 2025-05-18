@@ -13,8 +13,8 @@ namespace Assets.Scripts.Player
         {
             this.level = _data.playerLevel;
             currentXP = _data.playerExperience;
-            transform.position = _data.GetPlayerPosition();
-            transform.rotation = _data.GetPlayerRotation();
+            //transform.position = _data.GetPlayerPosition();
+            //transform.rotation = _data.GetPlayerRotation();
             //currentHealth = _data.currentHealth;
             //currentResource = _data.currentResource;
         }
@@ -23,7 +23,7 @@ namespace Assets.Scripts.Player
         {
             _data.playerLevel = this.level;
             _data.playerExperience = currentXP;
-            _data.SavePlayerTransform(transform.position, transform.rotation);
+            //_data.SavePlayerTransform(transform.position, transform.rotation);
             //_data.currentHealth = currentHealth;
             //_data.currentResource = currentResource;
         }

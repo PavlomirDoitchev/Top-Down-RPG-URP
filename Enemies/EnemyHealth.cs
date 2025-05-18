@@ -5,7 +5,7 @@ using Assets.Scripts.Combat_Logic;
 public class EnemyHealth : MonoBehaviour, IDamagable
 {
     private readonly int damage = 15;
-   private readonly int coolDown = 1;
+    private readonly int coolDown = 1;
     float timer = 0;
     public int maxHealth = 100;
     [SerializeField] private int currentHealth;
