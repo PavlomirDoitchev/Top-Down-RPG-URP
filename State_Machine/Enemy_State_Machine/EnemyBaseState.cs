@@ -2,10 +2,10 @@
 {
     public abstract class EnemyBaseState : State
     {
-        protected EnemyStateMachine _stateMachine;
+        protected EnemyStateMachine _enemyStateMachine;
         public EnemyBaseState(EnemyStateMachine stateMachine)
         {
-             this._stateMachine = stateMachine;
+             this._enemyStateMachine = stateMachine;
         }
         public override void EnterState() 
         {

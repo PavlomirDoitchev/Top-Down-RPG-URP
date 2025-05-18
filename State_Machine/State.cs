@@ -1,4 +1,3 @@
-using UnityEngine;
 namespace Assets.Scripts.State_Machine
 {
     public abstract class State
