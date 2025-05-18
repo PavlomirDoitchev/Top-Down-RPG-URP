@@ -17,7 +17,7 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
 
         public override void UpdateState(float deltaTime)
         {
-            if (Vector3.Distance(PlayerManager.Instance.PlayerStateMachine.transform.position, _enemyStateMachine.transform.position) < _enemyStateMachine.ChaseDistance) 
+            if (Vector3.Distance(PlayerManager.Instance.PlayerStateMachine.transform.position, _enemyStateMachine.transform.position) < _enemyStateMachine.AggroRange) 
             {
                 _enemyStateMachine.ChangeState(new OrkChaseState(_enemyStateMachine));
             }
