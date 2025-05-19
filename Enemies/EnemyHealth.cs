@@ -10,7 +10,7 @@ public class EnemyHealth : MonoBehaviour, IDamagable
     public int maxHealth = 100;
     [SerializeField] private int currentHealth;
     PlayerManager playerManager;
-    private void Awake()
+    private void Start()
     {
         currentHealth = maxHealth;
         playerManager = PlayerManager.Instance;
