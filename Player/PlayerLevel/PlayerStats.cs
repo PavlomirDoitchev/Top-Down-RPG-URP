@@ -4,10 +4,11 @@ using System;
 using UnityEngine;
 using System.Collections;
 using Assets.Scripts.Save_Manager;
+using Assets.Scripts.Combat_Logic;
 
 namespace Assets.Scripts.Player
 {
-    public class PlayerStats : MonoBehaviour, ISaveManager
+    public class PlayerStats : MonoBehaviour, IDamagable, ISaveManager
     {
         public void LoadData(GameData _data)
         {
@@ -65,9 +66,9 @@ namespace Assets.Scripts.Player
         [SerializeField] int armor;
         [field: SerializeField] public float AttackSpeed { get; private set; }
         [field: SerializeField]
-        [field:Range(0,1)]public float CriticalChance { get; private set; }
+        [field: Range(0,1)] public float CriticalChance { get; private set; }
         [field: SerializeField]
-        [field:Range(1, 5)] public float CriticalModifier { get; private set; }
+        [field: Range(1, 5)] public float CriticalModifier { get; private set; }
 
 
         [Header("Resource Info")]
@@ -110,10 +111,14 @@ namespace Assets.Scripts.Player
 
         public void PlayerTakeDamage(int damage)
         {
-            currentHealth -= damage;
+            TakeDamage(damage);
             Debug.Log($"Player has taken {damage}!");
             if (currentHealth <= 0)
                 playerManager.PlayerStateMachine.ChangeState(new PlayerDeathState(playerManager.PlayerStateMachine));
+        }
+        public void TakeDamage(int damage)
+        {
+            currentHealth -= damage;
         }
         public int CurrentLevel()
         {
@@ -184,6 +189,8 @@ namespace Assets.Scripts.Player
         {
             maxLevel = playerManager.PlayerStateMachine.CharacterLevelDataSO.Length - 1;
         }
+
+        
         //public void ApplyBuff(Buff buff)
         //{
         //    activeBuffs.Add(buff);

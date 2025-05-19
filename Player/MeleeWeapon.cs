@@ -6,21 +6,23 @@ using UnityEngine;
 public class MeleeWeapon : MonoBehaviour
 {
     public WeaponDataSO EquippedWeaponDataSO;
+    [SerializeField] string targetLayerName;
+    [SerializeField] int ignoreInactiveLayer = 3; //In the Unity Editor, this is the Inactive layer for the player
     int baseDamage;
     private readonly List<Collider> enemyColliders = new List<Collider>();
     private void OnTriggerEnter(Collider other)
     {
-        if (gameObject.layer == 3) return; //Ignore if weapon is set to the Inactive layer
+        if (gameObject.layer == ignoreInactiveLayer) return; 
         if (enemyColliders.Contains(other)) return;
 
-        if (other.gameObject.layer == LayerMask.NameToLayer("Enemy"))
+        if (other.gameObject.layer == LayerMask.NameToLayer(targetLayerName))
         {
             enemyColliders.Add(other);
             other.BroadcastMessage("TakeDamage", baseDamage, SendMessageOptions.DontRequireReceiver);
-            if (PlayerManager.Instance.PlayerStateMachine.PlayerStats.GetResourceType() == CharacterLevelSO.ResourceType.Rage)
-            {
-                PlayerManager.Instance.PlayerStateMachine.PlayerStats.RegainResource(3);
-            }
+            //if (PlayerManager.Instance.PlayerStateMachine.PlayerStats.GetResourceType() == CharacterLevelSO.ResourceType.Rage)
+            //{
+            //    PlayerManager.Instance.PlayerStateMachine.PlayerStats.RegainResource(3);
+            //}
             //Debug.Log($"Enemy colliders: {enemyColliders.Count}");
             //EnemyHealth enemy = other.GetComponent<EnemyHealth>();
             //if (enemy != null)

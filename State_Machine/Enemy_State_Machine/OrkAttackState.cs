@@ -1,7 +1,4 @@
-﻿using System;
-using UnityEngine;
-using Assets.Scripts.State_Machine;
-using UnityEngine.AI;
+﻿using UnityEngine;
 using Assets.Scripts.Player;
 namespace Assets.Scripts.State_Machine.Enemy_State_Machine
 {
@@ -12,8 +9,11 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
         }
         public override void EnterState()
         {
+            base.EnterState();
             _enemyStateMachine.Agent.isStopped = true;
             _enemyStateMachine.Animator.CrossFadeInFixedTime("attacking", .1f);
+            SetWeaponActive(true);
+            SetEnemyDamage();
         }
 
         public override void UpdateState(float deltaTime)
@@ -26,6 +26,7 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
         }
         public override void ExitState()
         {
+            ResetAnimationSpeed();
         }
     }
 }

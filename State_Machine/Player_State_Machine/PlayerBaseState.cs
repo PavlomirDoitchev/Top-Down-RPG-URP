@@ -77,7 +77,7 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
             _playerStateMachine.transform.rotation = lockedRotation;
         }
         /// <summary>
-        /// Use to make the character rotate to the mouse position.
+        /// Use to make the character rotate to the mouse position. Don't forget to set the terrain collider to the "Ground" layer for this to work.    
         /// </summary>
         /// <param name="deltaTime"></param>
         protected void RotateToMouse(float deltaTime)
@@ -166,7 +166,7 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
             float rollForCrit = Random.Range(0f, 1f);
             if (_playerStateMachine.PlayerStats.CriticalChance >= rollForCrit) 
             {
-                Debug.Log("Critical!");
+                //Debug.Log("Critical!");
                 return true;
             }
             return false;

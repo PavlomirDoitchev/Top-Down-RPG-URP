@@ -10,6 +10,7 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
 
         public override void EnterState()
         {
+            base.EnterState();
             _enemyStateMachine.Agent.isStopped = false;
             _enemyStateMachine.Agent.speed = 3.5f;
             _enemyStateMachine.Animator.CrossFadeInFixedTime("running", .1f);

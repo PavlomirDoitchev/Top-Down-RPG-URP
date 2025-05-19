@@ -11,6 +11,7 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
 
         public override void EnterState()
         {
+            base.EnterState();
             _enemyStateMachine.Agent.isStopped = true;
             _enemyStateMachine.Animator.CrossFadeInFixedTime("idle", .1f);
         }
