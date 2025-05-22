@@ -1,6 +1,7 @@
 ﻿using Assets.Scripts.State_Machine.Player_State_Machine;
 using static Assets.Scripts.State_Machine.Player_State_Machine.PlayerBaseState;
 using UnityEngine;
+using Assets.Scripts.Player;
 
 namespace Assets.Scripts.State_Machine.Enemy_State_Machine
 {
@@ -36,6 +37,13 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
             {
                 Debug.LogError("No weapon equipped in state: " + this.GetType().Name);
             }
+        }
+        protected void RotateToPlayer(float deltaTime)
+        {
+            Vector3 direction = PlayerManager.Instance.PlayerStateMachine.transform.position - _enemyStateMachine.transform.position;
+            direction.y = 0f;
+            Quaternion targetRotation = Quaternion.LookRotation(direction);
+            _enemyStateMachine.transform.rotation = Quaternion.Slerp(_enemyStateMachine.transform.rotation, targetRotation, deltaTime * 10);
         }
         protected void ResetAnimationSpeed()
         {
