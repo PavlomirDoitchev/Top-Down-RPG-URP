@@ -12,7 +12,7 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
             base.EnterState();
             _enemyStateMachine.Agent.isStopped = true;
             _enemyStateMachine.Animator.CrossFadeInFixedTime("attacking", .1f);
-            SetWeaponActive(true);
+            //SetWeaponActive(true);
             SetEnemyDamage();
         }
 
@@ -23,6 +23,16 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
                 && _enemyStateMachine.Animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= .75f)
             {
                 _enemyStateMachine.ChangeState(new OrkChaseState(_enemyStateMachine));
+            }
+            
+            
+            if (_enemyStateMachine.Animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= .95f)
+            {
+                _enemyMelee.EnemyClearHitEnemies();
+            }
+            if (PlayerManager.Instance.PlayerStateMachine.PlayerStats.GetCurrentHealth() <= 0)
+            {
+                _enemyStateMachine.ChangeState(new OrkIdleState(_enemyStateMachine));
             }
         }
         public override void ExitState()

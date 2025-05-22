@@ -16,7 +16,7 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
         public override void EnterState()
         {
             base.EnterState();
-            Debug.Log("Q Ability State");
+            //Debug.Log("Q Ability State");
             int rank = _playerStateMachine.QAbilityRank;
             _playerStateMachine.Animator.speed = _playerStateMachine.PlayerStats.AttackSpeed;
             _playerStateMachine.Animator.Play("2Hand-Sword-Attack8");

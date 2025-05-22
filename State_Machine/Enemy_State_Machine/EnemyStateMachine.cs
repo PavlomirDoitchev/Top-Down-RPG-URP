@@ -9,6 +9,7 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
         [field: SerializeField] public NavMeshAgent Agent { get; private set; }
 
         [Header("Stats")]
+        [field: SerializeField] public float RotationSpeed { get; private set; }    
         [field: SerializeField] public float AggroRange { get; private set; }
         [field: SerializeField] public float ChaseDistance { get; private set; }
         [field: SerializeField] public float MeleeAttackDistance { get; private set; }

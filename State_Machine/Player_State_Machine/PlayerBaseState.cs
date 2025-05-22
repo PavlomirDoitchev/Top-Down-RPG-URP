@@ -210,6 +210,12 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
                     return 1f; 
             }
         }
+        /// <summary>
+        /// Choose the ability rank and the stat type to use as a modifier for the melee damage.
+        /// </summary>
+        /// <param name="abilityRank"></param>
+        /// <param name="abilityType"></param>
+        /// <param name="statType"></param>
         protected void SetMeleeDamage(int abilityRank, AbilityType abilityType, PlayerStatType statType)
         {
             float multiplier = CalculateMeleeDamage(abilityType, statType);

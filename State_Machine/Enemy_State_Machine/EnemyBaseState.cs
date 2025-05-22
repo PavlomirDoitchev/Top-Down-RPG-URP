@@ -2,15 +2,17 @@
 using static Assets.Scripts.State_Machine.Player_State_Machine.PlayerBaseState;
 using UnityEngine;
 using Assets.Scripts.Player;
+using Assets.Scripts.Enemies;
 
 namespace Assets.Scripts.State_Machine.Enemy_State_Machine
 {
     public abstract class EnemyBaseState : State
     {
         protected EnemyStateMachine _enemyStateMachine;
-        protected MeleeWeapon _meleeWeapon;
-        protected readonly int activeLayer = 3;
-        protected readonly int inactiveLayer = 7;
+        //protected MeleeWeapon _meleeWeapon;
+        protected EnemyMelee _enemyMelee;
+        //protected readonly int activeLayer = 3;
+        //protected readonly int inactiveLayer = 7;
         public EnemyBaseState(EnemyStateMachine stateMachine)
         {
              this._enemyStateMachine = stateMachine;
@@ -19,21 +21,21 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
         {
             base.EnterState();
             InitializeWeapon();
-            SetWeaponActive(false);
-            _meleeWeapon.ClearHitEnemies();
+            //SetWeaponActive(false);
+            _enemyMelee.EnemyClearHitEnemies();
         }
-        protected void SetWeaponActive(bool isActive)
-        {
-            _meleeWeapon.gameObject.layer = isActive ? activeLayer : inactiveLayer;
-        }
+        //protected void SetWeaponActive(bool isActive)
+        //{
+        //    _enemyMelee.gameObject.layer = isActive ? activeLayer : inactiveLayer;
+        //}
         protected void InitializeWeapon()
         {
             if (_enemyStateMachine.EquippedWeapon != null)
             {
-                _meleeWeapon = _enemyStateMachine.EquippedWeapon.GetComponentInChildren<MeleeWeapon>();
+                _enemyMelee = _enemyStateMachine.EquippedWeapon.GetComponentInChildren<EnemyMelee>();
             }
 
-            if (_meleeWeapon == null)
+            if (_enemyMelee == null)
             {
                 Debug.LogError("No weapon equipped in state: " + this.GetType().Name);
             }
@@ -43,7 +45,7 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
             Vector3 direction = PlayerManager.Instance.PlayerStateMachine.transform.position - _enemyStateMachine.transform.position;
             direction.y = 0f;
             Quaternion targetRotation = Quaternion.LookRotation(direction);
-            _enemyStateMachine.transform.rotation = Quaternion.Slerp(_enemyStateMachine.transform.rotation, targetRotation, deltaTime * 10);
+            _enemyStateMachine.transform.rotation = Quaternion.Slerp(_enemyStateMachine.transform.rotation, targetRotation, deltaTime * _enemyStateMachine.RotationSpeed);
         }
         protected void ResetAnimationSpeed()
         {
@@ -64,15 +66,15 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
         {
             if (CriticalStrikeSuccessfull())
             {
-                _meleeWeapon.MeleeWeaponDamage
-                  (Random.Range(_meleeWeapon.EquippedWeaponDataSO.minDamage, _meleeWeapon.EquippedWeaponDataSO.maxDamage + 1),
-                  _enemyStateMachine.CriticalModifier, 0);
+                _enemyMelee.EnemyWeaponDamage
+                  (Random.Range(_enemyMelee.EquippedWeaponDataSO.minDamage, _enemyMelee.EquippedWeaponDataSO.maxDamage + 1),
+                  _enemyStateMachine.CriticalModifier);
             }
             else
             {
-                _meleeWeapon.MeleeWeaponDamage
-                     (Random.Range(_meleeWeapon.EquippedWeaponDataSO.minDamage, _meleeWeapon.EquippedWeaponDataSO.maxDamage + 1),
-                     1, 0);
+                _enemyMelee.EnemyWeaponDamage
+                     (Random.Range(_enemyMelee.EquippedWeaponDataSO.minDamage, _enemyMelee.EquippedWeaponDataSO.maxDamage + 1),
+                     1);
             }
         }
     }

@@ -1,3 +1,4 @@
+using Assets.Scripts.Combat_Logic;
 using Assets.Scripts.Player;
 using Assets.Scripts.State_Machine.Player_State_Machine;
 using System.Collections.Generic;
@@ -8,7 +9,7 @@ public class MeleeWeapon : MonoBehaviour
     public WeaponDataSO EquippedWeaponDataSO;
     [SerializeField] string targetLayerName;
     [SerializeField] int ignoreInactiveLayer = 3; //In the Unity Editor, this is the Inactive layer for the player
-    int baseDamage;
+    private int baseDamage;
     private readonly List<Collider> enemyColliders = new List<Collider>();
     private void OnTriggerEnter(Collider other)
     {
@@ -18,7 +19,12 @@ public class MeleeWeapon : MonoBehaviour
         if (other.gameObject.layer == LayerMask.NameToLayer(targetLayerName))
         {
             enemyColliders.Add(other);
-            other.BroadcastMessage("TakeDamage", baseDamage, SendMessageOptions.DontRequireReceiver);
+            IDamagable damagable = other.GetComponent<IDamagable>();
+            if(damagable != null)
+            {
+                damagable.TakeDamage(baseDamage);
+            }
+            //other.BroadcastMessage("TakeDamage", baseDamage, SendMessageOptions.DontRequireReceiver);
             //if (PlayerManager.Instance.PlayerStateMachine.PlayerStats.GetResourceType() == CharacterLevelSO.ResourceType.Rage)
             //{
             //    PlayerManager.Instance.PlayerStateMachine.PlayerStats.RegainResource(3);
@@ -27,7 +33,7 @@ public class MeleeWeapon : MonoBehaviour
             //EnemyHealth enemy = other.GetComponent<EnemyHealth>();
             //if (enemy != null)
             //{
-                
+
             //    enemy.TakeDamage(baseDamage);
             //}
         }

@@ -18,6 +18,10 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
 
         public override void UpdateState(float deltaTime)
         {
+            if(PlayerManager.Instance.PlayerStateMachine.PlayerStats.GetCurrentHealth() <= 0)
+            {
+                return;
+            }
             _enemyStateMachine.Agent.SetDestination(PlayerManager.Instance.PlayerStateMachine.transform.position);
             if(Vector3.Distance(PlayerManager.Instance.PlayerStateMachine.transform.position, _enemyStateMachine.transform.position) > _enemyStateMachine.ChaseDistance)
             {

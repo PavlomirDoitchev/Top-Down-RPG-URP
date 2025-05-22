@@ -32,7 +32,7 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
                 if (maxFallSpeed < -20f)
                 {
                     fallDamage = Mathf.RoundToInt(Mathf.Abs((maxFallSpeed * _playerStateMachine.PlayerStats.GetMaxHealth()) * 0.02f));
-                    _playerStateMachine.PlayerStats.PlayerTakeDamage(fallDamage);
+                    _playerStateMachine.PlayerStats.TakeDamage(fallDamage);
                 }
                 if (_playerStateMachine.PlayerStats.GetCurrentHealth() > 0)
                 {
