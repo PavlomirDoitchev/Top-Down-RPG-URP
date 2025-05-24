@@ -36,5 +36,13 @@ namespace Assets.Scripts.Enemies
         {
             enemyColliders.Clear();
         }
+        public void SetEnemyLayerDuringAttack()
+        {
+            this.gameObject.layer = LayerMask.NameToLayer("EnemyDamage");
+        }
+        public void CantHarmPlayer()
+        {
+            this.gameObject.layer = LayerMask.NameToLayer("Default");
+        }
     }
 }

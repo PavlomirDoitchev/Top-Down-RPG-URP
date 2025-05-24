@@ -1,6 +1,7 @@
 using UnityEngine;
 using Assets.Scripts.Player;
 using Assets.Scripts.Combat_Logic;
+using Assets.Scripts.State_Machine.Enemy_State_Machine;
 
 public class EnemyHealth : MonoBehaviour, IDamagable
 {
@@ -10,6 +11,7 @@ public class EnemyHealth : MonoBehaviour, IDamagable
     public int maxHealth = 100;
     [SerializeField] private int currentHealth;
     PlayerManager playerManager;
+    [SerializeField] EnemyStateMachine enemyStateMachine;
     private void Start()
     {
         currentHealth = maxHealth;
@@ -22,18 +24,18 @@ public class EnemyHealth : MonoBehaviour, IDamagable
     }
     private void OnTriggerEnter(Collider other)
     {
-        //if (other.gameObject.CompareTag("Player"))
-        //{
-        //    var playerStats = playerManager.PlayerStateMachine.PlayerStats;
-        //    playerStats.TakeDamage(DealDamage());
-        //    if (playerStats.GetResourceType() == CharacterLevelSO.ResourceType.Rage)
-        //        playerStats.RegainResource(5);
-        //    if (timer <= 0)
-        //    {
-        //        playerManager.PlayerStateMachine.ForceReceiver.AddForce((other.transform.position - this.transform.position).normalized * 15);
-        //        timer = coolDown;
-        //    }
-        //}
+        if (other.gameObject.CompareTag("Player") && this.gameObject.layer != 0)
+        {
+            var playerStats = playerManager.PlayerStateMachine.PlayerStats;
+            playerStats.TakeDamage(DealDamage());
+            if (playerStats.GetResourceType() == CharacterLevelSO.ResourceType.Rage)
+                playerStats.RegainResource(5);
+            if (timer <= 0)
+            {
+                playerManager.PlayerStateMachine.ForceReceiver.AddForce((other.transform.position - this.transform.position).normalized * 15);
+                timer = coolDown;
+            }
+        }
     }
     public void TakeDamage(int damage)
     {
@@ -51,10 +53,11 @@ public class EnemyHealth : MonoBehaviour, IDamagable
 
     private void Die()
     {
-        currentHealth = maxHealth;
+        //currentHealth = maxHealth;
+        Debug.Log(gameObject.name + " has died!");
         playerManager.PlayerStateMachine.PlayerStats.GainXP(1);
+        enemyStateMachine.ChangeState(new OrkDeathState(enemyStateMachine));
         //playerStats.GainXP(1);
-        //Debug.Log(gameObject.name + " has died!");
         //Destroy(gameObject);
     }
 }

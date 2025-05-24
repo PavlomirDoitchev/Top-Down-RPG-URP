@@ -10,27 +10,25 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
         public override void EnterState()
         {
             base.EnterState();
-            _enemyStateMachine.Agent.isStopped = true;
-            _enemyStateMachine.Animator.CrossFadeInFixedTime("attacking", .1f);
+            _enemyStateMachine.Agent.isStopped = false;
+            _enemyStateMachine.Agent.speed = 2f;
+            _enemyStateMachine.Animator.CrossFadeInFixedTime("Orc_Basic_Attack", .1f);
             //SetWeaponActive(true);
             SetEnemyDamage();
         }
 
         public override void UpdateState(float deltaTime)
         {
+            _enemyStateMachine.Agent.SetDestination(PlayerManager.Instance.PlayerStateMachine.transform.position);
             RotateToPlayer(deltaTime);
             if (Vector3.Distance(PlayerManager.Instance.PlayerStateMachine.transform.position, _enemyStateMachine.transform.position) > _enemyStateMachine.MeleeAttackDistance
                 && _enemyStateMachine.Animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= .75f)
             {
                 _enemyStateMachine.ChangeState(new OrkChaseState(_enemyStateMachine));
             }
-            if(_enemyStateMachine.Animator.GetCurrentAnimatorStateInfo(0).normalizedTime < .45f)
-            {
-                SetEnemyLayerDuringAttack("EnemyDamage");
-            }
             
 
-            if (_enemyStateMachine.Animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= .95f)
+            if (_enemyStateMachine.Animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= .9f)
             {
                 _enemyMelee.EnemyClearHitEnemies();
             }
@@ -41,6 +39,7 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
         }
         public override void ExitState()
         {
+            _enemyMelee.EnemyClearHitEnemies();
             ResetAnimationSpeed();
         }
     }

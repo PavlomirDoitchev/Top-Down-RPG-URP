@@ -22,7 +22,7 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
             base.EnterState();
             InitializeWeapon();
             //SetWeaponActive(false);
-            SetEnemyLayerDuringAttack("Enemy");
+           
             _enemyMelee.EnemyClearHitEnemies();
         }
         //protected void SetWeaponActive(bool isActive)
@@ -47,6 +47,10 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
             direction.y = 0f;
             Quaternion targetRotation = Quaternion.LookRotation(direction);
             _enemyStateMachine.transform.rotation = Quaternion.Slerp(_enemyStateMachine.transform.rotation, targetRotation, deltaTime * _enemyStateMachine.RotationSpeed);
+        }
+        protected void BecomeUntargtable() 
+        { 
+            _enemyStateMachine.gameObject.layer = LayerMask.NameToLayer("Default");
         }
         protected void ResetAnimationSpeed()
         {
@@ -78,9 +82,6 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
                      1);
             }
         }
-        protected void SetEnemyLayerDuringAttack(string layer)
-        {
-            _enemyMelee.gameObject.layer = LayerMask.NameToLayer(layer);
-        }
+        
     }
 }

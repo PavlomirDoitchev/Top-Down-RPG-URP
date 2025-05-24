@@ -15,7 +15,7 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
             //_playerStateMachine.Ragdoll.ToggleRagdoll(true);
             _playerStateMachine.Animator.Play("2Hand-Sword-Knockdown1");
             momentum = _playerStateMachine.CharacterController.velocity;
-
+            Physics.IgnoreLayerCollision(10, _playerStateMachine.gameObject.layer, true);
         }
         public override void UpdateState(float deltaTime)
         {

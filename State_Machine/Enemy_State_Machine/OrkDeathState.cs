@@ -1,9 +1,12 @@
 ﻿
+using Assets.Scripts.State_Machine.Player_State_Machine;
+using UnityEngine;
+
 namespace Assets.Scripts.State_Machine.Enemy_State_Machine
 {
-    internal class EnemyDeathState : EnemyBaseState
+    public class OrkDeathState : EnemyBaseState
     {
-        public EnemyDeathState(EnemyStateMachine stateMachine) : base(stateMachine)
+        public OrkDeathState(EnemyStateMachine stateMachine) : base(stateMachine)
         {
         }
         public override void EnterState()
@@ -11,6 +14,7 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
             base.EnterState();
             _enemyStateMachine.Agent.isStopped = true;
             _enemyStateMachine.Animator.CrossFadeInFixedTime("dying 2", .1f);
+            BecomeUntargtable();
         }
         public override void ExitState()
         {
