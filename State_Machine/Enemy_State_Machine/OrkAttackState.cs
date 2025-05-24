@@ -24,8 +24,12 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
             {
                 _enemyStateMachine.ChangeState(new OrkChaseState(_enemyStateMachine));
             }
+            if(_enemyStateMachine.Animator.GetCurrentAnimatorStateInfo(0).normalizedTime < .45f)
+            {
+                SetEnemyLayerDuringAttack("EnemyDamage");
+            }
             
-            
+
             if (_enemyStateMachine.Animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= .95f)
             {
                 _enemyMelee.EnemyClearHitEnemies();

@@ -22,5 +22,14 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
         {
             ChangeState(new OrkIdleState(this));
         }
+        public void OnDrawGizmosSelected()
+        {
+            Gizmos.color = Color.red;
+            Gizmos.DrawWireSphere(transform.position, AggroRange);
+            Gizmos.color = Color.yellow;
+            Gizmos.DrawWireSphere(transform.position, ChaseDistance);
+            Gizmos.color = Color.green;
+            Gizmos.DrawWireSphere(transform.position, MeleeAttackDistance);
+        }
     }
 }

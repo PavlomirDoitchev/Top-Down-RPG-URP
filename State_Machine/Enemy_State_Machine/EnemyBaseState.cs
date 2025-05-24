@@ -22,6 +22,7 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
             base.EnterState();
             InitializeWeapon();
             //SetWeaponActive(false);
+            SetEnemyLayerDuringAttack("Enemy");
             _enemyMelee.EnemyClearHitEnemies();
         }
         //protected void SetWeaponActive(bool isActive)
@@ -76,6 +77,10 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
                      (Random.Range(_enemyMelee.EquippedWeaponDataSO.minDamage, _enemyMelee.EquippedWeaponDataSO.maxDamage + 1),
                      1);
             }
+        }
+        protected void SetEnemyLayerDuringAttack(string layer)
+        {
+            _enemyMelee.gameObject.layer = LayerMask.NameToLayer(layer);
         }
     }
 }

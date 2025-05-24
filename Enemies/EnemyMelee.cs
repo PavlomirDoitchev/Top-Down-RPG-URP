@@ -18,7 +18,7 @@ namespace Assets.Scripts.Enemies
         private void OnTriggerEnter(Collider other)
         {
             if (enemyColliders.Contains(other)) return;
-            if (other.gameObject.CompareTag("Player"))
+            if (other.gameObject.CompareTag("Player") && this.gameObject.layer == LayerMask.NameToLayer("EnemyDamage"))
             {
                 enemyColliders.Add(other);
 
