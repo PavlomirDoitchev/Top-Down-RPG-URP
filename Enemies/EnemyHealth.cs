@@ -10,6 +10,7 @@ public class EnemyHealth : MonoBehaviour, IDamagable
     float timer = 0;
     public int maxHealth = 100;
     [SerializeField] private int currentHealth;
+    [SerializeField] private int xpReward = 1;
     PlayerManager playerManager;
     [SerializeField] EnemyStateMachine enemyStateMachine;
     private void Start()
@@ -54,8 +55,8 @@ public class EnemyHealth : MonoBehaviour, IDamagable
     private void Die()
     {
         //currentHealth = maxHealth;
-        Debug.Log(gameObject.name + " has died!");
-        playerManager.PlayerStateMachine.PlayerStats.GainXP(1);
+        //Debug.Log(gameObject.name + " has died!");
+        playerManager.PlayerStateMachine.PlayerStats.GainXP(xpReward);
         enemyStateMachine.ChangeState(new OrkDeathState(enemyStateMachine));
         //playerStats.GainXP(1);
         //Destroy(gameObject);
