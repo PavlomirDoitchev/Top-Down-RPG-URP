@@ -24,7 +24,7 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
         {
             int rank = _playerStateMachine.BasicAttackRank;
 
-            Move(deltaTime);
+            PlayerMove(deltaTime);
             if (_playerStateMachine.InputManager.IsAttacking
                 && _playerStateMachine.Animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= .75f)
             {
