@@ -1,39 +1,40 @@
+using Assets.Scripts.Combat_Logic;
 using Assets.Scripts.Player;
 using UnityEngine;
 
 public class SpikeTrap : MonoBehaviour
 {
-    private int damage;
+    [SerializeField] private int damage;
     [SerializeField] float timer = 1;
-    [SerializeField] Transform spikes;
-    private void Update()
-    {
-
-    }
+    [SerializeField] float spikeCooldown = 1f;
+    [SerializeField] GameObject spikes;
+    [SerializeField] float spikeHeight = 0.5f;
+    private float spikeOrignalHeight = -0.266f;
+    bool hasTakenDamage = false;
     private void OnTriggerStay(Collider other)
     {
-        if (other.gameObject.CompareTag("Player"))
+        if (other.TryGetComponent<IDamagable>(out var damagable))
         {
             Vector3 spikePosition = spikes.transform.localPosition;
-            var playerStats = PlayerManager.Instance.PlayerStateMachine.PlayerStats;
             timer -= Time.deltaTime;
-            if (timer <= 0)
+            if (timer <= 0 && !hasTakenDamage)
             {
-                spikePosition.y = Vector3.Slerp(spikePosition, new Vector3(spikePosition.x, spikePosition.y + 0.25f, spikePosition.z), Time.deltaTime * 2).y;
-                
+                spikes.transform.localPosition = new Vector3(spikePosition.x, spikeHeight, spikePosition.z);
+                damagable.TakeDamage(damage);
+                hasTakenDamage = true;
             }
-
-
         }
     }
     private void OnTriggerExit(Collider other)
     {
-        if (other.gameObject.CompareTag("Player"))
+        if (other.TryGetComponent<IDamagable>(out var damagable))
         {
             Vector3 spikePosition = spikes.transform.localPosition;
-            spikePosition.y = -0.266f;
+            spikePosition.y = spikeOrignalHeight;
             spikes.transform.localPosition = spikePosition;
-            timer = 1;
+            if (timer <= spikeCooldown)
+                timer = spikeCooldown;
+            hasTakenDamage = false;
         }
     }
 }
