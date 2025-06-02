@@ -1,3 +1,4 @@
+using Assets.Scripts.Combat_Logic;
 using UnityEngine;
 
 public class MovingPlatform : MonoBehaviour
@@ -6,7 +7,8 @@ public class MovingPlatform : MonoBehaviour
     [SerializeField] GameObject endPoint;
     [SerializeField] GameObject platform;
     [SerializeField] float speed = 1f;
-
+    //bool hasTakenDamage = false;
+   
     private float lerpTime = 0f;
     private bool goingForward = true;
 
@@ -34,4 +36,5 @@ public class MovingPlatform : MonoBehaviour
             Gizmos.DrawSphere(endPoint.transform.position, 0.1f);
         }
     }
+   
 }
