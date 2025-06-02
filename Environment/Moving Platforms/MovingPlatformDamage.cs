@@ -19,7 +19,6 @@ public class MovingPlatformDamage : MonoBehaviour
             //hasTakenDamage = true;
             if(other.TryGetComponent<ForceReceiver>(out var forceReceiver))
             {
-                // Apply a force to the player when they step on the platform
                 forceReceiver.AddForce((other.transform.position - transform.position).normalized * knockbackForce);
             }
         }

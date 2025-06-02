@@ -51,6 +51,7 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
         protected void BecomeUntargtable() 
         { 
             _enemyStateMachine.gameObject.layer = LayerMask.NameToLayer("Default");
+
         }
         protected void ResetAnimationSpeed()
         {

@@ -9,6 +9,7 @@ public class SpikeTrap : MonoBehaviour
     [SerializeField] float timer = 1;
     [SerializeField] float spikeCooldown = 1f;
     [SerializeField] float spikeRiseLimit = 0.5f;
+    [SerializeField] private float knockUpForce = 5f;
     private float spikeOrignalHeight = -0.266f;
     bool hasTakenDamage = false;
     private void OnTriggerStay(Collider other)
@@ -22,6 +23,10 @@ public class SpikeTrap : MonoBehaviour
                 movingSpikesReference.transform.localPosition = new Vector3(spikePosition.x, spikeRiseLimit, spikePosition.z);
                 damagable.TakeDamage(damage);
                 hasTakenDamage = true;
+                if (other.TryGetComponent<ForceReceiver>(out var forceReceiver))
+                {
+                    forceReceiver.AddForce(Vector3.up * knockUpForce);
+                }
             }
         }
     }
