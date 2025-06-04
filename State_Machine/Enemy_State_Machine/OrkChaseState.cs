@@ -4,6 +4,7 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
 {
     public class OrkChaseState : EnemyBaseState
     {
+
         public OrkChaseState(EnemyStateMachine stateMachine) : base(stateMachine)
         {
         }
@@ -26,14 +27,10 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
             _enemyStateMachine.Agent.SetDestination(PlayerManager.Instance.PlayerStateMachine.transform.position);
             if(Vector3.Distance(PlayerManager.Instance.PlayerStateMachine.transform.position, _enemyStateMachine.transform.position) > _enemyStateMachine.ChaseDistance)
             {   
-                _enemyStateMachine.Agent.SetDestination(_enemyStateMachine.OriginalPosition);
-                if (Vector3.Distance(_enemyStateMachine.OriginalPosition, _enemyStateMachine.transform.position) <= _enemyStateMachine.Agent.stoppingDistance) 
-                {
-                    _enemyStateMachine.ChangeState(new OrkIdleState(_enemyStateMachine));
-                
-                }
+                _enemyStateMachine.ChangeState(new OrkSuspicionState(_enemyStateMachine));
+
             }
-            if(Vector3.Distance(PlayerManager.Instance.PlayerStateMachine.transform.position, _enemyStateMachine.transform.position) < _enemyStateMachine.MeleeAttackDistance)
+            if(Vector3.Distance(PlayerManager.Instance.PlayerStateMachine.transform.position, _enemyStateMachine.transform.position) < _enemyStateMachine.AttackDistance)
             {
                 _enemyStateMachine.ChangeState(new OrkAttackState(_enemyStateMachine));
             }

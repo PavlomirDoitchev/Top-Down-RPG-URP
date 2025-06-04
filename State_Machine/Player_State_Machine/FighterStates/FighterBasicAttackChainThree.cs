@@ -21,7 +21,7 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
         }
         public override void UpdateState(float deltaTime)
         {
-            PlayerMove(deltaTime);
+            Move(deltaTime);
             if (_playerStateMachine.InputManager.IsAttacking
                 && _playerStateMachine.Animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= .6f)
             {
@@ -37,6 +37,8 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
             }
             if (!rotationLocked && _playerStateMachine.Animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 0.2f)
             {
+                _playerStateMachine.ForceReceiver.AddForce(_playerStateMachine.transform.forward * _playerStateMachine.basicAbilityData[_playerStateMachine.BasicAttackRank].force);
+
                 SetWeaponActive(true);
                 rotationLocked = true;
                 SetCurrentRotation();

@@ -21,7 +21,7 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
         {
             _enemyStateMachine.Agent.SetDestination(PlayerManager.Instance.PlayerStateMachine.transform.position);
             RotateToPlayer(deltaTime);
-            if (Vector3.Distance(PlayerManager.Instance.PlayerStateMachine.transform.position, _enemyStateMachine.transform.position) > _enemyStateMachine.MeleeAttackDistance
+            if (Vector3.Distance(PlayerManager.Instance.PlayerStateMachine.transform.position, _enemyStateMachine.transform.position) > _enemyStateMachine.AttackDistance
                 && _enemyStateMachine.Animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= .75f)
             {
                 _enemyStateMachine.ChangeState(new OrkChaseState(_enemyStateMachine));

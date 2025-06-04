@@ -12,7 +12,8 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
         [field: SerializeField] public float RotationSpeed { get; private set; }    
         [field: SerializeField] public float AggroRange { get; private set; }
         [field: SerializeField] public float ChaseDistance { get; private set; }
-        [field: SerializeField] public float MeleeAttackDistance { get; private set; }
+        [field: SerializeField] public float SuspicionTime { get; private set; }
+        [field: SerializeField] public float AttackDistance { get; private set; }
         [field: SerializeField]
         [field: Range(0, 1)] public float CriticalChance { get; private set; }
         [field: SerializeField] 
@@ -31,7 +32,7 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
             Gizmos.color = Color.yellow;
             Gizmos.DrawWireSphere(transform.position, ChaseDistance);
             Gizmos.color = Color.green;
-            Gizmos.DrawWireSphere(transform.position, MeleeAttackDistance);
+            Gizmos.DrawWireSphere(transform.position, AttackDistance);
         }
     }
 }
