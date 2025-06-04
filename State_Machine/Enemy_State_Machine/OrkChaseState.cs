@@ -12,7 +12,7 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
         {
             base.EnterState();
             _enemyStateMachine.Agent.isStopped = false;
-            _enemyStateMachine.Agent.speed = 3.5f;
+            _enemyStateMachine.Agent.speed = _enemyStateMachine.Agent.speed;
             _enemyStateMachine.Animator.CrossFadeInFixedTime("running", .1f);
         }
 
@@ -22,10 +22,16 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
             {
                 return;
             }
+            
             _enemyStateMachine.Agent.SetDestination(PlayerManager.Instance.PlayerStateMachine.transform.position);
             if(Vector3.Distance(PlayerManager.Instance.PlayerStateMachine.transform.position, _enemyStateMachine.transform.position) > _enemyStateMachine.ChaseDistance)
-            {
-                _enemyStateMachine.ChangeState(new OrkIdleState(_enemyStateMachine));
+            {   
+                _enemyStateMachine.Agent.SetDestination(_enemyStateMachine.OriginalPosition);
+                if (Vector3.Distance(_enemyStateMachine.OriginalPosition, _enemyStateMachine.transform.position) <= _enemyStateMachine.Agent.stoppingDistance) 
+                {
+                    _enemyStateMachine.ChangeState(new OrkIdleState(_enemyStateMachine));
+                
+                }
             }
             if(Vector3.Distance(PlayerManager.Instance.PlayerStateMachine.transform.position, _enemyStateMachine.transform.position) < _enemyStateMachine.MeleeAttackDistance)
             {

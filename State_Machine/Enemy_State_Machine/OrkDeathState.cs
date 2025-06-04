@@ -16,6 +16,7 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
             _enemyStateMachine.Animator.CrossFadeInFixedTime("dying 2", .1f);
             BecomeUntargtable();
             _enemyStateMachine.BodyCollider.enabled = false;
+            _enemyStateMachine.Agent.enabled = false;
         }
         public override void ExitState()
         {

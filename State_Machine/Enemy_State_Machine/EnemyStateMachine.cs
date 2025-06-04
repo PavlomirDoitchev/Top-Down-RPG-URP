@@ -18,8 +18,10 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
         [field: SerializeField] 
         [field: Range(1,5)] public float CriticalModifier { get; private set; }
         [field: SerializeField] public Collider BodyCollider { get; private set; }
+        public Vector3 OriginalPosition { get; private set; }
         private void Start()
         {
+            OriginalPosition = this.transform.position;
             ChangeState(new OrkIdleState(this));
         }
         public void OnDrawGizmosSelected()
