@@ -17,9 +17,21 @@ namespace Assets.Scripts.Enemies
             for (int i = 0; i < waypoints.Length; i++)
             {
                 if (waypoints[i] == null) continue;
+                int j = GetNextWaypoint(i);
                 Gizmos.color = gizmoColor;
-                Gizmos.DrawSphere(waypoints[i].position, gizmoSize);
+                Gizmos.DrawSphere(GetWaypoint(i), gizmoSize);
+                Gizmos.DrawLine(GetWaypoint(i), GetWaypoint(j));
             }
+        }
+
+        private int GetNextWaypoint(int i)
+        {
+            return (i + 1) % waypoints.Length;
+        }
+
+        public Vector3 GetWaypoint(int i)
+        {
+            return waypoints[i].position;
         }
     }
 }
