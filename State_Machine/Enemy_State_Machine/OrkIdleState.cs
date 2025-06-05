@@ -23,9 +23,13 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
             {
                 return;
             }
-            if (_enemyStateMachine.PatrolPath != null) 
+            if (_enemyStateMachine.PatrolPath != null)
             {
                 _enemyStateMachine.ChangeState(new OrkPatrolState(_enemyStateMachine));
+            }
+            else if (_enemyStateMachine.PatrolPath == null && _enemyStateMachine._enemyStateTypes == EnemyStateTypes.Wander) 
+            {
+                _enemyStateMachine.ChangeState(new OrkWanderState(_enemyStateMachine));
             }
             if (Vector3.Distance(PlayerManager.Instance.PlayerStateMachine.transform.position, _enemyStateMachine.transform.position) < _enemyStateMachine.AggroRange) 
             {

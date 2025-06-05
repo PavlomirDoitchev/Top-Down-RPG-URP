@@ -6,6 +6,7 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
     public class EnemyStateMachine : StateMachine
     {
         public GameObject EquippedWeapon;
+        public EnemyStateTypes _enemyStateTypes;
         [field: SerializeField] public Animator Animator { get; private set; }
         [field: SerializeField] public NavMeshAgent Agent { get; private set; }
         [Header("Make sure to check for null if using patrol!")]
