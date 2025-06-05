@@ -1,7 +1,7 @@
 using UnityEngine;
 using Assets.Scripts.State_Machine;
 using Assets.Scripts.Player;
-
+using DamageNumbersPro;
 namespace Assets.Scripts.State_Machine.Player_State_Machine
 {
     /// <summary>
@@ -224,6 +224,7 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
                  (Random.Range(meleeWeapon.EquippedWeaponDataSO.minDamage, meleeWeapon.EquippedWeaponDataSO.maxDamage + 1),
                  multiplier,
                  abilityRank);
+           
             //ApplyAbilityEffects(abilityType);
         }
         //private Basic_Ability_SO GetAbilityData(AbilityType abilityType)

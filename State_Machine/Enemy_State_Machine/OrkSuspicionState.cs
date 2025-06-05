@@ -3,6 +3,7 @@ using Assets.Scripts.Player;
 
 namespace Assets.Scripts.State_Machine.Enemy_State_Machine
 {
+    //TODO: Add some wandering to search for player.
     public class OrkSuspicionState : EnemyBaseState
     {
         float _suspicionTimer = 0f;
@@ -41,24 +42,22 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
 
                     _enemyStateMachine.Animator.Play("walking");
                     _enemyStateMachine.Agent.speed = _enemyStateMachine.WalkingSpeed;
-                    _suspicionTimer = 0f; 
+                    _suspicionTimer = 0f;
 
                     if (_enemyStateMachine.PatrolPath == null)
                         _enemyStateMachine.Agent.SetDestination(_enemyStateMachine.OriginalPosition);
-                    else if (_enemyStateMachine.PatrolPath != null && _enemyStateMachine.PatrolPath.GetWaypointCount() > 0)
-                    {
-                        //_enemyStateMachine.Agent.SetDestination(_enemyStateMachine.PatrolPath.GetWaypoint(Random.Range(0, _enemyStateMachine.PatrolPath.GetWaypointCount())));
+                    else if (_enemyStateMachine._enemyStateTypes == EnemyStateTypes.Patrol)
                         _enemyStateMachine.ChangeState(new OrkPatrolState(_enemyStateMachine));
-                    }
+
                 }
             }
-            if (_isReturningToOrigin && 
-                _enemyStateMachine.PatrolPath == null && 
+            if (_isReturningToOrigin &&
+                _enemyStateMachine.PatrolPath == null &&
                 Vector3.Distance(_enemyStateMachine.OriginalPosition, _enemyStateMachine.transform.position) <= _enemyStateMachine.Agent.stoppingDistance)
             {
                 _enemyStateMachine.ChangeState(new OrkIdleState(_enemyStateMachine));
             }
-            
+
 
         }
 

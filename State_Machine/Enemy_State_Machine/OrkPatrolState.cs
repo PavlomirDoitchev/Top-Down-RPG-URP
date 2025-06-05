@@ -52,31 +52,6 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
 
                     _isDwelling = false;
                 }
-                //if (AtWaypoint())
-                //{
-                //    _currentWaypointIndex++;
-                //    _timeToWaitAtWaypoint += deltaTime;
-
-                //    if (_currentWaypointIndex == _enemyStateMachine.PatrolPath.GetWaypointCount())
-                //        _currentWaypointIndex = 0;
-
-                //    Vector3 nextWaypoint = _enemyStateMachine.PatrolPath.GetWaypoint(_currentWaypointIndex);
-
-                //    if (_timeToWaitAtWaypoint >= _enemyStateMachine.PatrolDwellTime)
-                //    {
-                //        _enemyStateMachine.Animator.CrossFadeInFixedTime("walking", .1f);
-                //        _enemyStateMachine.Agent.isStopped = false;
-                //        _enemyStateMachine.Agent.SetDestination(nextWaypoint);
-                //        _timeToWaitAtWaypoint = 0f;
-                //    }
-                //    else if (_timeToWaitAtWaypoint < _enemyStateMachine.PatrolDwellTime)
-                //    {
-                //        _enemyStateMachine.Agent.isStopped = true;
-                //        _enemyStateMachine.Animator.Play("idle");
-                //    }
-
-                //}
-
             }
         }
         public override void ExitState()
@@ -84,8 +59,6 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
             ResetAnimationSpeed();
             ResetMovementSpeed();
         }
-
-       
 
         private bool AtWaypoint()
         {

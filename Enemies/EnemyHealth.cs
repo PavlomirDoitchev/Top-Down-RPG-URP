@@ -2,6 +2,8 @@ using UnityEngine;
 using Assets.Scripts.Player;
 using Assets.Scripts.Combat_Logic;
 using Assets.Scripts.State_Machine.Enemy_State_Machine;
+using DamageNumbersPro;
+using Assets.Scripts.State_Machine.Player_State_Machine;
 
 public class EnemyHealth : MonoBehaviour, IDamagable
 {
@@ -11,6 +13,7 @@ public class EnemyHealth : MonoBehaviour, IDamagable
     public int maxHealth = 100;
     [SerializeField] private int currentHealth;
     [SerializeField] private int xpReward = 1;
+    public DamageNumber playerDamage;
     PlayerManager playerManager;
     [SerializeField] EnemyStateMachine enemyStateMachine;
     private void Start()
@@ -41,6 +44,8 @@ public class EnemyHealth : MonoBehaviour, IDamagable
     public void TakeDamage(int damage)
     {
         currentHealth -= damage;
+        playerDamage.Spawn(transform.position, damage);
+
         if (currentHealth <= 0)
         {
             Die();
