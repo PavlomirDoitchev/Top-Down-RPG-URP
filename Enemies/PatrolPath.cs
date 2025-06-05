@@ -24,7 +24,7 @@ namespace Assets.Scripts.Enemies
             }
         }
 
-        private int GetNextWaypoint(int i)
+        public int GetNextWaypoint(int i)
         {
             return (i + 1) % waypoints.Length;
         }
@@ -32,6 +32,10 @@ namespace Assets.Scripts.Enemies
         public Vector3 GetWaypoint(int i)
         {
             return waypoints[i].position;
+        }
+        public int GetWaypointCount()
+        {
+            return waypoints.Length;
         }
     }
 }

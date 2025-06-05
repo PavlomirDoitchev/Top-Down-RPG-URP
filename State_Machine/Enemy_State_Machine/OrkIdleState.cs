@@ -1,4 +1,5 @@
 ﻿using Assets.Scripts.Player;
+using Assets.Scripts.Enemies;
 using Assets.Scripts.State_Machine.Player_State_Machine;
 using UnityEngine;
 namespace Assets.Scripts.State_Machine.Enemy_State_Machine
@@ -21,6 +22,10 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
             if(PlayerManager.Instance.PlayerStateMachine.PlayerStats.GetCurrentHealth() <= 0)
             {
                 return;
+            }
+            if (_enemyStateMachine.PatrolPath != null) 
+            {
+                _enemyStateMachine.ChangeState(new OrkPatrolState(_enemyStateMachine));
             }
             if (Vector3.Distance(PlayerManager.Instance.PlayerStateMachine.transform.position, _enemyStateMachine.transform.position) < _enemyStateMachine.AggroRange) 
             {

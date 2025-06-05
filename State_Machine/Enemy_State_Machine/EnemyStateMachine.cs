@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Assets.Scripts.Enemies;
+using UnityEngine;
 using UnityEngine.AI;
 namespace Assets.Scripts.State_Machine.Enemy_State_Machine
 {
@@ -7,6 +8,8 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
         public GameObject EquippedWeapon;
         [field: SerializeField] public Animator Animator { get; private set; }
         [field: SerializeField] public NavMeshAgent Agent { get; private set; }
+        [Tooltip("Make sure to check for null if using patrol!")]
+        [field: SerializeField] public PatrolPath PatrolPath { get; private set; }
 
         [Header("Stats")]
         [field: SerializeField] public float RotationSpeed { get; private set; }    
@@ -20,9 +23,11 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
         [field: Range(1,5)] public float CriticalModifier { get; private set; }
         [field: SerializeField] public Collider BodyCollider { get; private set; }
         public Vector3 OriginalPosition { get; private set; }
+        
         private void Start()
         {
             OriginalPosition = this.transform.position;
+            
             ChangeState(new OrkIdleState(this));
         }
         public void OnDrawGizmosSelected()
