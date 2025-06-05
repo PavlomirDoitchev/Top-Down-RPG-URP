@@ -13,7 +13,7 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
         {
             base.EnterState();
             _enemyStateMachine.Agent.isStopped = false;
-            _enemyStateMachine.Agent.speed = _enemyStateMachine.Agent.speed;
+            _enemyStateMachine.Agent.speed = _enemyStateMachine.RunningSpeed;
             _enemyStateMachine.Animator.CrossFadeInFixedTime("running", .1f);
         }
 
@@ -23,9 +23,15 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
             {
                 return;
             }
-            
+            if (Vector3.Distance(_enemyStateMachine.OriginalPosition, _enemyStateMachine.transform.position) > _enemyStateMachine.MaxDistanceFromOrigin) 
+            {
+                _enemyStateMachine.ChangeState(new ReturnToOriginState(_enemyStateMachine));
+                return;
+            }
+
             _enemyStateMachine.Agent.SetDestination(PlayerManager.Instance.PlayerStateMachine.transform.position);
-            if(Vector3.Distance(PlayerManager.Instance.PlayerStateMachine.transform.position, _enemyStateMachine.transform.position) > _enemyStateMachine.ChaseDistance)
+
+            if (Vector3.Distance(PlayerManager.Instance.PlayerStateMachine.transform.position, _enemyStateMachine.transform.position) > _enemyStateMachine.ChaseDistance)
             {   
                 _enemyStateMachine.ChangeState(new OrkSuspicionState(_enemyStateMachine));
 

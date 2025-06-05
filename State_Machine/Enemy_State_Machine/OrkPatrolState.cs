@@ -7,6 +7,8 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
     public class OrkPatrolState : EnemyBaseState
     {
         public int _currentWaypointIndex = 0;
+        private float _timeToWaitAtWaypoint = 0f;
+        private bool _isDwelling = false;
         public OrkPatrolState(EnemyStateMachine stateMachine) : base(stateMachine)
         {
         }
@@ -16,7 +18,7 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
             base.EnterState();
             _enemyStateMachine.Agent.isStopped = false;
             _enemyStateMachine.Animator.CrossFadeInFixedTime("walking", .1f);
-            _enemyStateMachine.Agent.speed *= 0.5f;
+            _enemyStateMachine.Agent.speed = _enemyStateMachine.WalkingSpeed;
             _enemyStateMachine.Agent.SetDestination(_enemyStateMachine.PatrolPath.GetWaypoint(_currentWaypointIndex));
         }
 
@@ -27,30 +29,63 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
                 _enemyStateMachine.ChangeState(new OrkChaseState(_enemyStateMachine));
             }
 
-
-            if (AtWaypoint())
+            if (AtWaypoint() && !_isDwelling)
             {
-                _currentWaypointIndex++;
-                if (_currentWaypointIndex == _enemyStateMachine.PatrolPath.GetWaypointCount())
-                {
-                    _currentWaypointIndex = 0;
-                }
-                Vector3 nextWaypoint = _enemyStateMachine.PatrolPath.GetWaypoint(_currentWaypointIndex);
-                _enemyStateMachine.Agent.SetDestination(nextWaypoint);
+                _isDwelling = true;
+                _timeToWaitAtWaypoint = 0f;
+                _enemyStateMachine.Agent.isStopped = true;
+                _enemyStateMachine.Animator.Play("idle");
             }
 
-        }
+            if (_isDwelling)
+            {
+                _timeToWaitAtWaypoint += deltaTime;
 
+                if (_timeToWaitAtWaypoint >= _enemyStateMachine.PatrolDwellTime)
+                {
+                    _currentWaypointIndex = (_currentWaypointIndex + 1) % _enemyStateMachine.PatrolPath.GetWaypointCount();
+
+                    Vector3 nextWaypoint = _enemyStateMachine.PatrolPath.GetWaypoint(_currentWaypointIndex);
+                    _enemyStateMachine.Agent.SetDestination(nextWaypoint);
+                    _enemyStateMachine.Agent.isStopped = false;
+                    _enemyStateMachine.Animator.CrossFadeInFixedTime("walking", 0.1f);
+
+                    _isDwelling = false;
+                }
+                //if (AtWaypoint())
+                //{
+                //    _currentWaypointIndex++;
+                //    _timeToWaitAtWaypoint += deltaTime;
+
+                //    if (_currentWaypointIndex == _enemyStateMachine.PatrolPath.GetWaypointCount())
+                //        _currentWaypointIndex = 0;
+
+                //    Vector3 nextWaypoint = _enemyStateMachine.PatrolPath.GetWaypoint(_currentWaypointIndex);
+
+                //    if (_timeToWaitAtWaypoint >= _enemyStateMachine.PatrolDwellTime)
+                //    {
+                //        _enemyStateMachine.Animator.CrossFadeInFixedTime("walking", .1f);
+                //        _enemyStateMachine.Agent.isStopped = false;
+                //        _enemyStateMachine.Agent.SetDestination(nextWaypoint);
+                //        _timeToWaitAtWaypoint = 0f;
+                //    }
+                //    else if (_timeToWaitAtWaypoint < _enemyStateMachine.PatrolDwellTime)
+                //    {
+                //        _enemyStateMachine.Agent.isStopped = true;
+                //        _enemyStateMachine.Animator.Play("idle");
+                //    }
+
+                //}
+
+            }
+        }
         public override void ExitState()
         {
             ResetAnimationSpeed();
-            ResetSpeed();
+            ResetMovementSpeed();
         }
 
-        private void ResetSpeed()
-        {
-            _enemyStateMachine.Agent.speed = _enemyStateMachine.Agent.speed / 0.5f;
-        }
+       
 
         private bool AtWaypoint()
         {

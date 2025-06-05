@@ -11,7 +11,7 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
         {
             base.EnterState();
             _enemyStateMachine.Agent.isStopped = false;
-            _enemyStateMachine.Agent.speed = 2f;
+            _enemyStateMachine.Agent.speed = _enemyStateMachine.WalkingSpeed;
             _enemyStateMachine.Animator.CrossFadeInFixedTime("Orc_Basic_Attack", .1f);
             //SetWeaponActive(true);
             SetEnemyDamage();
@@ -41,6 +41,7 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
         {
             _enemyMelee.EnemyClearHitEnemies();
             ResetAnimationSpeed();
+            ResetMovementSpeed();
         }
     }
 }

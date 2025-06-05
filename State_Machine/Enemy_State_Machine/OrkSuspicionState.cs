@@ -39,9 +39,11 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
                     _isReturningToOrigin = true;
                     _enemyStateMachine.Agent.isStopped = false;
 
-                    _enemyStateMachine.Animator.Play("running");
+                    _enemyStateMachine.Animator.Play("walking");
+                    _enemyStateMachine.Agent.speed = _enemyStateMachine.WalkingSpeed;
+                    _suspicionTimer = 0f; 
 
-                    if(_enemyStateMachine.PatrolPath == null)
+                    if (_enemyStateMachine.PatrolPath == null)
                         _enemyStateMachine.Agent.SetDestination(_enemyStateMachine.OriginalPosition);
                     else if (_enemyStateMachine.PatrolPath != null && _enemyStateMachine.PatrolPath.GetWaypointCount() > 0)
                     {

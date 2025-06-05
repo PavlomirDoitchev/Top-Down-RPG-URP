@@ -52,7 +52,14 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
         protected void BecomeUntargtable() 
         { 
             _enemyStateMachine.gameObject.layer = LayerMask.NameToLayer("Default");
-
+        }
+        protected void BecomeTargetable()
+        {
+            _enemyStateMachine.gameObject.layer = LayerMask.NameToLayer("Enemy");
+        }
+        protected void ResetMovementSpeed()
+        {
+            _enemyStateMachine.Agent.speed = _enemyStateMachine.RunningSpeed;
         }
         protected void ResetAnimationSpeed()
         {

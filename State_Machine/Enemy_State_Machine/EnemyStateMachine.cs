@@ -8,13 +8,17 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
         public GameObject EquippedWeapon;
         [field: SerializeField] public Animator Animator { get; private set; }
         [field: SerializeField] public NavMeshAgent Agent { get; private set; }
-        [Tooltip("Make sure to check for null if using patrol!")]
+        [Header("Make sure to check for null if using patrol!")]
         [field: SerializeField] public PatrolPath PatrolPath { get; private set; }
+        [field: SerializeField] public float PatrolDwellTime { get; private set; } 
 
         [Header("Stats")]
+        [field: SerializeField] public float RunningSpeed { get; private set; }
+        [field: SerializeField] public float WalkingSpeed { get; private set; }
         [field: SerializeField] public float RotationSpeed { get; private set; }    
         [field: SerializeField] public float AggroRange { get; private set; }
         [field: SerializeField] public float ChaseDistance { get; private set; }
+        [field: SerializeField] public float MaxDistanceFromOrigin { get; private set; }
         [field: SerializeField] public float SuspicionTime { get; private set; }
         [field: SerializeField] public float AttackDistance { get; private set; }
         [field: SerializeField]
@@ -26,6 +30,7 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
         
         private void Start()
         {
+            Agent.speed = RunningSpeed;
             OriginalPosition = this.transform.position;
             
             ChangeState(new OrkIdleState(this));
@@ -38,6 +43,8 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
             Gizmos.DrawWireSphere(transform.position, ChaseDistance);
             Gizmos.color = Color.green;
             Gizmos.DrawWireSphere(transform.position, AttackDistance);
+            Gizmos.color = Color.blue;
+            Gizmos.DrawWireSphere(OriginalPosition, MaxDistanceFromOrigin);
         }
     }
 }
