@@ -1,15 +1,16 @@
 using Assets.Scripts.Combat_Logic;
 using UnityEngine;
-
+using DamageNumbersPro;
 public class SpikeTrap : MonoBehaviour
 {
     [SerializeField] GameObject movingSpikesReference;
-    [SerializeField] private int damage;
+    [SerializeField] private int damageAmount;
     [Header("Timer should equal the cooldown!")]
     [SerializeField] float timer = 1;
     [SerializeField] float spikeCooldown = 1f;
     [SerializeField] float spikeRiseLimit = 0.5f;
     [SerializeField] private float knockUpForce = 5f;
+    [SerializeField] private DamageNumber damageText;
     private float spikeOrignalHeight = -0.266f;
     bool hasTakenDamage = false;
     private void OnTriggerStay(Collider other)
@@ -21,7 +22,8 @@ public class SpikeTrap : MonoBehaviour
             if (timer <= 0 && !hasTakenDamage)
             {
                 movingSpikesReference.transform.localPosition = new Vector3(spikePosition.x, spikeRiseLimit, spikePosition.z);
-                damagable.TakeDamage(damage);
+                damagable.TakeDamage(damageAmount);
+                damageText.Spawn(other.transform.position, damageAmount);
                 hasTakenDamage = true;
                 if (other.TryGetComponent<ForceReceiver>(out var forceReceiver))
                 {
