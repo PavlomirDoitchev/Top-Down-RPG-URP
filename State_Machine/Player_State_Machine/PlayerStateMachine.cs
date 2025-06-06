@@ -2,6 +2,7 @@ using UnityEngine;
 using Assets.Scripts.State_Machine;
 using Assets.Scripts.Player;
 using DamageNumbersPro;
+using Unity.Cinemachine;
 namespace Assets.Scripts.State_Machine.Player_State_Machine
 {
     public class PlayerStateMachine : StateMachine
@@ -29,9 +30,10 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
         [field: SerializeField] public CharacterController CharacterController { get; private set; }
         [field: SerializeField] public Animator Animator { get; private set; }
         [field: SerializeField] public ForceReceiver ForceReceiver { get; private set; }
+        public DamageNumber damageText;
         public PlayerStats PlayerStats { get; private set; }
         public Transform MainCameraTransform { get; private set; }
-        
+        [field:SerializeField] public CinemachineImpulseSource CinemachineImpulseSource { get; private set; }
         private void Start()
         {
             MainCameraTransform = Camera.main.transform;

@@ -13,7 +13,6 @@ public class EnemyHealth : MonoBehaviour, IDamagable
     public int maxHealth = 100;
     [SerializeField] private int currentHealth;
     [SerializeField] private int xpReward = 1;
-    public DamageNumber playerDamage;
     PlayerManager playerManager;
     [SerializeField] EnemyStateMachine enemyStateMachine;
     private void Start()
@@ -44,13 +43,12 @@ public class EnemyHealth : MonoBehaviour, IDamagable
     public void TakeDamage(int damage)
     {
         currentHealth -= damage;
-        playerDamage.Spawn(transform.position, damage);
-
+        
         if (currentHealth <= 0)
         {
             Die();
         }
-        Debug.Log(gameObject.name + " took " + damage + " damage!");
+        //Debug.Log(gameObject.name + " took " + damage + " damage!");
     }
     public int DealDamage()
     {

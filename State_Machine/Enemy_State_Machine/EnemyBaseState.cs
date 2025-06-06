@@ -21,7 +21,7 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
         {
             base.EnterState();
             //InitializeWeapon();
-            Debug.Log("Entering state: " + this.GetType().Name);
+            //Debug.Log("Entering state: " + this.GetType().Name);
             //SetWeaponActive(false);
 
             //_enemyMelee.EnemyClearHitEnemies();

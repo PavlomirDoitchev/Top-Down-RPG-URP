@@ -16,6 +16,7 @@ public class OrkWanderState : EnemyBaseState
     {
         base.EnterState();
         _enemyStateMachine.Agent.isStopped = false;
+        _enemyStateMachine.Agent.speed = _enemyStateMachine.WalkingSpeed;
         _enemyStateMachine.Animator.CrossFadeInFixedTime("walking", 0.1f);
         SetNewWanderDestination();
     }

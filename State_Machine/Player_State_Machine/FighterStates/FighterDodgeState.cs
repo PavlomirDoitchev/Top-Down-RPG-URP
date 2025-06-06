@@ -21,7 +21,7 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
             dashDirection = _playerStateMachine.transform.forward;
             dashVelocity = dashDirection * _playerStateMachine.PlayerStats.BaseMovementSpeed;
             dashVelocity.y = Physics.gravity.y;
-
+            _playerStateMachine.CinemachineImpulseSource.GenerateImpulse(dashDirection * 0.5f); 
         }
 
 

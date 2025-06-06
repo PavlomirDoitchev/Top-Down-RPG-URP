@@ -30,7 +30,7 @@ namespace Assets.Scripts.Enemies
                 {
                     baseDamage = Mathf.RoundToInt(Random.Range(EquippedWeaponDataSO.minDamage, EquippedWeaponDataSO.maxDamage + 1) * enemyStateMachine.CriticalModifier);
                     damageNumber.SetColor(Color.yellow);  
-                    Debug.Log("Critical");
+                    //Debug.Log("Critical");
                 }
                 else
                     baseDamage = Random.Range(EquippedWeaponDataSO.minDamage, EquippedWeaponDataSO.maxDamage + 1);

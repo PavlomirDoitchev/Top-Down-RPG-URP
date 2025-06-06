@@ -178,9 +178,11 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
             float damageMultiplier = GetAbilityMultiplier(abilityType, rank);
             float baseDamage = 1 + (statValue *
                            damageMultiplier);
+            _playerStateMachine.damageText.SetColor(Color.white);
             if (CriticalStrikeSuccessfull())
             {
                 baseDamage *= _playerStateMachine.PlayerStats.CriticalModifier;
+                _playerStateMachine.damageText.SetColor(Color.yellow);
             }
             return baseDamage;
         }
@@ -224,7 +226,6 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
                  (Random.Range(meleeWeapon.EquippedWeaponDataSO.minDamage, meleeWeapon.EquippedWeaponDataSO.maxDamage + 1),
                  multiplier,
                  abilityRank);
-           
             //ApplyAbilityEffects(abilityType);
         }
         //private Basic_Ability_SO GetAbilityData(AbilityType abilityType)

@@ -6,10 +6,12 @@ using UnityEngine;
 using DamageNumbersPro;
 public class MeleeWeapon : MonoBehaviour
 {
+    
     public WeaponDataSO EquippedWeaponDataSO;
     [SerializeField] string targetLayerName;
     [SerializeField] int ignoreInactiveLayer = 3; //In the Unity Editor, this is the Inactive layer for the player
     private int baseDamage;
+    [SerializeField] DamageNumber damageText;
     private readonly List<Collider> enemyColliders = new List<Collider>();
     private void OnTriggerEnter(Collider other)
     {
@@ -23,6 +25,7 @@ public class MeleeWeapon : MonoBehaviour
             if(damagable != null)
             {
                 damagable.TakeDamage(baseDamage);
+                damageText.Spawn(other.transform.position, baseDamage);
             }
             //other.BroadcastMessage("TakeDamage", baseDamage, SendMessageOptions.DontRequireReceiver);
             //if (PlayerManager.Instance.PlayerStateMachine.PlayerStats.GetResourceType() == CharacterLevelSO.ResourceType.Rage)
