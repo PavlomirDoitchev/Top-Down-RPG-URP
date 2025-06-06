@@ -25,6 +25,7 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
             if (_playerStateMachine.InputManager.IsAttacking
                 && _playerStateMachine.Animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= .75f)
             {
+                _playerStateMachine.ForceReceiver.AddForce(-_playerStateMachine.transform.forward * _playerStateMachine.basicAbilityData[_playerStateMachine.BasicAttackRank].force);
                 _playerStateMachine.ChangeState(new FighterBasicAttackChainThree(_playerStateMachine));
             }
 

@@ -8,8 +8,8 @@ using Assets.Scripts.State_Machine.Player_State_Machine;
 public class EnemyHealth : MonoBehaviour, IDamagable
 {
     private readonly int damage = 15;
-    private readonly int coolDown = 1;
-    float timer = 0;
+    //private readonly int coolDown = 1;
+    //float timer = 0;
     public int maxHealth = 100;
     [SerializeField] private int currentHealth;
     [SerializeField] private int xpReward = 1;
@@ -22,23 +22,23 @@ public class EnemyHealth : MonoBehaviour, IDamagable
         playerManager = PlayerManager.Instance;
 
     }
-    private void Update()
-    {
-        timer -= Time.deltaTime;
-    }
+    //private void Update()
+    //{
+    //    timer -= Time.deltaTime;
+    //}
     //private void OnTriggerEnter(Collider other)
     //{
-    //    if (other.gameObject.CompareTag("Player") && this.gameObject.layer != 0)
+    //    if (other.gameObject.CompareTag("Player") && this.gameObject.layer == LayerMask.NameToLayer("EnemyDamage"))
     //    {
-    //        var playerStats = playerManager.PlayerStateMachine.PlayerStats;
-    //        playerStats.TakeDamage(DealDamage());
-    //        if (playerStats.GetResourceType() == CharacterLevelSO.ResourceType.Rage)
-    //            playerStats.RegainResource(5);
-    //        //if (timer <= 0)
-    //        //{
-    //        //    playerManager.PlayerStateMachine.ForceReceiver.AddForce((other.transform.position - this.transform.position).normalized * 15);
-    //        //    timer = coolDown;
-    //        //}
+    //        //var playerStats = playerManager.PlayerStateMachine.PlayerStats;
+    //        //playerStats.TakeDamage(DealDamage());
+    //        //if (playerStats.GetResourceType() == CharacterLevelSO.ResourceType.Rage)
+    //           // playerStats.RegainResource(5);
+    //        if (timer <= 0)
+    //        {
+    //            playerManager.PlayerStateMachine.ForceReceiver.AddForce((other.transform.position - this.transform.position).normalized * 15);
+    //            timer = coolDown;
+    //        }
     //    }
     //}
     public void TakeDamage(int damage)

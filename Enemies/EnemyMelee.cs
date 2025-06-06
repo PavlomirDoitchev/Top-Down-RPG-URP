@@ -1,5 +1,6 @@
 ﻿using Assets.Scripts.Combat_Logic;
 using Assets.Scripts.Player;
+using Assets.Scripts.State_Machine.Enemy_State_Machine;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -11,9 +12,11 @@ namespace Assets.Scripts.Enemies
         private int baseDamage;
         private readonly List<Collider> enemyColliders = new List<Collider>();
         PlayerManager playerManager;
+        EnemyStateMachine enemyStateMachine;
         private void Start()
         {
             playerManager = PlayerManager.Instance;
+            enemyStateMachine = GetComponentInParent<EnemyStateMachine>();
         }
         private void OnTriggerEnter(Collider other)
         {
@@ -21,11 +24,19 @@ namespace Assets.Scripts.Enemies
             if (other.gameObject.CompareTag("Player") && this.gameObject.layer == LayerMask.NameToLayer("EnemyDamage"))
             {
                 enemyColliders.Add(other);
+                baseDamage = Random.Range(EquippedWeaponDataSO.minDamage, EquippedWeaponDataSO.maxDamage + 1);
 
                 var playerStats = playerManager.PlayerStateMachine.PlayerStats;
                 playerStats.TakeDamage(baseDamage);
                 Debug.Log("Player took " + baseDamage);
 
+            }
+        }
+        private void OnTriggerExit(Collider other)
+        {
+            if (enemyColliders.Contains(other))
+            {
+                enemyColliders.Remove(other);
             }
         }
         public void EnemyWeaponDamage(int baseDamage, float multiplier)
@@ -42,7 +53,7 @@ namespace Assets.Scripts.Enemies
         }
         public void CantHarmPlayer()
         {
-            this.gameObject.layer = LayerMask.NameToLayer("Default");
+            this.gameObject.layer = LayerMask.NameToLayer("CantHarmPlayer");
         }
     }
 }

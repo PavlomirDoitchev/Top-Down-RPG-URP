@@ -21,6 +21,7 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
         {
             if(PlayerManager.Instance.PlayerStateMachine.PlayerStats.GetCurrentHealth() <= 0)
             {
+                _enemyStateMachine.ChangeState(new OrkIdleState(_enemyStateMachine));
                 return;
             }
             if (Vector3.Distance(_enemyStateMachine.OriginalPosition, _enemyStateMachine.transform.position) > _enemyStateMachine.MaxDistanceFromOrigin) 

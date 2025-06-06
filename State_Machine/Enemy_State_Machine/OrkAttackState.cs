@@ -10,11 +10,11 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
         public override void EnterState()
         {
             base.EnterState();
-            _enemyStateMachine.Agent.isStopped = false;
-            _enemyStateMachine.Agent.speed = _enemyStateMachine.WalkingSpeed;
+            _enemyStateMachine.Agent.isStopped = true;
+            //_enemyStateMachine.Agent.speed = _enemyStateMachine.WalkingSpeed;
             _enemyStateMachine.Animator.CrossFadeInFixedTime("Orc_Basic_Attack", .1f);
             //SetWeaponActive(true);
-            SetEnemyDamage();
+            //SetEnemyDamage();
         }
 
         public override void UpdateState(float deltaTime)
@@ -26,11 +26,11 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
             {
                 _enemyStateMachine.ChangeState(new OrkChaseState(_enemyStateMachine));
             }
-            
+
 
             if (_enemyStateMachine.Animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= .9f)
             {
-                _enemyMelee.EnemyClearHitEnemies();
+                //_enemyMelee.EnemyClearHitEnemies();
             }
             if (PlayerManager.Instance.PlayerStateMachine.PlayerStats.GetCurrentHealth() <= 0)
             {
@@ -39,7 +39,7 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
         }
         public override void ExitState()
         {
-            _enemyMelee.EnemyClearHitEnemies();
+            //_enemyMelee.EnemyClearHitEnemies();
             ResetAnimationSpeed();
             ResetMovementSpeed();
         }

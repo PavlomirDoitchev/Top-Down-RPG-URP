@@ -5,9 +5,11 @@ using UnityEngine;
 using System.Collections;
 using Assets.Scripts.Save_Manager;
 using Assets.Scripts.Combat_Logic;
-
+using DamageNumbersPro;
+using UnityEngine.Scripting;
 namespace Assets.Scripts.Player
 {
+    //[RequiredInterface(typeof(IDamagable))]
     public class PlayerStats : MonoBehaviour, IDamagable, ISaveManager
     {
         public void LoadData(GameData _data)
@@ -18,6 +20,7 @@ namespace Assets.Scripts.Player
             //transform.rotation = _data.GetPlayerRotation();
             //currentHealth = _data.currentHealth;
             //currentResource = _data.currentResource;
+
         }
 
         public void SaveData(ref GameData _data)
@@ -78,8 +81,9 @@ namespace Assets.Scripts.Player
         [SerializeField] private int currentResource;
 
         [Header("References")]
+        public DamageNumber playerDamageDisplayText;
         [SerializeField] ParticleSystem levelUpEffect;
-        [SerializeField] GameObject weapon;
+        [SerializeField] GameObject weapon; //to be removed later
         PlayerManager playerManager;
         private void Start()
         {
@@ -119,6 +123,8 @@ namespace Assets.Scripts.Player
         public void TakeDamage(int damage)
         {
             currentHealth -= damage;
+            playerDamageDisplayText.Spawn(transform.position, damage);
+
             if (currentHealth <= 0)
                 playerManager.PlayerStateMachine.ChangeState(new PlayerDeathState(playerManager.PlayerStateMachine));
         }
