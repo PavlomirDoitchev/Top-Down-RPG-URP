@@ -19,7 +19,7 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
             //Debug.Log("Q Ability State");
             int rank = _playerStateMachine.QAbilityRank;
             _playerStateMachine.Animator.speed = _playerStateMachine.PlayerStats.AttackSpeed;
-            _playerStateMachine.Animator.Play("2Hand-Sword-Attack8");
+            _playerStateMachine.Animator.Play("ARPG_Dual_Wield_Attack_Heavy1");
             SetMeleeDamage(rank, AbilityType.AbilityQ, PlayerStatType.Strength);
             force = _playerStateMachine.transform.forward * _playerStateMachine.qAbilityData[rank].force;
             qCoroutine = _playerStateMachine.StartCoroutine(QAbilityRoutine());
