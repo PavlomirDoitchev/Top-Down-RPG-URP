@@ -26,6 +26,8 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
         [field: Range(0, 1)] public float CriticalChance { get; private set; }
         [field: SerializeField] 
         [field: Range(1,5)] public float CriticalModifier { get; private set; }
+        [field: SerializeField]
+        [field: Range(0.1f, 5f)] public float BaseAttackSpeed { get; private set; } 
         [field: SerializeField] public Collider BodyCollider { get; private set; } //disabled when dead
         public Vector3 OriginalPosition { get; private set; }
         

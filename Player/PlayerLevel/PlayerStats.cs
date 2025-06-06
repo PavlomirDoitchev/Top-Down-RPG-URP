@@ -6,7 +6,6 @@ using System.Collections;
 using Assets.Scripts.Save_Manager;
 using Assets.Scripts.Combat_Logic;
 using DamageNumbersPro;
-using UnityEngine.Scripting;
 namespace Assets.Scripts.Player
 {
     //[RequiredInterface(typeof(IDamagable))]
@@ -84,6 +83,7 @@ namespace Assets.Scripts.Player
         public DamageNumber playerDamageDisplayText;
         [SerializeField] ParticleSystem levelUpEffect;
         [SerializeField] GameObject weapon; //to be removed later
+        
         PlayerManager playerManager;
         private void Start()
         {
@@ -123,7 +123,7 @@ namespace Assets.Scripts.Player
         public void TakeDamage(int damage)
         {
             currentHealth -= damage;
-            playerDamageDisplayText.Spawn(transform.position, damage);
+            //playerDamageDisplayText.Spawn(transform.position, damage);
 
             if (currentHealth <= 0)
                 playerManager.PlayerStateMachine.ChangeState(new PlayerDeathState(playerManager.PlayerStateMachine));

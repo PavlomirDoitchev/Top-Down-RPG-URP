@@ -3,7 +3,7 @@ using Assets.Scripts.Player;
 using Assets.Scripts.State_Machine.Enemy_State_Machine;
 using System.Collections.Generic;
 using UnityEngine;
-
+using DamageNumbersPro;
 namespace Assets.Scripts.Enemies
 {
     public class EnemyMelee : MonoBehaviour
@@ -13,6 +13,7 @@ namespace Assets.Scripts.Enemies
         private readonly List<Collider> enemyColliders = new List<Collider>();
         PlayerManager playerManager;
         EnemyStateMachine enemyStateMachine;
+        public DamageNumber damageNumber;
         private void Start()
         {
             playerManager = PlayerManager.Instance;
@@ -24,11 +25,20 @@ namespace Assets.Scripts.Enemies
             if (other.gameObject.CompareTag("Player") && this.gameObject.layer == LayerMask.NameToLayer("EnemyDamage"))
             {
                 enemyColliders.Add(other);
-                baseDamage = Random.Range(EquippedWeaponDataSO.minDamage, EquippedWeaponDataSO.maxDamage + 1);
+                damageNumber.SetColor(Color.red);
+                if (CriticalStrikeSuccessfull())
+                {
+                    baseDamage = Mathf.RoundToInt(Random.Range(EquippedWeaponDataSO.minDamage, EquippedWeaponDataSO.maxDamage + 1) * enemyStateMachine.CriticalModifier);
+                    damageNumber.SetColor(Color.yellow);  
+                    Debug.Log("Critical");
+                }
+                else
+                    baseDamage = Random.Range(EquippedWeaponDataSO.minDamage, EquippedWeaponDataSO.maxDamage + 1);
 
                 var playerStats = playerManager.PlayerStateMachine.PlayerStats;
                 playerStats.TakeDamage(baseDamage);
-                Debug.Log("Player took " + baseDamage);
+                damageNumber.Spawn(other.transform.position, baseDamage, other.transform);
+                //Debug.Log("Player took " + baseDamage);
 
             }
         }
@@ -36,17 +46,20 @@ namespace Assets.Scripts.Enemies
         {
             if (enemyColliders.Contains(other))
             {
+
                 enemyColliders.Remove(other);
             }
+        }
+        private bool CriticalStrikeSuccessfull()
+        {
+            float criticalChance = enemyStateMachine.CriticalChance;
+            return Random.Range(0f, 1f) <= criticalChance;
         }
         public void EnemyWeaponDamage(int baseDamage, float multiplier)
         {
             this.baseDamage = Mathf.RoundToInt(baseDamage * multiplier);
         }
-        public void EnemyClearHitEnemies()
-        {
-            enemyColliders.Clear();
-        }
+
         public void SetEnemyLayerDuringAttack()
         {
             this.gameObject.layer = LayerMask.NameToLayer("EnemyDamage");

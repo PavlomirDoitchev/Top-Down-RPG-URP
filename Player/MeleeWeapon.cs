@@ -3,7 +3,7 @@ using Assets.Scripts.Player;
 using Assets.Scripts.State_Machine.Player_State_Machine;
 using System.Collections.Generic;
 using UnityEngine;
-
+using DamageNumbersPro;
 public class MeleeWeapon : MonoBehaviour
 {
     public WeaponDataSO EquippedWeaponDataSO;

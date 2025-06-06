@@ -46,6 +46,14 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
         {
             _enemyStateMachine.Agent.speed = _enemyStateMachine.RunningSpeed;
         }
+        /// <summary>
+        /// Keep speed at 1f for normal speed.
+        /// </summary>
+        /// <param name="speed"></param>
+        protected void SetAttackSpeed(float speed) 
+        {
+            _enemyStateMachine.Animator.speed = _enemyStateMachine.BaseAttackSpeed * speed;
+        }
         protected void ResetAnimationSpeed()
         {
             _enemyStateMachine.Animator.speed = 1f;
