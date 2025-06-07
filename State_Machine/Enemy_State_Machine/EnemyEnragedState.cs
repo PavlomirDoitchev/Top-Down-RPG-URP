@@ -21,13 +21,13 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
 
             if (_enemyStateMachine.Animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= .9f) 
             {
+                BecomeTargetable();
                 _enemyStateMachine.ChangeState(new EnemyChaseState(_enemyStateMachine));
             }
 
         }
         public override void ExitState()
         {
-            BecomeTargetable();
             ResetAnimationSpeed();
             ResetMovementSpeed();
         }

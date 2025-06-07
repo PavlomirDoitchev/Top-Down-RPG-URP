@@ -20,10 +20,7 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
         public override void UpdateState(float deltaTime)
         {
             if (CheckForGlobalTransitions()) return;
-            if (PlayerManager.Instance.PlayerStateMachine.PlayerStats.GetCurrentHealth() <= 0)
-            {
-                return;
-            }
+            
             if (_enemyStateMachine.PatrolPath != null)
             {
                 _enemyStateMachine.ChangeState(new EnemyPatrolState(_enemyStateMachine));
