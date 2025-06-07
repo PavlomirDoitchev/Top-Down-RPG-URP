@@ -27,7 +27,7 @@ namespace Assets.Scripts.Enemies
                 enemyColliders.Add(other);
 
                 damageNumber.SetColor(Color.red);
-
+                
                 if (CriticalStrikeSuccessfull())
                 {
                     baseDamage = Mathf.RoundToInt(Random.Range(EquippedWeaponDataSO.minDamage, EquippedWeaponDataSO.maxDamage + 1) * enemyStateMachine.CriticalModifier);
@@ -36,6 +36,10 @@ namespace Assets.Scripts.Enemies
                 else
                     baseDamage = Random.Range(EquippedWeaponDataSO.minDamage, EquippedWeaponDataSO.maxDamage + 1);
 
+                if(enemyStateMachine.IsEnraged)
+                {
+                    baseDamage = Mathf.RoundToInt(baseDamage * enemyStateMachine.EnragedDamageMultiplier);
+                }
                 if (enemyStateMachine.ShouldKnockBackPlayer)
                     playerManager.PlayerStateMachine.ForceReceiver.AddForce((other.transform.position - enemyStateMachine.transform.position).normalized * enemyStateMachine.KnockBackForce);
 

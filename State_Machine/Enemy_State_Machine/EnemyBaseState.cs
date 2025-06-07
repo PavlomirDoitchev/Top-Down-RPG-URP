@@ -28,7 +28,7 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
             }
             if (PlayerManager.Instance.PlayerStateMachine.PlayerStats.GetCurrentHealth() <= 0) 
             {
-                _enemyStateMachine.ChangeState(new EnemyIdleState(_enemyStateMachine));
+                _enemyStateMachine.ChangeState(new EnemyPlayerIsDeadState(_enemyStateMachine));
             }
             if (_enemyStateMachine.IsEnraged && _enemyStateMachine.CanBecomeEnraged)
             {

@@ -45,6 +45,8 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
         [field: Range(0.1f, 5f)] public float BaseAttackSpeed { get; private set; }
         [field: SerializeField]
         [field: Range(1f, 3f)] public float EnragedAttackSpeed { get; private set; }
+        [field: SerializeField] 
+        [field: Range(1, 5)] public float EnragedDamageMultiplier { get; private set; }
         [field: SerializeField] public float KnockBackForce { get; private set; } = 15f;
         [field: SerializeField] public bool ShouldKnockBackPlayer { get; set; }
 

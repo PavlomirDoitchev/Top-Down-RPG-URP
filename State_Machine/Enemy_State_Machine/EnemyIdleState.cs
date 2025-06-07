@@ -21,7 +21,7 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
         {
             if (CheckForGlobalTransitions()) return;
             
-            if (_enemyStateMachine.PatrolPath != null)
+            if (_enemyStateMachine._enemyStateTypes == EnemyStateTypes.Patrol)
             {
                 _enemyStateMachine.ChangeState(new EnemyPatrolState(_enemyStateMachine));
             }
