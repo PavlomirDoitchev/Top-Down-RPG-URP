@@ -25,15 +25,19 @@ namespace Assets.Scripts.Enemies
             if (other.gameObject.CompareTag("Player") && this.gameObject.layer == LayerMask.NameToLayer("EnemyDamage"))
             {
                 enemyColliders.Add(other);
+
                 damageNumber.SetColor(Color.red);
+
                 if (CriticalStrikeSuccessfull())
                 {
                     baseDamage = Mathf.RoundToInt(Random.Range(EquippedWeaponDataSO.minDamage, EquippedWeaponDataSO.maxDamage + 1) * enemyStateMachine.CriticalModifier);
                     damageNumber.SetColor(Color.yellow);  
-                    //Debug.Log("Critical");
                 }
                 else
                     baseDamage = Random.Range(EquippedWeaponDataSO.minDamage, EquippedWeaponDataSO.maxDamage + 1);
+
+                if (enemyStateMachine.ShouldKnockBackPlayer)
+                    playerManager.PlayerStateMachine.ForceReceiver.AddForce((other.transform.position - enemyStateMachine.transform.position).normalized * enemyStateMachine.KnockBackForce);
 
                 var playerStats = playerManager.PlayerStateMachine.PlayerStats;
                 playerStats.TakeDamage(baseDamage);
@@ -45,10 +49,7 @@ namespace Assets.Scripts.Enemies
         private void OnTriggerExit(Collider other)
         {
             if (enemyColliders.Contains(other))
-            {
-
                 enemyColliders.Remove(other);
-            }
         }
         private bool CriticalStrikeSuccessfull()
         {

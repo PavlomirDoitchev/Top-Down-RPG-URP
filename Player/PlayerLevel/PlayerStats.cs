@@ -93,23 +93,23 @@ namespace Assets.Scripts.Player
             currentHealth = maxHealth;
             SetMaxLevel();
         }
-        private void Update()
-        {
+        //private void Update()
+        //{
 
-            //if (Input.GetKeyDown(KeyCode.UpArrow))
-            //{
-            //    if (level == maxLevel)
-            //    {
-            //        return;
-            //    }
-            //    currentXP++;
-            //    if (currentXP >= playerManager.PlayerStateMachine.CharacterLevelDataSO[CurrentLevel()].XpRequired)
-            //    {
-            //        LevelUp();
-            //        playerManager.PlayerStateMachine.EquipNewWeapon(weapon);
-            //    }
-            //}
-        }
+        //    //if (Input.GetKeyDown(KeyCode.UpArrow))
+        //    //{
+        //    //    if (level == maxLevel)
+        //    //    {
+        //    //        return;
+        //    //    }
+        //    //    currentXP++;
+        //    //    if (currentXP >= playerManager.PlayerStateMachine.CharacterLevelDataSO[CurrentLevel()].XpRequired)
+        //    //    {
+        //    //        LevelUp();
+        //    //        playerManager.PlayerStateMachine.EquipNewWeapon(weapon);
+        //    //    }
+        //    //}
+        //}
 
         //public void PlayerTakeDamage(int damage)
         //{

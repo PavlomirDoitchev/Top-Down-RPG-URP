@@ -10,19 +10,19 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
         public override void EnterState()
         {
             base.EnterState();
-            _enemyStateMachine.Agent.isStopped = true;
-            //_enemyStateMachine.Agent.speed = _enemyStateMachine.WalkingSpeed;
-            _enemyStateMachine.Animator.CrossFadeInFixedTime(_enemyStateMachine.AttackAnimationName, .1f);
+            _enemyStateMachine.Agent.isStopped = false;
+            _enemyStateMachine.Agent.speed = _enemyStateMachine.WalkingSpeed;
+            _enemyStateMachine.Animator.CrossFadeInFixedTime(_enemyStateMachine.AttackAnimationName[0], .1f);
             SetAttackSpeed(1f);
         }
 
         public override void UpdateState(float deltaTime)
         {
-            //_enemyStateMachine.Agent.SetDestination(PlayerManager.Instance.PlayerStateMachine.transform.position);
+            _enemyStateMachine.Agent.SetDestination(PlayerManager.Instance.PlayerStateMachine.transform.position);
             RotateToPlayer(deltaTime);
 
-            if (Vector3.Distance(PlayerManager.Instance.PlayerStateMachine.transform.position, _enemyStateMachine.transform.position) > _enemyStateMachine.AttackDistance
-                && _enemyStateMachine.Animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= .75f)
+            if (Vector3.Distance(PlayerManager.Instance.PlayerStateMachine.transform.position, _enemyStateMachine.transform.position) > _enemyStateMachine.AttackDistanceToleranceBeforeChasing)
+                //&& _enemyStateMachine.Animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= .75f)
             {
                 _enemyStateMachine.ChangeState(new EnemyChaseState(_enemyStateMachine));
             }
