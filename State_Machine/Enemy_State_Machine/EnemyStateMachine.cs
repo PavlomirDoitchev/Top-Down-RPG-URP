@@ -29,8 +29,9 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
         [field: SerializeField]
         [field: Range(0.1f, 5f)] public float BaseAttackSpeed { get; private set; } 
         [field: SerializeField] public Collider BodyCollider { get; private set; } //disabled when dead
-        public Vector3 OriginalPosition { get; private set; }
-        
+        public Vector3 OriginalPosition { get;  set; }
+        public int CurrentWaypointIndex { get; set; } = 0;
+
         private void Start()
         {
             Agent.speed = RunningSpeed;

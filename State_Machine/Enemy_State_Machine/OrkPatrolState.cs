@@ -6,7 +6,6 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
 {
     public class OrkPatrolState : EnemyBaseState
     {
-        public int _currentWaypointIndex = 0;
         private float _timeToWaitAtWaypoint = 0f;
         private bool _isDwelling = false;
         public OrkPatrolState(EnemyStateMachine stateMachine) : base(stateMachine)
@@ -19,7 +18,7 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
             _enemyStateMachine.Agent.isStopped = false;
             _enemyStateMachine.Animator.CrossFadeInFixedTime("walking", .1f);
             _enemyStateMachine.Agent.speed = _enemyStateMachine.WalkingSpeed;
-            _enemyStateMachine.Agent.SetDestination(_enemyStateMachine.PatrolPath.GetWaypoint(_currentWaypointIndex));
+            _enemyStateMachine.Agent.SetDestination(_enemyStateMachine.PatrolPath.GetWaypoint(_enemyStateMachine.CurrentWaypointIndex));
         }
 
         public override void UpdateState(float deltaTime)
@@ -28,7 +27,7 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
             {
                 _enemyStateMachine.ChangeState(new OrkChaseState(_enemyStateMachine));
             }
-
+            _enemyStateMachine.OriginalPosition = _enemyStateMachine.transform.position;
             if (AtWaypoint() && !_isDwelling)
             {
                 _isDwelling = true;
@@ -43,9 +42,9 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
 
                 if (_timeToWaitAtWaypoint >= _enemyStateMachine.PatrolDwellTime)
                 {
-                    _currentWaypointIndex = (_currentWaypointIndex + 1) % _enemyStateMachine.PatrolPath.GetWaypointCount();
+                    _enemyStateMachine.CurrentWaypointIndex = (_enemyStateMachine.CurrentWaypointIndex + 1) % _enemyStateMachine.PatrolPath.GetWaypointCount();
 
-                    Vector3 nextWaypoint = _enemyStateMachine.PatrolPath.GetWaypoint(_currentWaypointIndex);
+                    Vector3 nextWaypoint = _enemyStateMachine.PatrolPath.GetWaypoint(_enemyStateMachine.CurrentWaypointIndex);
                     _enemyStateMachine.Agent.SetDestination(nextWaypoint);
                     _enemyStateMachine.Agent.isStopped = false;
                     _enemyStateMachine.Animator.CrossFadeInFixedTime("walking", 0.1f);
@@ -62,7 +61,7 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
 
         private bool AtWaypoint()
         {
-            float distanceToWaypoint = Vector3.Distance(_enemyStateMachine.PatrolPath.GetWaypoint(_currentWaypointIndex), _enemyStateMachine.transform.position);
+            float distanceToWaypoint = Vector3.Distance(_enemyStateMachine.PatrolPath.GetWaypoint(_enemyStateMachine.CurrentWaypointIndex), _enemyStateMachine.transform.position);
             return distanceToWaypoint < _enemyStateMachine.Agent.stoppingDistance;
         }
     }

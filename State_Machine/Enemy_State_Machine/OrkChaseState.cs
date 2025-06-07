@@ -26,8 +26,16 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
             }
             if (Vector3.Distance(_enemyStateMachine.OriginalPosition, _enemyStateMachine.transform.position) > _enemyStateMachine.MaxDistanceFromOrigin) 
             {
-                _enemyStateMachine.ChangeState(new ReturnToOriginState(_enemyStateMachine));
-                return;
+                if (_enemyStateMachine._enemyStateTypes == EnemyStateTypes.Patrol)
+                {
+                    _enemyStateMachine.ChangeState(new OrkPatrolState(_enemyStateMachine));
+                    return;
+                }
+                else
+                {
+                    _enemyStateMachine.ChangeState(new ReturnToOriginState(_enemyStateMachine));
+                    return;
+                }
             }
 
             _enemyStateMachine.Agent.SetDestination(PlayerManager.Instance.PlayerStateMachine.transform.position);
