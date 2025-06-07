@@ -2,9 +2,9 @@
 using Assets.Scripts.Player;
 namespace Assets.Scripts.State_Machine.Enemy_State_Machine
 {
-    public class OrkAttackState : EnemyBaseState
+    public class EnemyAttackState : EnemyBaseState
     {
-        public OrkAttackState(EnemyStateMachine stateMachine) : base(stateMachine)
+        public EnemyAttackState(EnemyStateMachine stateMachine) : base(stateMachine)
         {
         }
         public override void EnterState()
@@ -12,7 +12,7 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
             base.EnterState();
             _enemyStateMachine.Agent.isStopped = true;
             //_enemyStateMachine.Agent.speed = _enemyStateMachine.WalkingSpeed;
-            _enemyStateMachine.Animator.CrossFadeInFixedTime("Orc_Basic_Attack", .1f);
+            _enemyStateMachine.Animator.CrossFadeInFixedTime(_enemyStateMachine.AttackAnimationName, .1f);
             SetAttackSpeed(1f);
         }
 
@@ -24,12 +24,12 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
             if (Vector3.Distance(PlayerManager.Instance.PlayerStateMachine.transform.position, _enemyStateMachine.transform.position) > _enemyStateMachine.AttackDistance
                 && _enemyStateMachine.Animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= .75f)
             {
-                _enemyStateMachine.ChangeState(new OrkChaseState(_enemyStateMachine));
+                _enemyStateMachine.ChangeState(new EnemyChaseState(_enemyStateMachine));
             }
 
             if (PlayerManager.Instance.PlayerStateMachine.PlayerStats.GetCurrentHealth() <= 0)
             {
-                _enemyStateMachine.ChangeState(new OrkIdleState(_enemyStateMachine));
+                _enemyStateMachine.ChangeState(new EnemyIdleState(_enemyStateMachine));
             }
         }
         public override void ExitState()

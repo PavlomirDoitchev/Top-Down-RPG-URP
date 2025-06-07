@@ -6,13 +6,13 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
     public class EnemyStateMachine : StateMachine
     {
         public GameObject EquippedWeapon;
+        public EnemyType EnemyType;
         public EnemyStateTypes _enemyStateTypes;
         [field: SerializeField] public Animator Animator { get; private set; }
         [field: SerializeField] public NavMeshAgent Agent { get; private set; }
         [Header("Make sure to check for null if using patrol!")]
         [field: SerializeField] public PatrolPath PatrolPath { get; private set; }
-        [field: SerializeField] public float PatrolDwellTime { get; private set; } 
-
+        [field: SerializeField] public float PatrolDwellTime { get; private set; }
         [Header("Stats")]
         [field: SerializeField] public float RunningSpeed { get; private set; }
         [field: SerializeField] public float WalkingSpeed { get; private set; }
@@ -32,12 +32,20 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
         public Vector3 OriginalPosition { get;  set; }
         public int CurrentWaypointIndex { get; set; } = 0;
 
+        [Header("Animation Names")]
+        [field:SerializeField] public string IdleAnimationName { get; private set; } = "idle";
+        [field: SerializeField] public string WalkAnimationName { get; private set; } = "walk";
+        [field: SerializeField] public string RunAnimationName { get; private set; } = "run";
+        [field: SerializeField] public string AttackAnimationName { get; private set; } = "Attack_R";
+        [field: SerializeField] public string DeathAnimationName { get; private set; } = "Death";
+        [field: SerializeField] public string HitAnimationName { get; private set; } = "hit";
+
         private void Start()
         {
             Agent.speed = RunningSpeed;
             OriginalPosition = this.transform.position;
             
-            ChangeState(new OrkIdleState(this));
+            ChangeState(new EnemyIdleState(this));
         }
         public void OnDrawGizmosSelected()
         {

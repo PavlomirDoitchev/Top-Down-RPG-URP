@@ -3,21 +3,21 @@ using Assets.Scripts.State_Machine.Enemy_State_Machine;
 using UnityEngine;
 using UnityEngine.AI;
 
-public class OrkWanderState : EnemyBaseState
+public class EnemyWanderState : EnemyBaseState
 {
     //private float _wanderRadius = 25f;
     private float _dwellTime = 2f;
     private float _waitTimer = 0f;
     private bool _isWaiting = false;
 
-    public OrkWanderState(EnemyStateMachine stateMachine) : base(stateMachine) { }
+    public EnemyWanderState(EnemyStateMachine stateMachine) : base(stateMachine) { }
 
     public override void EnterState()
     {
         base.EnterState();
         _enemyStateMachine.Agent.isStopped = false;
         _enemyStateMachine.Agent.speed = _enemyStateMachine.WalkingSpeed;
-        _enemyStateMachine.Animator.CrossFadeInFixedTime("walking", 0.1f);
+        _enemyStateMachine.Animator.CrossFadeInFixedTime(_enemyStateMachine.WalkAnimationName, 0.1f);
         SetNewWanderDestination();
     }
 
@@ -25,13 +25,13 @@ public class OrkWanderState : EnemyBaseState
     {
         if (Vector3.Distance(PlayerManager.Instance.PlayerStateMachine.transform.position, _enemyStateMachine.transform.position) < _enemyStateMachine.AggroRange)
         {
-            _enemyStateMachine.ChangeState(new OrkChaseState(_enemyStateMachine));
+            _enemyStateMachine.ChangeState(new EnemyChaseState(_enemyStateMachine));
             return;
         }
         if (!_isWaiting && !_enemyStateMachine.Agent.pathPending && _enemyStateMachine.Agent.remainingDistance < _enemyStateMachine.Agent.stoppingDistance)
         {
             _enemyStateMachine.Agent.isStopped = true;
-            _enemyStateMachine.Animator.Play("idle");
+            _enemyStateMachine.Animator.Play(_enemyStateMachine.IdleAnimationName);
             _isWaiting = true;
             _waitTimer = 0f;
         }
@@ -43,7 +43,7 @@ public class OrkWanderState : EnemyBaseState
             {
                 SetNewWanderDestination();
                 _enemyStateMachine.Agent.isStopped = false;
-                _enemyStateMachine.Animator.CrossFadeInFixedTime("walking", 0.1f);
+                _enemyStateMachine.Animator.CrossFadeInFixedTime(_enemyStateMachine.WalkAnimationName, 0.1f);
                 _isWaiting = false;
             }
         }

@@ -5,6 +5,8 @@ namespace Assets.Scripts.State_Machine
     public abstract class StateMachine : MonoBehaviour
     {
         private State currentState;
+        protected State CurrentState => currentState; 
+
         private void Update()
         {
             currentState?.UpdateState(Time.deltaTime);
@@ -16,6 +18,5 @@ namespace Assets.Scripts.State_Machine
             currentState = newState;
             currentState?.EnterState();
         }
-
     }
 }

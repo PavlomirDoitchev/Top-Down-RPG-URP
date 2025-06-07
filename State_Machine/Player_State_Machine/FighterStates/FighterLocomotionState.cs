@@ -25,6 +25,7 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
                 _playerStateMachine.ChangeState(new PlayerFallState(_playerStateMachine));
                 return;
             }
+            
             if (Input.GetKey(_playerStateMachine.InputManager.GetKey("Dodge")))
             {
                 if (_playerStateMachine.CharacterController.velocity.x != 0 || _playerStateMachine.CharacterController.velocity.z != 0)
@@ -50,7 +51,7 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
 
         public override void ExitState()
         {
-
+            ResetAnimationSpeed();
         }
 
     }

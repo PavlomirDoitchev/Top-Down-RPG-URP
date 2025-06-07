@@ -61,7 +61,7 @@ public class EnemyHealth : MonoBehaviour, IDamagable
         //Debug.Log(gameObject.name + " has died!");
         playerManager.PlayerStateMachine.PlayerStats.GainXP(xpReward);
 
-        enemyStateMachine.ChangeState(new OrkDeathState(enemyStateMachine));
+        enemyStateMachine.ChangeState(new EnemyDeathState(enemyStateMachine));
         //playerStats.GainXP(1);
         //Destroy(gameObject);
     }

@@ -5,7 +5,6 @@ using UnityEngine;
 using System.Collections;
 using Assets.Scripts.Save_Manager;
 using Assets.Scripts.Combat_Logic;
-using DamageNumbersPro;
 namespace Assets.Scripts.Player
 {
     //[RequiredInterface(typeof(IDamagable))]
@@ -32,7 +31,7 @@ namespace Assets.Scripts.Player
         }
 
         // Buff and Debuff system (commented out for now)
-    
+
         //public event Action<Buff> OnBuffApplied;
         //public event Action<Buff> OnBuffExpired;
 
@@ -42,7 +41,7 @@ namespace Assets.Scripts.Player
         //private List<Buff> activeBuffs = new List<Buff>();
         //private List<Debuff> activeDebuffs = new List<Debuff>();
 
-       
+
 
         [Header("Player Level")]
         [SerializeField] int level = 0;
@@ -68,7 +67,7 @@ namespace Assets.Scripts.Player
         [SerializeField] int armor;
         [field: SerializeField] public float AttackSpeed { get; private set; }
         [field: SerializeField]
-        [field: Range(0,1)] public float CriticalChance { get; private set; }
+        [field: Range(0, 1)] public float CriticalChance { get; private set; }
         [field: SerializeField]
         [field: Range(1, 5)] public float CriticalModifier { get; private set; }
 
@@ -80,10 +79,9 @@ namespace Assets.Scripts.Player
         [SerializeField] private int currentResource;
 
         [Header("References")]
-        public DamageNumber playerDamageDisplayText;
         [SerializeField] ParticleSystem levelUpEffect;
         [SerializeField] GameObject weapon; //to be removed later
-        
+
         PlayerManager playerManager;
         private void Start()
         {
@@ -123,8 +121,12 @@ namespace Assets.Scripts.Player
         public void TakeDamage(int damage)
         {
             currentHealth -= damage;
-            //playerDamageDisplayText.Spawn(transform.position, damage);
-
+            playerManager.PlayerStateMachine.CinemachineImpulseSource.GenerateImpulse(Vector3.up * 0.1f);
+            // playerManager.PlayerStateMachine.Animator.Play("ARPG_Warrior_Hit1");
+            if (playerManager.PlayerStateMachine.PlayerCurrentState is FighterLocomotionState)
+            {
+                playerManager.PlayerStateMachine.Animator.Play("Fighter_Hit");
+            }
             if (currentHealth <= 0)
                 playerManager.PlayerStateMachine.ChangeState(new PlayerDeathState(playerManager.PlayerStateMachine));
         }
@@ -150,7 +152,7 @@ namespace Assets.Scripts.Player
             {
                 Instantiate(levelUpEffect, transform.position, Quaternion.identity);
             }
-            
+
             currentHealth = maxHealth;
 
             Debug.Log($"Leveled up to {level}!");
@@ -173,7 +175,7 @@ namespace Assets.Scripts.Player
             currentResource = Mathf.Min(currentResource + amount, maxResource);
             Debug.Log($"Regained {amount} {resourceType}. Current: {currentResource}");
         }
-        public CharacterLevelSO.CharacterClass GetClassType() 
+        public CharacterLevelSO.CharacterClass GetClassType()
         {
             return characterClass;
         }
@@ -198,7 +200,7 @@ namespace Assets.Scripts.Player
             maxLevel = playerManager.PlayerStateMachine.CharacterLevelDataSO.Length - 1;
         }
 
-        
+
         //public void ApplyBuff(Buff buff)
         //{
         //    activeBuffs.Add(buff);

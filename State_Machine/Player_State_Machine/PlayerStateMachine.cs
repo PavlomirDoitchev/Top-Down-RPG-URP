@@ -7,6 +7,7 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
 {
     public class PlayerStateMachine : StateMachine
     {
+        public State PlayerCurrentState => (State)CurrentState;
         [Header("-----Equipped Items-----")]
         //[SerializeField] public WeaponDataSO EquippedWeaponDataSO;
         public GameObject EquippedWeapon;

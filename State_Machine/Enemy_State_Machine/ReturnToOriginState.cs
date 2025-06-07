@@ -13,7 +13,7 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
             base.EnterState();
             _enemyStateMachine.Agent.isStopped = false;
             _enemyStateMachine.Agent.speed = _enemyStateMachine.WalkingSpeed;
-            _enemyStateMachine.Animator.CrossFadeInFixedTime("walking", .1f);
+            _enemyStateMachine.Animator.CrossFadeInFixedTime(_enemyStateMachine.WalkAnimationName, .1f);
             _enemyStateMachine.Agent.SetDestination(_enemyStateMachine.OriginalPosition);
             BecomeUntargtable();
         }
@@ -22,7 +22,7 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
         {
             if (_enemyStateMachine.Agent.remainingDistance <= _enemyStateMachine.MaxDistanceFromOrigin * 0.25f)
             {
-                _enemyStateMachine.ChangeState(new OrkIdleState(_enemyStateMachine));
+                _enemyStateMachine.ChangeState(new EnemyIdleState(_enemyStateMachine));
             }
         }
 

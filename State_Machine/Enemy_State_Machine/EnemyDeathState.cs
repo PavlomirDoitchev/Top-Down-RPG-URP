@@ -4,16 +4,16 @@ using UnityEngine;
 
 namespace Assets.Scripts.State_Machine.Enemy_State_Machine
 {
-    public class OrkDeathState : EnemyBaseState
+    public class EnemyDeathState : EnemyBaseState
     {
-        public OrkDeathState(EnemyStateMachine stateMachine) : base(stateMachine)
+        public EnemyDeathState(EnemyStateMachine stateMachine) : base(stateMachine)
         {
         }
         public override void EnterState()
         {
             base.EnterState();
             _enemyStateMachine.Agent.isStopped = true;
-            _enemyStateMachine.Animator.CrossFadeInFixedTime("dying 2", .1f);
+            _enemyStateMachine.Animator.CrossFadeInFixedTime(_enemyStateMachine.DeathAnimationName, .1f);
             BecomeUntargtable();
             _enemyStateMachine.BodyCollider.enabled = false;
             _enemyStateMachine.Agent.enabled = false;

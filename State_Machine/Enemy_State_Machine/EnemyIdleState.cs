@@ -4,9 +4,9 @@ using Assets.Scripts.State_Machine.Player_State_Machine;
 using UnityEngine;
 namespace Assets.Scripts.State_Machine.Enemy_State_Machine
 {
-    public class OrkIdleState : EnemyBaseState
+    public class EnemyIdleState : EnemyBaseState
     {
-        public OrkIdleState(EnemyStateMachine stateMachine) : base(stateMachine)
+        public EnemyIdleState(EnemyStateMachine stateMachine) : base(stateMachine)
         {
         }
 
@@ -14,7 +14,7 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
         {
             base.EnterState();
             _enemyStateMachine.Agent.isStopped = true;
-            _enemyStateMachine.Animator.CrossFadeInFixedTime("idle", .1f);
+            _enemyStateMachine.Animator.CrossFadeInFixedTime(_enemyStateMachine.IdleAnimationName, .1f);
         }
 
         public override void UpdateState(float deltaTime)
@@ -25,15 +25,15 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
             }
             if (_enemyStateMachine.PatrolPath != null)
             {
-                _enemyStateMachine.ChangeState(new OrkPatrolState(_enemyStateMachine));
+                _enemyStateMachine.ChangeState(new EnemyPatrolState(_enemyStateMachine));
             }
             else if (_enemyStateMachine.PatrolPath == null && _enemyStateMachine._enemyStateTypes == EnemyStateTypes.Wander) 
             {
-                _enemyStateMachine.ChangeState(new OrkWanderState(_enemyStateMachine));
+                _enemyStateMachine.ChangeState(new EnemyWanderState(_enemyStateMachine));
             }
             if (Vector3.Distance(PlayerManager.Instance.PlayerStateMachine.transform.position, _enemyStateMachine.transform.position) < _enemyStateMachine.AggroRange) 
             {
-                _enemyStateMachine.ChangeState(new OrkChaseState(_enemyStateMachine));
+                _enemyStateMachine.ChangeState(new EnemyChaseState(_enemyStateMachine));
             }
             
         }
