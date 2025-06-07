@@ -9,10 +9,7 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
     public abstract class EnemyBaseState : State
     {
         protected EnemyStateMachine _enemyStateMachine;
-        //protected MeleeWeapon _meleeWeapon;
-        //protected EnemyMelee _enemyMelee;
-        //protected readonly int activeLayer = 3;
-        //protected readonly int inactiveLayer = 7;
+      
         public EnemyBaseState(EnemyStateMachine stateMachine)
         {
             this._enemyStateMachine = stateMachine;
@@ -20,13 +17,26 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
         public override void EnterState()
         {
             base.EnterState();
-            //InitializeWeapon();
-            //Debug.Log("Entering state: " + this.GetType().Name);
-            //SetWeaponActive(false);
-
-            //_enemyMelee.EnemyClearHitEnemies();
         }
-        
+        protected bool CheckForGlobalTransitions() 
+        {
+            if(_enemyStateMachine.ShouldDie)
+            {
+                _enemyStateMachine.ChangeState(new EnemyDeathState(_enemyStateMachine));
+                return true;
+            }
+            if (_enemyStateMachine.ShouldEnrage)
+            {
+                _enemyStateMachine.ChangeState(new EnemyEnragedState(_enemyStateMachine));
+                return true;
+            }
+            if (_enemyStateMachine.IsStunned)
+            {
+                _enemyStateMachine.ChangeState(new EnemyStunnedState(_enemyStateMachine));
+                return true;
+            }
+            return false;
+        }
         protected void RotateToPlayer(float deltaTime)
         {
             Vector3 direction = PlayerManager.Instance.PlayerStateMachine.transform.position - _enemyStateMachine.transform.position;
@@ -34,10 +44,16 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
             Quaternion targetRotation = Quaternion.LookRotation(direction);
             _enemyStateMachine.transform.rotation = Quaternion.Slerp(_enemyStateMachine.transform.rotation, targetRotation, deltaTime * _enemyStateMachine.RotationSpeed);
         }
+        /// <summary>
+        /// Change the layer of the enemy to "Default" so it can't be targeted by the player.
+        /// </summary>
         protected void BecomeUntargtable()
         {
             _enemyStateMachine.gameObject.layer = LayerMask.NameToLayer("Default");
         }
+        /// <summary>
+        /// Change the layer of the enemy to "Enemy" so it can be targeted by the player.
+        /// </summary>
         protected void BecomeTargetable()
         {
             _enemyStateMachine.gameObject.layer = LayerMask.NameToLayer("Enemy");
@@ -58,50 +74,6 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
         {
             _enemyStateMachine.Animator.speed = 1f;
         }
-        //protected void SetWeaponActive(bool isActive)
-        //{
-        //    _enemyMelee.gameObject.layer = isActive ? activeLayer : inactiveLayer;
-        //}
-
-        //protected void InitializeWeapon()
-        //{
-        //    if (_enemyStateMachine.EquippedWeapon != null)
-        //    {
-        //        _enemyMelee = _enemyStateMachine.EquippedWeapon.GetComponentInChildren<EnemyMelee>();
-        //    }
-
-        //    if (_enemyMelee == null)
-        //    {
-        //        Debug.LogError("No weapon equipped in state: " + this.GetType().Name);
-        //    }
-        //}
-
-        //private bool CriticalStrikeSuccessfull()
-        //{
-        //    float rollForCrit = Random.Range(0f, 1f);
-        //    if (_enemyStateMachine.CriticalChance >= rollForCrit)
-        //    {
-        //        Debug.Log("Enemy Critical!");
-        //        return true;
-        //    }
-        //    return false;
-        //}
-
-        //protected void SetEnemyDamage()
-        //{
-        //    if (CriticalStrikeSuccessfull())
-        //    {
-        //        _enemyMelee.EnemyWeaponDamage
-        //          (Random.Range(_enemyMelee.EquippedWeaponDataSO.minDamage, _enemyMelee.EquippedWeaponDataSO.maxDamage + 1),
-        //          _enemyStateMachine.CriticalModifier);
-        //    }
-        //    else
-        //    {
-        //        _enemyMelee.EnemyWeaponDamage
-        //             (Random.Range(_enemyMelee.EquippedWeaponDataSO.minDamage, _enemyMelee.EquippedWeaponDataSO.maxDamage + 1),
-        //             1);
-        //    }
-        //}
-
+       
     }
 }

@@ -5,15 +5,21 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
 {
     public class EnemyStateMachine : StateMachine
     {
-        public GameObject EquippedWeapon;
+
         public EnemyType EnemyType;
         public EnemyStateTypes _enemyStateTypes;
+        public GameObject EquippedWeapon;
         [field: SerializeField] public Animator Animator { get; private set; }
         [field: SerializeField] public NavMeshAgent Agent { get; private set; }
+        [field: SerializeField] public Collider BodyCollider { get; private set; } //disabled when dead
         [Header("Make sure to check for null if using patrol!")]
         [field: SerializeField] public PatrolPath PatrolPath { get; private set; }
         [field: SerializeField] public float PatrolDwellTime { get; private set; }
-        [Header("Stats")]
+        public int CurrentWaypointIndex { get; set; } = 0;
+        public Vector3 OriginalPosition { get;  set; }
+
+        #region Enemy AI Stats
+        [Header("AI Stats")]
         [field: SerializeField] public float RunningSpeed { get; private set; }
         [field: SerializeField] public float WalkingSpeed { get; private set; }
         [field: SerializeField] public float RotationSpeed { get; private set; }    
@@ -24,6 +30,11 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
         [field: SerializeField] public float AttackDistance { get; private set; }
         [field: SerializeField] public float AttackDistanceToleranceBeforeChasing { get; private set; } 
         [field: SerializeField] public int AttackIndex { get; private set; } = 0; //used to determine which attack animation to play
+
+        #endregion
+
+        #region Enemy Stats
+        [Header("Enemy Stats")]
         [field: SerializeField]
         [field: Range(0, 1)] public float CriticalChance { get; private set; }
         [field: SerializeField] 
@@ -31,11 +42,11 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
         [field: SerializeField]
         [field: Range(0.1f, 5f)] public float BaseAttackSpeed { get; private set; }
         [field: SerializeField] public float KnockBackForce { get; private set; } = 15f;
-        [field: SerializeField] public bool ShouldKnockBackPlayer { get; set; } 
-        [field: SerializeField] public Collider BodyCollider { get; private set; } //disabled when dead
-        public Vector3 OriginalPosition { get;  set; }
-        public int CurrentWaypointIndex { get; set; } = 0;
+        [field: SerializeField] public bool ShouldKnockBackPlayer { get; set; }
 
+        #endregion
+
+        #region Animation Variables
         [Header("Animation Names")]
         [field:SerializeField] public string IdleAnimationName { get; private set; } = "idle";
         [field: SerializeField] public string WalkAnimationName { get; private set; } = "walk";
@@ -43,7 +54,16 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
         [field: SerializeField] public string[] AttackAnimationName { get; private set; }
         [field: SerializeField] public string DeathAnimationName { get; private set; } = "Death";
         [field: SerializeField] public string HitAnimationName { get; private set; } = "hit";
+        [field: SerializeField] public string StunnedAnimationName { get; private set; } = "stunned";
+        [field: SerializeField] public string EnragedAnimationName { get; private set; } = "Roar";
+        #endregion
 
+        #region Global Flags
+        public bool ShouldDie { get; set; } = false; 
+        public bool IsStunned { get; set; } = false; 
+        public bool ShouldEnrage { get; set; } = false; 
+        public bool IsEnraged { get; set; } = false; 
+        #endregion
         private void Start()
         {
             Agent.speed = RunningSpeed;

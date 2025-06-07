@@ -23,6 +23,7 @@ public class EnemyWanderState : EnemyBaseState
 
     public override void UpdateState(float deltaTime)
     {
+        if(CheckForGlobalTransitions()) return;
         if (Vector3.Distance(PlayerManager.Instance.PlayerStateMachine.transform.position, _enemyStateMachine.transform.position) < _enemyStateMachine.AggroRange)
         {
             _enemyStateMachine.ChangeState(new EnemyChaseState(_enemyStateMachine));

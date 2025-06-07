@@ -8,7 +8,6 @@ namespace Assets.Scripts.Enemies.EnemyType
 
         [SerializeField] ParticleSystem fireBreathEffect;
         [SerializeField] DamageNumber damageNumberPrefab;
-
         [Header("AttackStats")]
         [SerializeField] private int damage = 25;
         [SerializeField] private float radius = 5f;

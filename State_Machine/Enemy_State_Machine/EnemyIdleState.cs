@@ -19,7 +19,8 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
 
         public override void UpdateState(float deltaTime)
         {
-            if(PlayerManager.Instance.PlayerStateMachine.PlayerStats.GetCurrentHealth() <= 0)
+            if (CheckForGlobalTransitions()) return;
+            if (PlayerManager.Instance.PlayerStateMachine.PlayerStats.GetCurrentHealth() <= 0)
             {
                 return;
             }
