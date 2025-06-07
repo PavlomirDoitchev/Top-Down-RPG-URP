@@ -13,19 +13,24 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
         {
             base.EnterState();
             _enemyStateMachine.Agent.isStopped = false;
-            _enemyStateMachine.Agent.speed = _enemyStateMachine.RunningSpeed;
+            if (_enemyStateMachine.IsEnraged)
+            {
+                _enemyStateMachine.Agent.speed = _enemyStateMachine.EnragedSpeed;
+            }
+            else
+            {
+                _enemyStateMachine.Agent.speed = _enemyStateMachine.RunningSpeed;
+            }
             _enemyStateMachine.Animator.CrossFadeInFixedTime(_enemyStateMachine.RunAnimationName, .1f);
         }
 
         public override void UpdateState(float deltaTime)
         {
-            if(CheckForGlobalTransitions()) return;
-            if (PlayerManager.Instance.PlayerStateMachine.PlayerStats.GetCurrentHealth() <= 0)
-            {
-                _enemyStateMachine.ChangeState(new EnemyIdleState(_enemyStateMachine));
-                return;
-            }
-            if (Vector3.Distance(_enemyStateMachine.OriginalPosition, _enemyStateMachine.transform.position) > _enemyStateMachine.MaxDistanceFromOrigin) 
+            if (CheckForGlobalTransitions()) return;
+            _enemyStateMachine.Agent.SetDestination(PlayerManager.Instance.PlayerStateMachine.transform.position);
+
+            if (Vector3.Distance(_enemyStateMachine.OriginalPosition, _enemyStateMachine.transform.position) > _enemyStateMachine.MaxDistanceFromOrigin
+                && !_enemyStateMachine.IsEnraged)
             {
                 if (_enemyStateMachine._enemyStateTypes == EnemyStateTypes.Patrol)
                 {
@@ -39,14 +44,14 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
                 }
             }
 
-            _enemyStateMachine.Agent.SetDestination(PlayerManager.Instance.PlayerStateMachine.transform.position);
 
-            if (Vector3.Distance(PlayerManager.Instance.PlayerStateMachine.transform.position, _enemyStateMachine.transform.position) > _enemyStateMachine.ChaseDistance)
-            {   
+            if (Vector3.Distance(PlayerManager.Instance.PlayerStateMachine.transform.position, _enemyStateMachine.transform.position) > _enemyStateMachine.ChaseDistance
+                && !_enemyStateMachine.IsEnraged)
+            {
                 _enemyStateMachine.ChangeState(new EnemySuspicionState(_enemyStateMachine));
 
             }
-            if(Vector3.Distance(PlayerManager.Instance.PlayerStateMachine.transform.position, _enemyStateMachine.transform.position) < _enemyStateMachine.AttackDistance)
+            if (Vector3.Distance(PlayerManager.Instance.PlayerStateMachine.transform.position, _enemyStateMachine.transform.position) < _enemyStateMachine.AttackDistance)
             {
                 _enemyStateMachine.ChangeState(new EnemyAttackState(_enemyStateMachine));
             }
@@ -54,7 +59,7 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
 
         public override void ExitState()
         {
-            
+            ResetMovementSpeed();   
         }
     }
 }

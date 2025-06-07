@@ -20,14 +20,13 @@ public class EnemyHealth : MonoBehaviour, IDamagable
     public void TakeDamage(int damage)
     {
         currentHealth -= damage;
-        if (currentHealth <= Mathf.RoundToInt(maxHealth * enrageThreshold) && enemyStateMachine.ShouldEnrage) 
+        if (currentHealth >= Mathf.RoundToInt(maxHealth * enrageThreshold) && enemyStateMachine.CanBecomeEnraged) 
         {
             enemyStateMachine.IsEnraged = true;
         }
         if (currentHealth <= 0)
         {
             enemyStateMachine.ShouldDie = true;
-
             playerManager.PlayerStateMachine.PlayerStats.GainXP(xpReward);
         }
     } 

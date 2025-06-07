@@ -16,20 +16,22 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
         [field: SerializeField] public PatrolPath PatrolPath { get; private set; }
         [field: SerializeField] public float PatrolDwellTime { get; private set; }
         public int CurrentWaypointIndex { get; set; } = 0;
-        public Vector3 OriginalPosition { get;  set; }
+        public Vector3 OriginalPosition { get; set; }
 
         #region Enemy AI Stats
         [Header("AI Stats")]
         [field: SerializeField] public float RunningSpeed { get; private set; }
         [field: SerializeField] public float WalkingSpeed { get; private set; }
-        [field: SerializeField] public float RotationSpeed { get; private set; }    
+        [field: SerializeField] public float EnragedSpeed { get; private set; }
+        [field: SerializeField] public float RotationSpeed { get; private set; }
         [field: SerializeField] public float AggroRange { get; private set; }
         [field: SerializeField] public float ChaseDistance { get; private set; }
         [field: SerializeField] public float MaxDistanceFromOrigin { get; private set; }
         [field: SerializeField] public float SuspicionTime { get; private set; }
         [field: SerializeField] public float AttackDistance { get; private set; }
-        [field: SerializeField] public float AttackDistanceToleranceBeforeChasing { get; private set; } 
+        [field: SerializeField] public float AttackDistanceToleranceBeforeChasing { get; private set; }
         [field: SerializeField] public int AttackIndex { get; private set; } = 0; //used to determine which attack animation to play
+        [field: SerializeField] public bool CanBecomeEnraged { get; set; } = false; 
 
         #endregion
 
@@ -37,10 +39,12 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
         [Header("Enemy Stats")]
         [field: SerializeField]
         [field: Range(0, 1)] public float CriticalChance { get; private set; }
-        [field: SerializeField] 
-        [field: Range(1,5)] public float CriticalModifier { get; private set; }
+        [field: SerializeField]
+        [field: Range(1, 5)] public float CriticalModifier { get; private set; }
         [field: SerializeField]
         [field: Range(0.1f, 5f)] public float BaseAttackSpeed { get; private set; }
+        [field: SerializeField]
+        [field: Range(1f, 3f)] public float EnragedAttackSpeed { get; private set; }
         [field: SerializeField] public float KnockBackForce { get; private set; } = 15f;
         [field: SerializeField] public bool ShouldKnockBackPlayer { get; set; }
 
@@ -48,7 +52,7 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
 
         #region Animation Variables
         [Header("Animation Names")]
-        [field:SerializeField] public string IdleAnimationName { get; private set; } = "idle";
+        [field: SerializeField] public string IdleAnimationName { get; private set; } = "idle";
         [field: SerializeField] public string WalkAnimationName { get; private set; } = "walk";
         [field: SerializeField] public string RunAnimationName { get; private set; } = "run";
         [field: SerializeField] public string[] AttackAnimationName { get; private set; }
@@ -59,9 +63,8 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
         #endregion
 
         #region Global Flags
-        public bool ShouldDie { get; set; } = false; 
-        public bool IsStunned { get; set; } = false; 
-        public bool ShouldEnrage { get; set; } = false; 
+        public bool ShouldDie { get; set; } = false;
+        public bool IsStunned { get; set; } = false;
         public bool IsEnraged { get; set; } = false; 
         #endregion
         private void Start()

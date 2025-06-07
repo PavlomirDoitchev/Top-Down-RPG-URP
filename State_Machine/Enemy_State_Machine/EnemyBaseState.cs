@@ -17,15 +17,20 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
         public override void EnterState()
         {
             base.EnterState();
+            Debug.Log($"Entering state: {this.GetType().Name}");
         }
         protected bool CheckForGlobalTransitions() 
         {
-            if(_enemyStateMachine.ShouldDie)
+            if (_enemyStateMachine.ShouldDie)
             {
                 _enemyStateMachine.ChangeState(new EnemyDeathState(_enemyStateMachine));
                 return true;
             }
-            if (_enemyStateMachine.ShouldEnrage)
+            if (PlayerManager.Instance.PlayerStateMachine.PlayerStats.GetCurrentHealth() <= 0) 
+            {
+                _enemyStateMachine.ChangeState(new EnemyIdleState(_enemyStateMachine));
+            }
+            if (_enemyStateMachine.IsEnraged && _enemyStateMachine.CanBecomeEnraged)
             {
                 _enemyStateMachine.ChangeState(new EnemyEnragedState(_enemyStateMachine));
                 return true;
