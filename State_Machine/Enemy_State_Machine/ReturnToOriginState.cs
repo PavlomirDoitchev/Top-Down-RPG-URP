@@ -12,7 +12,7 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
         {
             base.EnterState();
             _enemyStateMachine.Agent.isStopped = false;
-            _enemyStateMachine.Agent.speed = _enemyStateMachine.WalkingSpeed;
+            MovementSpeedEnraged();
             _enemyStateMachine.Animator.CrossFadeInFixedTime(_enemyStateMachine.WalkAnimationName, .1f);
             _enemyStateMachine.Agent.SetDestination(_enemyStateMachine.OriginalPosition);
             BecomeUntargtable();
@@ -22,14 +22,25 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
         {
             if (_enemyStateMachine.Agent.remainingDistance <= _enemyStateMachine.MaxDistanceFromOrigin * 0.25f)
             {
-                _enemyStateMachine.ChangeState(new EnemyIdleState(_enemyStateMachine));
+                switch (_enemyStateMachine.EnemyStateTypes)
+                {
+                    case EnemyStateTypes.Patrol:
+                        _enemyStateMachine.ChangeState(new EnemyPatrolState(_enemyStateMachine));
+                        break;
+                    case EnemyStateTypes.Idle:
+                        _enemyStateMachine.ChangeState(new EnemyIdleState(_enemyStateMachine));
+                        break;
+                    case EnemyStateTypes.Wander:
+                        _enemyStateMachine.ChangeState(new EnemyWanderState(_enemyStateMachine));
+                        break;
+                }
             }
         }
 
         public override void ExitState()
         {
             ResetAnimationSpeed();
-            ResetMovementSpeed();
+            MovementSpeedRunning();
             BecomeTargetable();
         }
     }

@@ -116,12 +116,40 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
             //Debug.Log("Player is not in line of sight.");
             return false;
         }
+        /// <summary>
+        /// Rotate to player using the enemy's rotation speed.
+        /// </summary>
+        /// <param name="deltaTime"></param>
         protected void RotateToPlayer(float deltaTime)
         {
             Vector3 direction = PlayerManager.Instance.PlayerStateMachine.transform.position - _enemyStateMachine.transform.position;
             direction.y = 0f;
             Quaternion targetRotation = Quaternion.LookRotation(direction);
             _enemyStateMachine.transform.rotation = Quaternion.Slerp(_enemyStateMachine.transform.rotation, targetRotation, deltaTime * _enemyStateMachine.RotationSpeed);
+        }
+        /// <summary>
+        /// Instantly rotates the enemy to face the player.
+        /// </summary>
+        protected void RotateToPlayer()
+        {
+            Vector3 direction = PlayerManager.Instance.PlayerStateMachine.transform.position - _enemyStateMachine.transform.position;
+            direction.y = 0f;
+            Quaternion targetRotation = Quaternion.LookRotation(direction);
+        }
+        /// <summary>
+        /// Use later for a teleport ability, like a shadow step or blink.
+        /// </summary>
+        protected void SnapToPlayer()
+        {
+            Transform playerTransform = PlayerManager.Instance.PlayerStateMachine.transform;
+
+            float behindDistance = 3f;
+            Vector3 offset = -playerTransform.forward * behindDistance;
+            Vector3 snapPosition = playerTransform.position + offset;
+
+            snapPosition.y = _enemyStateMachine.transform.position.y;
+
+            _enemyStateMachine.transform.position = snapPosition;
         }
         /// <summary>
         /// Change the layer of the enemy to "Default" so it can't be targeted by the player.
@@ -137,9 +165,17 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
         {
             _enemyStateMachine.gameObject.layer = LayerMask.NameToLayer("Enemy");
         }
-        protected void ResetMovementSpeed()
+        protected void MovementSpeedWalking() 
         {
             _enemyStateMachine.Agent.speed = _enemyStateMachine.RunningSpeed;
+        }
+        protected void MovementSpeedRunning()
+        {
+            _enemyStateMachine.Agent.speed = _enemyStateMachine.RunningSpeed;
+        }
+        protected void MovementSpeedEnraged()
+        {
+            _enemyStateMachine.Agent.speed = _enemyStateMachine.EnragedSpeed;
         }
         /// <summary>
         /// Keep speed at 1f for normal speed.

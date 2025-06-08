@@ -9,7 +9,7 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
     {
         public PlayerManager player => PlayerManager.Instance;
         public EnemyType EnemyType;
-        public EnemyStateTypes _enemyStateTypes;
+        public EnemyStateTypes EnemyStateTypes;
         public GameObject EquippedWeapon;
         [field: SerializeField] public CharacterController CharacterController { get; private set; }
         [field: SerializeField] public ForceReceiver ForceReceiver { get; private set; }
@@ -108,25 +108,27 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
             //Gizmos.color = Color.red;
             //Gizmos.DrawWireSphere(transform.position, AggroRange);
             //Gizmos.color = Color.yellow;
-            //Gizmos.DrawWireSphere(transform.position, ChaseDistance);
-            //Gizmos.color = Color.green;
-            //Gizmos.DrawWireSphere(transform.position, AttackDistance);
-            //Gizmos.color = Color.magenta;
+            Gizmos.DrawWireSphere(transform.position, ChaseDistance);
+            Gizmos.color = Color.green;
+            Gizmos.DrawWireSphere(transform.position, AttackDistance);
+            Gizmos.color = Color.magenta;
             //Gizmos.DrawWireSphere(transform.position, AttackDistanceToleranceBeforeChasing);
             //Gizmos.color = Color.blue;
             //Gizmos.DrawWireSphere(OriginalPosition, MaxDistanceFromOrigin);
-            //Vector3 position = transform.position + Vector3.up * 1.5f;
-            //Vector3 forward = transform.forward;
 
-            //Gizmos.color = Color.yellow;
-            //Gizmos.DrawWireSphere(position, AggroRange);
 
-            //Vector3 leftBoundary = Quaternion.Euler(0, -ViewAngle / 2f, 0) * forward * AggroRange;
-            //Vector3 rightBoundary = Quaternion.Euler(0, ViewAngle / 2f, 0) * forward * AggroRange;
+            Vector3 position = transform.position + Vector3.up * 1.5f;
+            Vector3 forward = transform.forward;
 
-            //Gizmos.color = Color.blue;
-            //Gizmos.DrawLine(position, position + leftBoundary);
-            //Gizmos.DrawLine(position, position + rightBoundary);
+            Gizmos.color = Color.yellow;
+            Gizmos.DrawWireSphere(position, AggroRange);
+
+            Vector3 leftBoundary = Quaternion.Euler(0, -ViewAngle / 2f, 0) * forward * AggroRange;
+            Vector3 rightBoundary = Quaternion.Euler(0, ViewAngle / 2f, 0) * forward * AggroRange;
+
+            Gizmos.color = Color.blue;
+            Gizmos.DrawLine(position, position + leftBoundary);
+            Gizmos.DrawLine(position, position + rightBoundary);
         }
         public void TwoHitCombo()
         {

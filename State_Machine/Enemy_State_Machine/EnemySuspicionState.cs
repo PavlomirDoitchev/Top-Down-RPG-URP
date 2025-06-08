@@ -28,7 +28,7 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
             if (CheckForGlobalTransitions()) return;
             
             if (Vector3.Distance(PlayerManager.Instance.PlayerStateMachine.transform.position, _enemyStateMachine.transform.position)
-                < _enemyStateMachine.AggroRange
+                < _enemyStateMachine.ChaseDistance
                 && HasLineOfSight())
             {
                 _enemyStateMachine.ChangeState(new EnemyChaseState(_enemyStateMachine));
@@ -43,7 +43,7 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
 
                     if (_enemyStateMachine.PatrolPath == null)
                         _enemyStateMachine.Agent.SetDestination(_enemyStateMachine.OriginalPosition);
-                    else if (_enemyStateMachine._enemyStateTypes == EnemyStateTypes.Patrol)
+                    else if (_enemyStateMachine.EnemyStateTypes == EnemyStateTypes.Patrol)
                         _enemyStateMachine.ChangeState(new EnemyPatrolState(_enemyStateMachine));
                 }
             }

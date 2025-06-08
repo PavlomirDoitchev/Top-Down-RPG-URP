@@ -45,7 +45,7 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
             }
 
             // Check if the enemy can see the player and is a melee enemy and switch to the appropriate attack state
-            if (Vector3.Distance(PlayerManager.Instance.PlayerStateMachine.transform.position, _enemyStateMachine.transform.position) < _enemyStateMachine.AttackDistance
+            if (Vector3.Distance(PlayerManager.Instance.PlayerStateMachine.transform.position, _enemyStateMachine.transform.position) < _enemyStateMachine.AttackDistanceToleranceBeforeChasing
                 && HasLineOfSight() 
                 && MeleeEnemy())
             {
@@ -57,7 +57,7 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
 
         public override void ExitState()
         {
-            ResetMovementSpeed();
+            MovementSpeedRunning();
         }
     }
 }

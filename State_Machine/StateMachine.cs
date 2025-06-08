@@ -5,6 +5,8 @@ namespace Assets.Scripts.State_Machine
     public abstract class StateMachine : MonoBehaviour
     {
         private State currentState;
+        private State previousState;
+        public State PreviousState => previousState;
         protected State CurrentState => currentState; 
 
         private void Update()
@@ -14,6 +16,7 @@ namespace Assets.Scripts.State_Machine
 
         public void ChangeState(State newState)
         {
+            previousState = currentState;
             currentState?.ExitState();
             currentState = newState;
             currentState?.EnterState();

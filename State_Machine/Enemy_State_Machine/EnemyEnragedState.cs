@@ -29,7 +29,7 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
         public override void ExitState()
         {
             ResetAnimationSpeed();
-            ResetMovementSpeed();
+            MovementSpeedRunning();
         }
     }
 }

@@ -11,13 +11,18 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
         {
             base.EnterState();
             _enemyStateMachine.Agent.isStopped = false;
-            _enemyStateMachine.Agent.speed = _enemyStateMachine.WalkingSpeed;
             _enemyStateMachine.Animator.CrossFadeInFixedTime(_enemyStateMachine.AttackAnimationName[0], .1f);
-
+            RotateToPlayer();
             if (_enemyStateMachine.IsEnraged)
+            {
                 SetAttackSpeed(_enemyStateMachine.EnragedAttackSpeed);
-            else
+                MovementSpeedEnraged();
+            }
+            else 
+            { 
                 SetAttackSpeed(1f);
+                MovementSpeedWalking();
+            }
         }
 
         public override void UpdateState(float deltaTime)
@@ -37,7 +42,7 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
         public override void ExitState()
         {
             ResetAnimationSpeed();
-            ResetMovementSpeed();
+            MovementSpeedRunning();
         }
     }
 }

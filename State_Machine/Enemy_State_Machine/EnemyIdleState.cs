@@ -18,7 +18,7 @@
             
             if (CheckForGlobalTransitions()) return;
 
-            switch (_enemyStateMachine._enemyStateTypes)
+            switch (_enemyStateMachine.EnemyStateTypes)
             {
                 case EnemyStateTypes.Patrol:
                     _enemyStateMachine.ChangeState(new EnemyPatrolState(_enemyStateMachine));

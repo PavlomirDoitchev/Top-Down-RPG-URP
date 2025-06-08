@@ -28,12 +28,17 @@ public class EnemyKnockbackState : EnemyBaseState
             _enemyStateMachine.Agent.enabled = true;
 
             // Default state
+            if (_enemyStateMachine.PreviousState is EnemyPatrolState)
+            {
+                _enemyStateMachine.ChangeState(new EnemyMeleeAttackState(_enemyStateMachine));
+                return;
+            }
             _enemyStateMachine.ChangeState(new EnemyIdleState(_enemyStateMachine)); 
         }
     }
 
     public override void ExitState()
     {
-        ResetMovementSpeed();
+        MovementSpeedRunning();
     }
 }
