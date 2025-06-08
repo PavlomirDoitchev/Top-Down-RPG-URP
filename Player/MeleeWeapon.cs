@@ -4,6 +4,7 @@ using Assets.Scripts.State_Machine.Player_State_Machine;
 using System.Collections.Generic;
 using UnityEngine;
 using DamageNumbersPro;
+using Assets.Scripts.State_Machine.Enemy_State_Machine;
 public class MeleeWeapon : MonoBehaviour
 {
     private int baseDamage;
@@ -32,10 +33,15 @@ public class MeleeWeapon : MonoBehaviour
             {
                 damagable.TakeDamage(baseDamage);
                 damageText.Spawn(other.transform.position, baseDamage);
-                if (other.TryGetComponent<ForceReceiver>(out var forceReceiver) && shouldKnockback)
+                if (other.TryGetComponent<ForceReceiver>(out var forceReceiver)
+                    && other.TryGetComponent<EnemyStateMachine>(out var enemyStateMachine)
+                    && shouldKnockback)
                 {
-                    forceReceiver.AddForce((other.transform.position - playerManager.PlayerStateMachine.transform.position).normalized 
-                        * 20f);
+                    Vector3 knockbackDir = (other.transform.position - playerManager.PlayerStateMachine.transform.position).normalized;
+                    forceReceiver.AddForce(knockbackDir * 50f);
+
+                    // Switch to knockback state
+                    enemyStateMachine.ChangeState(new EnemyKnockbackState(enemyStateMachine, 0.5f)); // adjust duration
                 }
             }
         }

@@ -27,21 +27,25 @@ public class ForceReceiver : MonoBehaviour
         }
 
         impact = Vector3.SmoothDamp(impact, Vector3.zero, ref dampingVelocity, dragTime);
-        if (impact == Vector3.zero && agent != null)
-        {
-            agent.enabled = true;
-        }
+        //if (impact == Vector3.zero && agent != null)
+        //{
+        //    agent.Warp(this.transform.position);
+        //    agent.enabled = true;
+        //}
     }
     public void AddForce(Vector3 force)
     {
         impact += force;
-        if(agent != null)
-            agent.enabled = false; 
+        //if (agent != null)
+        //{
+           
+        //    agent.enabled = false;
+        //}
     }
     public void Jump(float jumpForce)
     {
         verticalVelocity += jumpForce;
-        if (agent != null)
-            agent.enabled = false; 
+        //if (agent != null)
+        //    agent.enabled = false; 
     }
 }

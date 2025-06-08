@@ -19,7 +19,7 @@ namespace Assets.Scripts.Enemies
             playerManager = PlayerManager.Instance;
             enemyStateMachine = GetComponentInParent<EnemyStateMachine>();
         }
-        private void OnTriggerEnter(Collider other)
+        private void OnTriggerStay(Collider other)
         {
             if (enemyColliders.Contains(other)) return;
             if (other.gameObject.CompareTag("Player") && this.gameObject.layer == LayerMask.NameToLayer("EnemyDamage"))
