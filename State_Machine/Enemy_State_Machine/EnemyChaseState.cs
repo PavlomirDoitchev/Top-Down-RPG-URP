@@ -28,24 +28,19 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
         {
             if (CheckForGlobalTransitions()) return;
             _enemyStateMachine.Agent.SetDestination(PlayerManager.Instance.PlayerStateMachine.transform.position);
+            
+
             if (Vector3.Distance(_enemyStateMachine.OriginalPosition, _enemyStateMachine.transform.position) > _enemyStateMachine.MaxDistanceFromOrigin
                 && !_enemyStateMachine.IsEnraged)
             {
-                //if (_enemyStateMachine._enemyStateTypes == EnemyStateTypes.Patrol)
-                //{
-                //    _enemyStateMachine.ChangeState(new ReturnToOriginState(_enemyStateMachine));
-                //    return;
-                //}
-                //else
-                //{
                     _enemyStateMachine.ChangeState(new ReturnToOriginState(_enemyStateMachine));
                     return;
-                //}
             }
 
 
             if (Vector3.Distance(PlayerManager.Instance.PlayerStateMachine.transform.position, _enemyStateMachine.transform.position) > _enemyStateMachine.ChaseDistance
-                && !_enemyStateMachine.IsEnraged)
+                && !_enemyStateMachine.IsEnraged
+                || !PlayerIsInLineOfSight())
             {
                 _enemyStateMachine.ChangeState(new EnemySuspicionState(_enemyStateMachine));
 

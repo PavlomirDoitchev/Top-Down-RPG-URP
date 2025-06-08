@@ -93,18 +93,18 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
             //Gizmos.DrawWireSphere(transform.position, AttackDistanceToleranceBeforeChasing);
             //Gizmos.color = Color.blue;
             //Gizmos.DrawWireSphere(OriginalPosition, MaxDistanceFromOrigin);
-            Vector3 position = transform.position + Vector3.up * 1.5f;
-            Vector3 forward = transform.forward;
+            //Vector3 position = transform.position + Vector3.up * 1.5f;
+            //Vector3 forward = transform.forward;
 
-            Gizmos.color = Color.yellow;
-            Gizmos.DrawWireSphere(position, AggroRange);
+            //Gizmos.color = Color.yellow;
+            //Gizmos.DrawWireSphere(position, AggroRange);
 
-            Vector3 leftBoundary = Quaternion.Euler(0, -ViewAngle / 2f, 0) * forward * AggroRange;
-            Vector3 rightBoundary = Quaternion.Euler(0, ViewAngle / 2f, 0) * forward * AggroRange;
+            //Vector3 leftBoundary = Quaternion.Euler(0, -ViewAngle / 2f, 0) * forward * AggroRange;
+            //Vector3 rightBoundary = Quaternion.Euler(0, ViewAngle / 2f, 0) * forward * AggroRange;
 
-            Gizmos.color = Color.blue;
-            Gizmos.DrawLine(position, position + leftBoundary);
-            Gizmos.DrawLine(position, position + rightBoundary);
+            //Gizmos.color = Color.blue;
+            //Gizmos.DrawLine(position, position + leftBoundary);
+            //Gizmos.DrawLine(position, position + rightBoundary);
         }
         public void TwoHitCombo() 
         {

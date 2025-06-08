@@ -19,8 +19,8 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
             rotationSpeed = _playerStateMachine.PlayerStats.RotationSpeed + 50f;
             _playerStateMachine.Animator.speed = 1.2f;
             _playerStateMachine.Animator.Play("2Hand-Sword-DiveRoll-Forward1");
-            _playerStateMachine.gameObject.layer = LayerMask.NameToLayer("IgnoreCollisionWithEnemy");
-
+            //_playerStateMachine.gameObject.layer = LayerMask.NameToLayer("IgnoreCollisionWithEnemy");
+            Physics.IgnoreLayerCollision(LayerMask.NameToLayer("MyOutlines"), LayerMask.NameToLayer("EnemyDamage"), true);
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             if (Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity, LayerMask.GetMask("Ground")))
             {
@@ -57,7 +57,8 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
         }
         public override void ExitState()
         {
-            _playerStateMachine.gameObject.layer = LayerMask.NameToLayer("MyOutlines");
+            Physics.IgnoreLayerCollision(LayerMask.NameToLayer("MyOutlines"), LayerMask.NameToLayer("EnemyDamage"), false); 
+            //_playerStateMachine.gameObject.layer = LayerMask.NameToLayer("MyOutlines");
             ResetAnimationSpeed();
         }
     }

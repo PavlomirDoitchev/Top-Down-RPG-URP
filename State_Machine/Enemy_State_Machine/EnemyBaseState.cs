@@ -9,7 +9,7 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
     public abstract class EnemyBaseState : State
     {
         protected EnemyStateMachine _enemyStateMachine;
-
+        protected PlayerManager playerManager => PlayerManager.Instance;
         public EnemyBaseState(EnemyStateMachine stateMachine)
         {
             this._enemyStateMachine = stateMachine;
@@ -44,13 +44,13 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
         }
         /// <summary>
         /// Checks if the enemy can see the player within a certain distance.
-        /// Use distance to specify how far the enemy can see the player.
+        /// Use for Idle, Wander , and Patrol states to determine if the enemy has aggro based on line of sight and parameter distance.
         /// </summary>
         /// <param name="distance"></param>
         /// <returns></returns>
         protected bool CanSeePlayer(float distance)
         {
-            Transform player = PlayerManager.Instance.PlayerStateMachine.transform;
+            Transform player = playerManager.PlayerStateMachine.transform;
             Vector3 directionToPlayer = (player.position - _enemyStateMachine.transform.position).normalized;
             float distanceToPlayer = Vector3.Distance(_enemyStateMachine.transform.position, player.position);
 
@@ -74,6 +74,34 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
             Debug.DrawLine(_enemyStateMachine.transform.position + Vector3.up * 1.5f, player.position + Vector3.up * 1.5f, Color.red, 0.1f);
             return false;
 
+        }
+        /// <summary>
+        /// Checks if the player is in line of sight of the enemy. No distance parameter, so it will always check the full distance to the player.
+        /// Use for Chase and Ranged Attack states to determine if the enemy can see the player.
+        /// </summary>
+        /// <returns></returns>
+        protected bool PlayerIsInLineOfSight() 
+        {
+            Transform player = playerManager.PlayerStateMachine.transform;
+            Vector3 directionToPlayer = (player.position - _enemyStateMachine.transform.position).normalized;
+            float distanceToPlayer = Vector3.Distance(_enemyStateMachine.transform.position, player.position);
+            if (Vector3.Angle(_enemyStateMachine.transform.forward, directionToPlayer) < _enemyStateMachine.ViewAngle / 2f)
+            {
+
+                // Check for obstruction
+                if (!Physics.Raycast(_enemyStateMachine.transform.position + Vector3.up * 1.5f, directionToPlayer, distanceToPlayer, _enemyStateMachine.ObstacleMask))
+                {
+                    Debug.DrawLine(_enemyStateMachine.transform.position + Vector3.up * 1.5f,
+                    PlayerManager.Instance.PlayerStateMachine.transform.position,
+                    Color.green, 0.1f);
+                    // Confirm player
+                    if ((1 << player.gameObject.layer & _enemyStateMachine.TargetMask) != 0)
+                        return true;
+                }
+            }
+            Debug.DrawLine(_enemyStateMachine.transform.position + Vector3.up * 1.5f, player.position + Vector3.up * 1.5f, Color.red, 0.1f);
+            Debug.Log("Player is not in line of sight.");
+            return false;
         }
         protected void RotateToPlayer(float deltaTime)
         {
