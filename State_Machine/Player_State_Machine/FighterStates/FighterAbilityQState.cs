@@ -67,6 +67,8 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
             {
                 SetWeaponActive(true);
                 _playerStateMachine.PlayerStats.UseResource(cost);
+                _playerStateMachine.Animator.Play("ARPG_Dual_Wield_Attack_Heavy1");
+
                 meleeWeapon.ClearHitEnemies();
 
                 yield return new WaitForSeconds(_playerStateMachine.PlayerStats.AttackSpeed);

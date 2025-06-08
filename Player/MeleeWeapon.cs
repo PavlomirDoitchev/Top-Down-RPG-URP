@@ -6,12 +6,12 @@ using UnityEngine;
 using DamageNumbersPro;
 public class MeleeWeapon : MonoBehaviour
 {
-    
+    private int baseDamage;
     public WeaponDataSO EquippedWeaponDataSO;
     [SerializeField] string targetLayerName;
     [SerializeField] int ignoreInactiveLayer = 3; //In the Unity Editor, this is the Inactive layer for the player
-    private int baseDamage;
     [SerializeField] DamageNumber damageText;
+    [SerializeField] TrailRenderer trailRenderer;
     private readonly List<Collider> enemyColliders = new List<Collider>();
     private void OnTriggerEnter(Collider other)
     {
@@ -27,18 +27,6 @@ public class MeleeWeapon : MonoBehaviour
                 damagable.TakeDamage(baseDamage);
                 damageText.Spawn(other.transform.position, baseDamage);
             }
-            //other.BroadcastMessage("TakeDamage", baseDamage, SendMessageOptions.DontRequireReceiver);
-            //if (PlayerManager.Instance.PlayerStateMachine.PlayerStats.GetResourceType() == CharacterLevelSO.ResourceType.Rage)
-            //{
-            //    PlayerManager.Instance.PlayerStateMachine.PlayerStats.RegainResource(3);
-            //}
-            //Debug.Log($"Enemy colliders: {enemyColliders.Count}");
-            //EnemyHealth enemy = other.GetComponent<EnemyHealth>();
-            //if (enemy != null)
-            //{
-
-            //    enemy.TakeDamage(baseDamage);
-            //}
         }
     }
     public void MeleeWeaponDamage(int baseDamage, float multiplier, int index)
@@ -50,5 +38,8 @@ public class MeleeWeapon : MonoBehaviour
         enemyColliders.Clear();
         //Debug.Log($"Enemy colliders {enemyColliders.Count}");
     }
-    
+    public void TrailRenderSwitcher()
+    {
+        trailRenderer.emitting = !trailRenderer.emitting;
+    }
 }

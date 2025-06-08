@@ -22,7 +22,7 @@ public class EnemyAnimationEvents : MonoBehaviour
 
     #endregion
 
-    #region Dragon Brute Attacks    
+    #region Melee Combo Attacks  
     public void DragonBruteTwoHitCombo() => enemyStateMachine.TwoHitCombo();
     #endregion
 

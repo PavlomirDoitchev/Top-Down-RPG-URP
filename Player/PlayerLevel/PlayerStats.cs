@@ -88,7 +88,7 @@ namespace Assets.Scripts.Player
             playerManager = PlayerManager.Instance;
             playerManager.PlayerStateMachine.CharacterLevelDataSO[CurrentLevel()].ApplyClassResourceType();
             ApplyCharacterData();
-            Debug.Log($"Loaded Class: {playerManager.PlayerStateMachine.CharacterLevelDataSO[CurrentLevel()].GetCharacterClass()}");
+            //Debug.Log($"Loaded Class: {playerManager.PlayerStateMachine.CharacterLevelDataSO[CurrentLevel()].GetCharacterClass()}");
             maxHealth *= (Stamina / 10);
             currentHealth = maxHealth;
             SetMaxLevel();
@@ -122,7 +122,6 @@ namespace Assets.Scripts.Player
         {
             currentHealth -= damage;
             playerManager.PlayerStateMachine.CinemachineImpulseSource.GenerateImpulse(Vector3.up * 0.1f);
-            // playerManager.PlayerStateMachine.Animator.Play("ARPG_Warrior_Hit1");
             if (playerManager.PlayerStateMachine.PlayerCurrentState is FighterLocomotionState)
             {
                 playerManager.PlayerStateMachine.Animator.Play("Fighter_Hit");

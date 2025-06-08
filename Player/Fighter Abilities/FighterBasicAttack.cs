@@ -13,19 +13,5 @@ namespace Assets.Scripts.Player
             playerStats.UseResource(GetSkillCost());
             playerState.ChangeState(new FighterBasicAttackChainOne(playerState));
         }
-        /// <summary>
-        /// Added in the animation event to enable the trail renderer. Added to the weapon prefab as a component!
-        /// </summary>
-        void TrailRendererEnabled() 
-        {
-            PlayerManager.Instance.PlayerStateMachine.EquippedWeapon.GetComponent<TrailRenderer>().emitting = true;
-        }
-        /// <summary>
-        /// Added in the animation event to disable the trail renderer. Added to the weapon prefab as a component!
-        /// </summary>
-        void TrailRendererDisabled()
-        {
-            PlayerManager.Instance.PlayerStateMachine.EquippedWeapon.GetComponent<TrailRenderer>().emitting = false;
-        }
     }
 }

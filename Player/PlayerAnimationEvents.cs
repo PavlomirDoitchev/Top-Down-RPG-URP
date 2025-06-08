@@ -4,12 +4,17 @@ using UnityEngine;
 public class PlayerAnimationEvents : MonoBehaviour
 {
     public PlayerStateMachine stateMachine;
-
-    public void OnHitAnimationComplete()
+    [SerializeField] private MeleeWeapon meleeWeapon;
+    private void Start()
     {
-        if (stateMachine != null)
-        {
-            stateMachine.ChangeState(new FighterLocomotionState(stateMachine));
-        }
+        if (stateMachine == null)
+            stateMachine = GetComponent<PlayerStateMachine>();
+        if (meleeWeapon == null)
+            meleeWeapon = stateMachine.EquippedWeapon.GetComponent<MeleeWeapon>();
     }
+    public void BackToLocomotion()
+    {
+        stateMachine.ChangeState(new FighterLocomotionState(stateMachine));
+    }
+    public void EnableDisableTrails() => meleeWeapon.TrailRenderSwitcher();
 }

@@ -1,5 +1,5 @@
 using UnityEngine;
-
+using DamageNumbersPro;
 namespace Assets.Scripts.State_Machine.Player_State_Machine
 {
     public class PlayerFallState : PlayerBaseState
@@ -31,8 +31,12 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
             {
                 if (maxFallSpeed < -20f)
                 {
-                    fallDamage = Mathf.RoundToInt(Mathf.Abs((maxFallSpeed * _playerStateMachine.PlayerStats.GetMaxHealth()) * 0.02f));
+                    fallDamage = Mathf.RoundToInt(Mathf.Abs((maxFallSpeed * _playerStateMachine.PlayerStats.GetMaxHealth()) * 0.01f));
                     _playerStateMachine.PlayerStats.TakeDamage(fallDamage);
+                }
+                if(fallDamage > 0)
+                {
+                    _playerStateMachine.damageText.Spawn(_playerStateMachine.transform.position, fallDamage);
                 }
                 if (_playerStateMachine.PlayerStats.GetCurrentHealth() > 0)
                 {

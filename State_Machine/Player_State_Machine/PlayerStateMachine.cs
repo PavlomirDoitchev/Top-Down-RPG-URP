@@ -5,6 +5,7 @@ using DamageNumbersPro;
 using Unity.Cinemachine;
 namespace Assets.Scripts.State_Machine.Player_State_Machine
 {
+    [RequireComponent(typeof(CharacterController), typeof(CinemachineImpulseSource), typeof(Rigidbody))]
     public class PlayerStateMachine : StateMachine
     {
         public State PlayerCurrentState => (State)CurrentState;
@@ -31,6 +32,7 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
         [field: SerializeField] public CharacterController CharacterController { get; private set; }
         [field: SerializeField] public Animator Animator { get; private set; }
         [field: SerializeField] public ForceReceiver ForceReceiver { get; private set; }
+
         public DamageNumber damageText;
         public PlayerStats PlayerStats { get; private set; }
         public Transform MainCameraTransform { get; private set; }
