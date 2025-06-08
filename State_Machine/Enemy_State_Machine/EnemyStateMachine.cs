@@ -9,9 +9,11 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
         public EnemyType EnemyType;
         public EnemyStateTypes _enemyStateTypes;
         public GameObject EquippedWeapon;
+        [field: SerializeField] public CharacterController CharacterController { get; private set; }
+        [field: SerializeField] public ForceReceiver ForceReceiver { get; private set; }
         [field: SerializeField] public Animator Animator { get; private set; }
         [field: SerializeField] public NavMeshAgent Agent { get; private set; }
-        [field: SerializeField] public Collider BodyCollider { get; private set; } //disabled when dead
+        //[field: SerializeField] public Collider BodyCollider { get; private set; } //disabled when dead
         [Header("Make sure to check for null if using patrol!")]
         [field: SerializeField] public PatrolPath PatrolPath { get; private set; }
         [field: SerializeField] public float PatrolDwellTime { get; private set; }

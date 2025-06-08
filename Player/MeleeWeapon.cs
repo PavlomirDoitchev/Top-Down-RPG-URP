@@ -7,12 +7,18 @@ using DamageNumbersPro;
 public class MeleeWeapon : MonoBehaviour
 {
     private int baseDamage;
+    private bool shouldKnockback;
     public WeaponDataSO EquippedWeaponDataSO;
     [SerializeField] string targetLayerName;
     [SerializeField] int ignoreInactiveLayer = 3; //In the Unity Editor, this is the Inactive layer for the player
     [SerializeField] DamageNumber damageText;
     [SerializeField] TrailRenderer trailRenderer;
     private readonly List<Collider> enemyColliders = new List<Collider>();
+    PlayerManager playerManager;
+    private void Start()
+    {
+        playerManager = PlayerManager.Instance;
+    }
     private void OnTriggerEnter(Collider other)
     {
         if (gameObject.layer == ignoreInactiveLayer) return; 
@@ -26,6 +32,11 @@ public class MeleeWeapon : MonoBehaviour
             {
                 damagable.TakeDamage(baseDamage);
                 damageText.Spawn(other.transform.position, baseDamage);
+                if (other.TryGetComponent<ForceReceiver>(out var forceReceiver) && shouldKnockback)
+                {
+                    forceReceiver.AddForce((other.transform.position - playerManager.PlayerStateMachine.transform.position).normalized 
+                        * 20f);
+                }
             }
         }
     }
@@ -41,5 +52,10 @@ public class MeleeWeapon : MonoBehaviour
     public void TrailRenderSwitcher()
     {
         trailRenderer.emitting = !trailRenderer.emitting;
+    }
+    public void ShouldKnockBackSwitcher() 
+    {
+        
+        shouldKnockback = !shouldKnockback;
     }
 }

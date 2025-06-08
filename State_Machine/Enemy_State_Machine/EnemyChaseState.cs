@@ -28,7 +28,6 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
         {
             if (CheckForGlobalTransitions()) return;
             _enemyStateMachine.Agent.SetDestination(PlayerManager.Instance.PlayerStateMachine.transform.position);
-
             if (Vector3.Distance(_enemyStateMachine.OriginalPosition, _enemyStateMachine.transform.position) > _enemyStateMachine.MaxDistanceFromOrigin
                 && !_enemyStateMachine.IsEnraged)
             {

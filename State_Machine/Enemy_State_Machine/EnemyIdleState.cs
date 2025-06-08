@@ -19,8 +19,9 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
 
         public override void UpdateState(float deltaTime)
         {
-            if (CheckForGlobalTransitions()) return;
             
+            if (CheckForGlobalTransitions()) return;
+           
             if (_enemyStateMachine._enemyStateTypes == EnemyStateTypes.Patrol)
             {
                 _enemyStateMachine.ChangeState(new EnemyPatrolState(_enemyStateMachine));

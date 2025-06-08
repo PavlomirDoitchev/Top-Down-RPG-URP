@@ -79,6 +79,13 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
         {
             _enemyStateMachine.Animator.speed = 1f;
         }
-       
+        protected void Move(Vector3 motion, float deltaTime)
+        {
+            _enemyStateMachine.CharacterController.Move((motion + _enemyStateMachine.ForceReceiver.Movement) * deltaTime);
+        }
+        protected void Move(float deltaTime)
+        {
+            Move(Vector3.zero, deltaTime);
+        }
     }
 }

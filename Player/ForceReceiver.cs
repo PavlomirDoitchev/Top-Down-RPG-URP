@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.AI;
 
 public class ForceReceiver : MonoBehaviour
 {
@@ -7,6 +8,7 @@ public class ForceReceiver : MonoBehaviour
     [SerializeField] private float fallMultiplier = 2.5f;
     [SerializeField] private float inAirDrag = .05f;
     [SerializeField] private float maxFallSpeed = -50f;
+    [SerializeField] private NavMeshAgent agent;
     private float verticalVelocity;
     private Vector3 impact;
     private Vector3 dampingVelocity;
@@ -25,13 +27,21 @@ public class ForceReceiver : MonoBehaviour
         }
 
         impact = Vector3.SmoothDamp(impact, Vector3.zero, ref dampingVelocity, dragTime);
+        if (impact == Vector3.zero && agent != null)
+        {
+            agent.enabled = true;
+        }
     }
     public void AddForce(Vector3 force)
     {
         impact += force;
+        if(agent != null)
+            agent.enabled = false; 
     }
     public void Jump(float jumpForce)
     {
         verticalVelocity += jumpForce;
+        if (agent != null)
+            agent.enabled = false; 
     }
 }

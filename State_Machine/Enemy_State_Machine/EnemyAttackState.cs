@@ -26,7 +26,6 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
             if (CheckForGlobalTransitions()) return;
             _enemyStateMachine.Agent.SetDestination(PlayerManager.Instance.PlayerStateMachine.transform.position);
             RotateToPlayer(deltaTime);
-
             if (Vector3.Distance(PlayerManager.Instance.PlayerStateMachine.transform.position, _enemyStateMachine.transform.position) > _enemyStateMachine.AttackDistanceToleranceBeforeChasing)
             //&& _enemyStateMachine.Animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= .75f)
             {

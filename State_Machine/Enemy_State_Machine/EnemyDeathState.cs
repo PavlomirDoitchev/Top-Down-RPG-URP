@@ -15,7 +15,8 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
             _enemyStateMachine.Agent.isStopped = true;
             _enemyStateMachine.Animator.CrossFadeInFixedTime(_enemyStateMachine.DeathAnimationName, .1f);
             BecomeUntargtable();
-            _enemyStateMachine.BodyCollider.enabled = false;
+            _enemyStateMachine.CharacterController.enabled = false;
+            //_enemyStateMachine.BodyCollider.enabled = false;
             _enemyStateMachine.Agent.enabled = false;
         }
         public override void ExitState()

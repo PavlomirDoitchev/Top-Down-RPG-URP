@@ -17,4 +17,5 @@ public class PlayerAnimationEvents : MonoBehaviour
         stateMachine.ChangeState(new FighterLocomotionState(stateMachine));
     }
     public void EnableDisableTrails() => meleeWeapon.TrailRenderSwitcher();
+    public void EnableDisableKnockback() => meleeWeapon.ShouldKnockBackSwitcher();
 }
