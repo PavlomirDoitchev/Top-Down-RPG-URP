@@ -1,8 +1,4 @@
-﻿using Assets.Scripts.Player;
-using Assets.Scripts.Enemies;
-using Assets.Scripts.State_Machine.Player_State_Machine;
-using UnityEngine;
-namespace Assets.Scripts.State_Machine.Enemy_State_Machine
+﻿namespace Assets.Scripts.State_Machine.Enemy_State_Machine
 {
     public class EnemyIdleState : EnemyBaseState
     {
@@ -21,22 +17,21 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
         {
             
             if (CheckForGlobalTransitions()) return;
-            
-            if (_enemyStateMachine._enemyStateTypes == EnemyStateTypes.Patrol)
+
+            switch (_enemyStateMachine._enemyStateTypes)
             {
-                _enemyStateMachine.ChangeState(new EnemyPatrolState(_enemyStateMachine));
+                case EnemyStateTypes.Patrol:
+                    _enemyStateMachine.ChangeState(new EnemyPatrolState(_enemyStateMachine));
+                    break;
+                case EnemyStateTypes.Wander:
+                    _enemyStateMachine.ChangeState(new EnemyWanderState(_enemyStateMachine));
+                    break;
             }
-            else if (_enemyStateMachine.PatrolPath == null && _enemyStateMachine._enemyStateTypes == EnemyStateTypes.Wander) 
-            {
-                _enemyStateMachine.ChangeState(new EnemyWanderState(_enemyStateMachine));
-            }
-            //if (Vector3.Distance(PlayerManager.Instance.PlayerStateMachine.transform.position, _enemyStateMachine.transform.position) < _enemyStateMachine.AggroRange)
-          
-            if(CanSeePlayer(_enemyStateMachine.AggroRange))
+
+            if (CanSeePlayer(_enemyStateMachine.AggroRange))
             {
                 _enemyStateMachine.ChangeState(new EnemyChaseState(_enemyStateMachine));
             }
-            
         }
 
         public override void ExitState()

@@ -1,5 +1,5 @@
 ﻿public enum EnemyType
 {
-    Ork,
-    DragonBrute
+    Melee,
+    Ranged,
 }

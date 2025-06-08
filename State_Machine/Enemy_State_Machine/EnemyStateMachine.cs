@@ -1,11 +1,13 @@
-﻿using Assets.Scripts.Enemies;
+﻿using Assets.Scripts.Combat_Logic;
+using Assets.Scripts.Enemies;
+using Assets.Scripts.Player;
 using UnityEngine;
 using UnityEngine.AI;
 namespace Assets.Scripts.State_Machine.Enemy_State_Machine
 {
-    public class EnemyStateMachine : StateMachine
+    public class EnemyStateMachine : StateMachine, IDamagable
     {
-
+        public PlayerManager player => PlayerManager.Instance;
         public EnemyType EnemyType;
         public EnemyStateTypes _enemyStateTypes;
         public GameObject EquippedWeapon;
@@ -13,18 +15,19 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
         [field: SerializeField] public ForceReceiver ForceReceiver { get; private set; }
         [field: SerializeField] public Animator Animator { get; private set; }
         [field: SerializeField] public NavMeshAgent Agent { get; private set; }
-        //[field: SerializeField] public Collider BodyCollider { get; private set; } //disabled when dead
-        [Header("Make sure to check for null if using patrol!")]
+
+        #region Patrol Logic
         [field: SerializeField] public PatrolPath PatrolPath { get; private set; }
         [field: SerializeField] public float PatrolDwellTime { get; private set; }
         public int CurrentWaypointIndex { get; set; } = 0;
         public Vector3 OriginalPosition { get; set; }
+        #endregion
 
         #region Enemy AI Stats
         [Header("AI Stats")]
         [field: SerializeField] public float ViewAngle { get; private set; } = 120f; //degrees
-        [field: SerializeField] public LayerMask ObstacleMask { get; private set; } 
-        [field: SerializeField] public LayerMask TargetMask { get; private set; } 
+        [field: SerializeField] public LayerMask ObstacleMask { get; private set; }
+        [field: SerializeField] public LayerMask TargetMask { get; private set; }
         [field: SerializeField] public float RunningSpeed { get; private set; }
         [field: SerializeField] public float WalkingSpeed { get; private set; }
         [field: SerializeField] public float EnragedSpeed { get; private set; }
@@ -36,12 +39,17 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
         [field: SerializeField] public float AttackDistance { get; private set; }
         [field: SerializeField] public float AttackDistanceToleranceBeforeChasing { get; private set; }
         [field: SerializeField] public int AttackIndex { get; private set; } = 0; //used to determine which attack animation to play
-        [field: SerializeField] public bool CanBecomeEnraged { get; set; } = false; 
+        [field: SerializeField]
+        [field: Range(0, 1)] public float EnrageThreshold { get; private set; } = 0.5f; //percentage of health at which the enemy becomes enraged
+        [field: SerializeField] public bool CanBecomeEnraged { get; set; } = false;
 
         #endregion
 
         #region Enemy Stats
         [Header("Enemy Stats")]
+        [field: SerializeField] public int MaxHealth { get; private set; } = 100;
+        [field: SerializeField] public int CurrentHealth { get; private set; }
+        [field: SerializeField] public int XpReward { get; private set; } = 1;
         [field: SerializeField]
         [field: Range(0, 1)] public float CriticalChance { get; private set; }
         [field: SerializeField]
@@ -50,7 +58,7 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
         [field: Range(0.1f, 5f)] public float BaseAttackSpeed { get; private set; }
         [field: SerializeField]
         [field: Range(1f, 3f)] public float EnragedAttackSpeed { get; private set; }
-        [field: SerializeField] 
+        [field: SerializeField]
         [field: Range(1, 5)] public float EnragedDamageMultiplier { get; private set; }
         [field: SerializeField] public float KnockBackForce { get; private set; } = 15f;
         [field: SerializeField] public bool ShouldKnockBackPlayer { get; set; }
@@ -72,14 +80,28 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
         #region Global Flags
         public bool ShouldDie { get; set; } = false;
         public bool IsStunned { get; set; } = false;
-        public bool IsEnraged { get; set; } = false; 
+        public bool IsEnraged { get; set; } = false;
+        public bool ShouldStartAttacking { get; set; } = false;  
         #endregion
         private void Start()
         {
             Agent.speed = RunningSpeed;
             OriginalPosition = this.transform.position;
-            
+            CurrentHealth = MaxHealth;
             ChangeState(new EnemyIdleState(this));
+        }
+        public void TakeDamage(int damage)
+        {
+            CurrentHealth -= damage;
+            ShouldStartAttacking = true;
+            if (CurrentHealth <= Mathf.RoundToInt(MaxHealth * EnrageThreshold) && CanBecomeEnraged)
+                IsEnraged = true;
+            
+            if (CurrentHealth <= 0)
+            {
+                ShouldDie = true;
+                player.PlayerStateMachine.PlayerStats.GainXP(XpReward);
+            }
         }
         public void OnDrawGizmosSelected()
         {
@@ -106,12 +128,12 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
             //Gizmos.DrawLine(position, position + leftBoundary);
             //Gizmos.DrawLine(position, position + rightBoundary);
         }
-        public void TwoHitCombo() 
+        public void TwoHitCombo()
         {
-            if (this.CurrentState is EnemyAttackState) 
+            if (this.CurrentState is EnemyMeleeAttackState)
             {
                 Animator.CrossFadeInFixedTime(AttackAnimationName[AttackIndex], .1f);
-                AttackIndex = 1 - AttackIndex; // Toggle between 0 and 1 for combo attacks
+                AttackIndex = 1 - AttackIndex;
             }
         }
     }

@@ -35,6 +35,19 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
                 _enemyStateMachine.ChangeState(new EnemyEnragedState(_enemyStateMachine));
                 return true;
             }
+            if (_enemyStateMachine.ShouldStartAttacking)
+            {
+                if (_enemyStateMachine.EnemyType == EnemyType.Melee)
+                {
+                    _enemyStateMachine.ChangeState(new EnemyMeleeAttackState(_enemyStateMachine));
+                    _enemyStateMachine.ShouldStartAttacking = false;
+                }
+                else if (_enemyStateMachine.EnemyType == EnemyType.Ranged)
+                {
+                    //_enemyStateMachine.ChangeState(new EnemyRangedAttackState(_enemyStateMachine));
+
+                }
+            }
             if (_enemyStateMachine.IsStunned)
             {
                 _enemyStateMachine.ChangeState(new EnemyStunnedState(_enemyStateMachine));
@@ -54,7 +67,7 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
             Vector3 directionToPlayer = (player.position - _enemyStateMachine.transform.position).normalized;
             float distanceToPlayer = Vector3.Distance(_enemyStateMachine.transform.position, player.position);
 
-            if (distanceToPlayer > distance) 
+            if (distanceToPlayer > distance)
                 return false;
 
             if (Vector3.Angle(_enemyStateMachine.transform.forward, directionToPlayer) < _enemyStateMachine.ViewAngle / 2f)
@@ -80,7 +93,7 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
         /// Use for Chase and Ranged Attack states to determine if the enemy can see the player.
         /// </summary>
         /// <returns></returns>
-        protected bool PlayerIsInLineOfSight() 
+        protected bool HasLineOfSight()
         {
             Transform player = playerManager.PlayerStateMachine.transform;
             Vector3 directionToPlayer = (player.position - _enemyStateMachine.transform.position).normalized;
@@ -100,7 +113,7 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
                 }
             }
             Debug.DrawLine(_enemyStateMachine.transform.position + Vector3.up * 1.5f, player.position + Vector3.up * 1.5f, Color.red, 0.1f);
-            Debug.Log("Player is not in line of sight.");
+            //Debug.Log("Player is not in line of sight.");
             return false;
         }
         protected void RotateToPlayer(float deltaTime)
@@ -140,6 +153,11 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
         {
             _enemyStateMachine.Animator.speed = 1f;
         }
+        /// <summary>
+        /// Used by Move below...
+        /// </summary>
+        /// <param name="motion"></param>
+        /// <param name="deltaTime"></param>
         protected void Move(Vector3 motion, float deltaTime)
         {
             _enemyStateMachine.CharacterController.Move((motion + _enemyStateMachine.ForceReceiver.Movement) * deltaTime);
@@ -151,6 +169,19 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
         protected void Move(float deltaTime)
         {
             Move(Vector3.zero, deltaTime);
+        }
+
+        protected bool MeleeEnemy()
+        {
+            if (_enemyStateMachine.EnemyType == EnemyType.Melee)
+            {
+                return true;
+            }
+            else
+            {
+                _enemyStateMachine.EnemyType = EnemyType.Ranged;
+                return false;
+            }
         }
     }
 }

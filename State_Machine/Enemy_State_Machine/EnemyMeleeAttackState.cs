@@ -2,9 +2,9 @@
 using Assets.Scripts.Player;
 namespace Assets.Scripts.State_Machine.Enemy_State_Machine
 {
-    public class EnemyAttackState : EnemyBaseState
+    public class EnemyMeleeAttackState : EnemyBaseState
     {
-        public EnemyAttackState(EnemyStateMachine stateMachine) : base(stateMachine)
+        public EnemyMeleeAttackState(EnemyStateMachine stateMachine) : base(stateMachine)
         {
         }
         public override void EnterState()
@@ -23,11 +23,11 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
         public override void UpdateState(float deltaTime)
         {
             if (CheckForGlobalTransitions()) return;
-            _enemyStateMachine.Agent.SetDestination(PlayerManager.Instance.PlayerStateMachine.transform.position);
+            
             RotateToPlayer(deltaTime);
-            //if (Vector3.Distance(PlayerManager.Instance.PlayerStateMachine.transform.position, _enemyStateMachine.transform.position) 
-            //    > _enemyStateMachine.AttackDistanceToleranceBeforeChasing)
-            //&& _enemyStateMachine.Animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= .75f)
+
+            _enemyStateMachine.Agent.SetDestination(PlayerManager.Instance.PlayerStateMachine.transform.position);
+
             if (Vector3.Distance(PlayerManager.Instance.PlayerStateMachine.transform.position, _enemyStateMachine.transform.position)
                 > _enemyStateMachine.AttackDistanceToleranceBeforeChasing)
             {

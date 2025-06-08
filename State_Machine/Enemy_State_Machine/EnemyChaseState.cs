@@ -28,27 +28,31 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
         {
             if (CheckForGlobalTransitions()) return;
             _enemyStateMachine.Agent.SetDestination(PlayerManager.Instance.PlayerStateMachine.transform.position);
-            
 
             if (Vector3.Distance(_enemyStateMachine.OriginalPosition, _enemyStateMachine.transform.position) > _enemyStateMachine.MaxDistanceFromOrigin
                 && !_enemyStateMachine.IsEnraged)
             {
-                    _enemyStateMachine.ChangeState(new ReturnToOriginState(_enemyStateMachine));
-                    return;
+                _enemyStateMachine.ChangeState(new ReturnToOriginState(_enemyStateMachine));
+                return;
             }
 
-
-            if (Vector3.Distance(PlayerManager.Instance.PlayerStateMachine.transform.position, _enemyStateMachine.transform.position) > _enemyStateMachine.ChaseDistance
-                && !_enemyStateMachine.IsEnraged
-                || !PlayerIsInLineOfSight())
+            if (!_enemyStateMachine.IsEnraged
+                && (Vector3.Distance(
+                PlayerManager.Instance.PlayerStateMachine.transform.position, _enemyStateMachine.transform.position) > _enemyStateMachine.ChaseDistance
+                || !HasLineOfSight()))
             {
                 _enemyStateMachine.ChangeState(new EnemySuspicionState(_enemyStateMachine));
+            }
 
-            }
-            if (Vector3.Distance(PlayerManager.Instance.PlayerStateMachine.transform.position, _enemyStateMachine.transform.position) < _enemyStateMachine.AttackDistance)
+            // Check if the enemy can see the player and is a melee enemy and switch to the appropriate attack state
+            if (Vector3.Distance(PlayerManager.Instance.PlayerStateMachine.transform.position, _enemyStateMachine.transform.position) < _enemyStateMachine.AttackDistance
+                && HasLineOfSight() 
+                && MeleeEnemy())
             {
-                _enemyStateMachine.ChangeState(new EnemyAttackState(_enemyStateMachine));
+                _enemyStateMachine.ChangeState(new EnemyMeleeAttackState(_enemyStateMachine));
             }
+            //else
+            //    _enemyStateMachine.ChangeState(new EnemyRangedAttackState(_enemyStateMachine));
         }
 
         public override void ExitState()

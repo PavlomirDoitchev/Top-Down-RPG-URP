@@ -24,17 +24,14 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
         public override void UpdateState(float deltaTime)
         {
             if(CheckForGlobalTransitions()) return;
-            if (Vector3.Distance(PlayerManager.Instance.PlayerStateMachine.transform.position, _enemyStateMachine.transform.position) < _enemyStateMachine.AggroRange)
-            {
+
+            if (CanSeePlayer(_enemyStateMachine.AggroRange))
                 _enemyStateMachine.ChangeState(new EnemyChaseState(_enemyStateMachine));
-            }
+            
             _enemyStateMachine.OriginalPosition = _enemyStateMachine.transform.position;
             if (AtWaypoint() && !_isDwelling)
             {
-                _isDwelling = true;
-                _timeToWaitAtWaypoint = 0f;
-                _enemyStateMachine.Agent.isStopped = true;
-                _enemyStateMachine.Animator.Play(_enemyStateMachine.IdleAnimationName);
+                DwellingOnPatrolWaypoint();
             }
 
             if (_isDwelling)
@@ -43,14 +40,7 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
 
                 if (_timeToWaitAtWaypoint >= _enemyStateMachine.PatrolDwellTime)
                 {
-                    _enemyStateMachine.CurrentWaypointIndex = (_enemyStateMachine.CurrentWaypointIndex + 1) % _enemyStateMachine.PatrolPath.GetWaypointCount();
-
-                    Vector3 nextWaypoint = _enemyStateMachine.PatrolPath.GetWaypoint(_enemyStateMachine.CurrentWaypointIndex);
-                    _enemyStateMachine.Agent.SetDestination(nextWaypoint);
-                    _enemyStateMachine.Agent.isStopped = false;
-                    _enemyStateMachine.Animator.CrossFadeInFixedTime(_enemyStateMachine.WalkAnimationName, 0.1f);
-
-                    _isDwelling = false;
+                    GoToNextPatrolWaypoint();
                 }
             }
         }
@@ -59,6 +49,27 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
             ResetAnimationSpeed();
             ResetMovementSpeed();
         }
+
+        private void DwellingOnPatrolWaypoint()
+        {
+            _isDwelling = true;
+            _timeToWaitAtWaypoint = 0f;
+            _enemyStateMachine.Agent.isStopped = true;
+            _enemyStateMachine.Animator.Play(_enemyStateMachine.IdleAnimationName);
+        }
+
+        private void GoToNextPatrolWaypoint()
+        {
+            _enemyStateMachine.CurrentWaypointIndex = (_enemyStateMachine.CurrentWaypointIndex + 1) % _enemyStateMachine.PatrolPath.GetWaypointCount();
+
+            Vector3 nextWaypoint = _enemyStateMachine.PatrolPath.GetWaypoint(_enemyStateMachine.CurrentWaypointIndex);
+            _enemyStateMachine.Agent.SetDestination(nextWaypoint);
+            _enemyStateMachine.Agent.isStopped = false;
+            _enemyStateMachine.Animator.CrossFadeInFixedTime(_enemyStateMachine.WalkAnimationName, 0.1f);
+
+            _isDwelling = false;
+        }
+
 
         private bool AtWaypoint()
         {
