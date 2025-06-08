@@ -57,7 +57,7 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
         }
         public override void ExitState()
         {
-            _playerStateMachine.gameObject.layer = LayerMask.NameToLayer("Player");
+            _playerStateMachine.gameObject.layer = LayerMask.NameToLayer("MyOutlines");
             ResetAnimationSpeed();
         }
     }

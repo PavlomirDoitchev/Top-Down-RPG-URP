@@ -9,7 +9,7 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
     public abstract class EnemyBaseState : State
     {
         protected EnemyStateMachine _enemyStateMachine;
-      
+
         public EnemyBaseState(EnemyStateMachine stateMachine)
         {
             this._enemyStateMachine = stateMachine;
@@ -19,14 +19,14 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
             base.EnterState();
             Debug.Log($"Entering state: {this.GetType().Name}");
         }
-        protected bool CheckForGlobalTransitions() 
+        protected bool CheckForGlobalTransitions()
         {
             if (_enemyStateMachine.ShouldDie)
             {
                 _enemyStateMachine.ChangeState(new EnemyDeathState(_enemyStateMachine));
                 return true;
             }
-            if (PlayerManager.Instance.PlayerStateMachine.PlayerStats.GetCurrentHealth() <= 0) 
+            if (PlayerManager.Instance.PlayerStateMachine.PlayerStats.GetCurrentHealth() <= 0)
             {
                 _enemyStateMachine.ChangeState(new EnemyPlayerIsDeadState(_enemyStateMachine));
             }
@@ -41,6 +41,39 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
                 return true;
             }
             return false;
+        }
+        /// <summary>
+        /// Checks if the enemy can see the player within a certain distance.
+        /// Use distance to specify how far the enemy can see the player.
+        /// </summary>
+        /// <param name="distance"></param>
+        /// <returns></returns>
+        protected bool CanSeePlayer(float distance)
+        {
+            Transform player = PlayerManager.Instance.PlayerStateMachine.transform;
+            Vector3 directionToPlayer = (player.position - _enemyStateMachine.transform.position).normalized;
+            float distanceToPlayer = Vector3.Distance(_enemyStateMachine.transform.position, player.position);
+
+            if (distanceToPlayer > distance) 
+                return false;
+
+            if (Vector3.Angle(_enemyStateMachine.transform.forward, directionToPlayer) < _enemyStateMachine.ViewAngle / 2f)
+            {
+
+                // Check for obstruction
+                if (!Physics.Raycast(_enemyStateMachine.transform.position + Vector3.up * 1.5f, directionToPlayer, distanceToPlayer, _enemyStateMachine.ObstacleMask))
+                {
+                    Debug.DrawLine(_enemyStateMachine.transform.position + Vector3.up * 1.5f,
+                    PlayerManager.Instance.PlayerStateMachine.transform.position,
+                    Color.green, 0.1f);
+                    // Confirm player
+                    if ((1 << player.gameObject.layer & _enemyStateMachine.TargetMask) != 0)
+                        return true;
+                }
+            }
+            Debug.DrawLine(_enemyStateMachine.transform.position + Vector3.up * 1.5f, player.position + Vector3.up * 1.5f, Color.red, 0.1f);
+            return false;
+
         }
         protected void RotateToPlayer(float deltaTime)
         {
@@ -71,7 +104,7 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
         /// Keep speed at 1f for normal speed.
         /// </summary>
         /// <param name="speed"></param>
-        protected void SetAttackSpeed(float speed) 
+        protected void SetAttackSpeed(float speed)
         {
             _enemyStateMachine.Animator.speed = _enemyStateMachine.BaseAttackSpeed * speed;
         }
@@ -83,6 +116,10 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
         {
             _enemyStateMachine.CharacterController.Move((motion + _enemyStateMachine.ForceReceiver.Movement) * deltaTime);
         }
+        /// <summary>
+        /// Moves the enemy using the ForceReceiver's movement vector.
+        /// </summary>
+        /// <param name="deltaTime"></param>
         protected void Move(float deltaTime)
         {
             Move(Vector3.zero, deltaTime);

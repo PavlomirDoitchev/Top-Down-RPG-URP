@@ -30,11 +30,11 @@ namespace Assets.Scripts.Enemies.EnemyType
             }
 
         }
-        private void OnDrawGizmosSelected()
-        {
-            Gizmos.color = Color.grey;
-            Gizmos.DrawWireSphere(transform.position, radius);
+        //private void OnDrawGizmosSelected()
+        //{
+        //    Gizmos.color = Color.grey;
+        //    Gizmos.DrawWireSphere(transform.position, radius);
             
-        }
+        //}
     }
 }

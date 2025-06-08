@@ -20,18 +20,15 @@ public class EnemyKnockbackState : EnemyBaseState
     public override void UpdateState(float deltaTime)
     {
         elapsedTime += deltaTime;
-
-        // Apply movement from ForceReceiver
         Move(deltaTime);
 
         if (elapsedTime >= knockbackDuration)
         {
-            // Snap to NavMesh and re-enable pathfinding
             _enemyStateMachine.Agent.Warp(_enemyStateMachine.transform.position);
             _enemyStateMachine.Agent.enabled = true;
 
-            // Transition to previous or default state
-            _enemyStateMachine.ChangeState(new EnemyIdleState(_enemyStateMachine)); // Or remember last state
+            // Default state
+            _enemyStateMachine.ChangeState(new EnemyIdleState(_enemyStateMachine)); 
         }
     }
 

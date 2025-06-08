@@ -21,7 +21,7 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
         {
             
             if (CheckForGlobalTransitions()) return;
-           
+            
             if (_enemyStateMachine._enemyStateTypes == EnemyStateTypes.Patrol)
             {
                 _enemyStateMachine.ChangeState(new EnemyPatrolState(_enemyStateMachine));
@@ -30,7 +30,9 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
             {
                 _enemyStateMachine.ChangeState(new EnemyWanderState(_enemyStateMachine));
             }
-            if (Vector3.Distance(PlayerManager.Instance.PlayerStateMachine.transform.position, _enemyStateMachine.transform.position) < _enemyStateMachine.AggroRange) 
+            //if (Vector3.Distance(PlayerManager.Instance.PlayerStateMachine.transform.position, _enemyStateMachine.transform.position) < _enemyStateMachine.AggroRange)
+          
+            if(CanSeePlayer(_enemyStateMachine.AggroRange))
             {
                 _enemyStateMachine.ChangeState(new EnemyChaseState(_enemyStateMachine));
             }
