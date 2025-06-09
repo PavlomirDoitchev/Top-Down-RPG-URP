@@ -68,6 +68,7 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
         #region Animation Variables
         [Header("Animation Names")]
         [field: SerializeField] public string IdleAnimationName { get; private set; } = "idle";
+        [field: SerializeField] public string SuspicionAnimationName { get; private set; } = "idle01";
         [field: SerializeField] public string WalkAnimationName { get; private set; } = "walk";
         [field: SerializeField] public string RunAnimationName { get; private set; } = "run";
         [field: SerializeField] public string[] AttackAnimationName { get; private set; }

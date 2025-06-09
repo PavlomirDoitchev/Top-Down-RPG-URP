@@ -73,7 +73,7 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
         {
             _suspicionTimer += deltaTime;
             _enemyStateMachine.Agent.isStopped = true;
-            _enemyStateMachine.Animator.Play(_enemyStateMachine.IdleAnimationName);
+            _enemyStateMachine.Animator.Play(_enemyStateMachine.SuspicionAnimationName);
         }
     }
 }
