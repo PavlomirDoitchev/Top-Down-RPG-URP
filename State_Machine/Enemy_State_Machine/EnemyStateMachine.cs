@@ -38,6 +38,7 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
         [field: SerializeField] public float SuspicionTime { get; private set; }
         [field: SerializeField] public float AttackDistance { get; private set; }
         [field: SerializeField] public float AttackDistanceToleranceBeforeChasing { get; private set; }
+        [field :SerializeField] public float RangedAttackDistance { get; private set; } 
         [field: SerializeField] public int AttackIndex { get; private set; } = 0; //used to determine which attack animation to play
         [field: SerializeField]
         [field: Range(0, 1)] public float EnrageThreshold { get; private set; } = 0.5f; //percentage of health at which the enemy becomes enraged
@@ -77,6 +78,7 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
         [field: SerializeField] public string HitAnimationName { get; private set; } = "hit";
         [field: SerializeField] public string StunnedAnimationName { get; private set; } = "stunned";
         [field: SerializeField] public string EnragedAnimationName { get; private set; } = "Roar";
+        [field: SerializeField] public string CastAnimationName { get; private set; } = "cast";
         #endregion
 
         #region Global Flags

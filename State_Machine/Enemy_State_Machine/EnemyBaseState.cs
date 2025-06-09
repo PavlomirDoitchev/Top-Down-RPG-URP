@@ -135,6 +135,7 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
             Vector3 direction = PlayerManager.Instance.PlayerStateMachine.transform.position - _enemyStateMachine.transform.position;
             direction.y = 0f;
             Quaternion targetRotation = Quaternion.LookRotation(direction);
+            _enemyStateMachine.transform.rotation = targetRotation;
         }
         /// <summary>
         /// Use later for a teleport ability, like a shadow step or blink.
@@ -165,7 +166,7 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
         {
             _enemyStateMachine.gameObject.layer = LayerMask.NameToLayer("Enemy");
         }
-        protected void MovementSpeedWalking() 
+        protected void MovementSpeedWalking()
         {
             _enemyStateMachine.Agent.speed = _enemyStateMachine.RunningSpeed;
         }

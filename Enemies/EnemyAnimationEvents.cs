@@ -7,6 +7,7 @@ public class EnemyAnimationEvents : MonoBehaviour
 {
     [SerializeField] private EnemyMelee[] enemyMelee;
     [SerializeField] private EnemyStateMachine enemyStateMachine;
+    [SerializeField] private EnemySpell enemySpell;
     PlayerManager playerManager;
     private void Start()
     {
@@ -19,6 +20,8 @@ public class EnemyAnimationEvents : MonoBehaviour
     public void DisableOffHandWeaponDamage() => enemyMelee[1].CantHarmPlayer();
     public void KnockBack() => enemyStateMachine.ShouldKnockBackPlayer = true;
     public void DontKnockBack() => enemyStateMachine.ShouldKnockBackPlayer = false;
+    public void CastSpell() => enemySpell.Cast(PlayerManager.Instance.PlayerStateMachine.transform);
+    
 
     #endregion
 
