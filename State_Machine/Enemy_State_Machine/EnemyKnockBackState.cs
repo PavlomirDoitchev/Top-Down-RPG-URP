@@ -19,6 +19,7 @@ public class EnemyKnockbackState : EnemyBaseState
 
     public override void UpdateState(float deltaTime)
     {
+       // CheckForGlobalTransitions();
         elapsedTime += deltaTime;
         Move(deltaTime);
 

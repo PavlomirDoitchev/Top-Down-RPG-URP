@@ -13,6 +13,8 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
             _enemyStateMachine.Agent.isStopped = false;
             _enemyStateMachine.Animator.CrossFadeInFixedTime(_enemyStateMachine.AttackAnimationName[0], .1f);
             RotateToPlayer();
+            
+
             if (_enemyStateMachine.IsEnraged)
             {
                 SetAttackSpeed(_enemyStateMachine.EnragedAttackSpeed);

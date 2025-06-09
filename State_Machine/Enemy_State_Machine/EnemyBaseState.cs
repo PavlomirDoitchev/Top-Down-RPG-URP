@@ -39,8 +39,8 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
             {
                 if (_enemyStateMachine.EnemyType == EnemyType.Melee)
                 {
-                    _enemyStateMachine.ChangeState(new EnemyMeleeAttackState(_enemyStateMachine));
                     _enemyStateMachine.ShouldStartAttacking = false;
+                    _enemyStateMachine.ChangeState(new EnemyMeleeAttackState(_enemyStateMachine));
                 }
                 else if (_enemyStateMachine.EnemyType == EnemyType.Ranged)
                 {

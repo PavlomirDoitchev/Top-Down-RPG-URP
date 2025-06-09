@@ -35,7 +35,14 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
                 _enemyStateMachine.ChangeState(new ReturnToOriginState(_enemyStateMachine));
                 return;
             }
-
+            if(_enemyStateMachine.CanShadowStep
+                && Vector3.Distance(
+                PlayerManager.Instance.PlayerStateMachine.transform.position, _enemyStateMachine.transform.position) > _enemyStateMachine.ChaseDistance * 0.5f
+                && _enemyStateMachine.PreviousState is EnemyMeleeAttackState)               
+            {
+                SnapToPlayer();
+                return;
+            }
             if (!_enemyStateMachine.IsEnraged
                 && (Vector3.Distance(
                 PlayerManager.Instance.PlayerStateMachine.transform.position, _enemyStateMachine.transform.position) > _enemyStateMachine.ChaseDistance

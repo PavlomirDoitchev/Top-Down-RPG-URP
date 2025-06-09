@@ -42,6 +42,7 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
         [field: SerializeField]
         [field: Range(0, 1)] public float EnrageThreshold { get; private set; } = 0.5f; //percentage of health at which the enemy becomes enraged
         [field: SerializeField] public bool CanBecomeEnraged { get; set; } = false;
+        [field: SerializeField] public bool CanShadowStep { get; set; } = false; 
 
         #endregion
 
@@ -83,6 +84,7 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
         public bool IsStunned { get; set; } = false;
         public bool IsEnraged { get; set; } = false;
         public bool ShouldStartAttacking { get; set; } = false;  
+        public bool ShouldShadowStep { get; set; } = false; 
         #endregion
         private void Start()
         {
@@ -97,7 +99,10 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
             ShouldStartAttacking = true;
             if (CurrentHealth <= Mathf.RoundToInt(MaxHealth * EnrageThreshold) && CanBecomeEnraged)
                 IsEnraged = true;
-            
+
+            //if (CurrentHealth <= MaxHealth * 0.8f && CanShadowStep)
+            //    ShouldShadowStep = true;
+
             if (CurrentHealth <= 0)
             {
                 ShouldDie = true;
