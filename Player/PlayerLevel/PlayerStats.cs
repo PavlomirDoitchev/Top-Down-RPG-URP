@@ -111,13 +111,7 @@ namespace Assets.Scripts.Player
         //    //}
         //}
 
-        //public void PlayerTakeDamage(int damage)
-        //{
-        //    TakeDamage(damage);
-        //    Debug.Log($"Player has taken {damage}!");
-        //    if (currentHealth <= 0)
-        //        playerManager.PlayerStateMachine.ChangeState(new PlayerDeathState(playerManager.PlayerStateMachine));
-        //}
+       
         public void TakeDamage(int damage)
         {
             currentHealth -= damage;
