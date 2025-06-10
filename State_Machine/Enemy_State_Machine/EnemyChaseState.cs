@@ -37,7 +37,8 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
             }
             if(_enemyStateMachine.CanShadowStep
                 && Vector3.Distance(
-                PlayerManager.Instance.PlayerStateMachine.transform.position, _enemyStateMachine.transform.position) > _enemyStateMachine.ChaseDistance * 0.5f
+                PlayerManager.Instance.PlayerStateMachine.transform.position, _enemyStateMachine.transform.position) 
+                > _enemyStateMachine.ChaseDistance * _enemyStateMachine.ShadowStepThresholdDistance
                 && _enemyStateMachine.PreviousState is EnemyMeleeAttackState)               
             {
                 SnapToPlayer();

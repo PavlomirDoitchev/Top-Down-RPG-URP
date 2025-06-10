@@ -46,6 +46,8 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
         [field: SerializeField]
         [field: Range(0, 1)] public float EnrageThreshold { get; private set; } = 0.5f; //percentage of health at which the enemy becomes enraged
         [field: SerializeField] public bool CanBecomeEnraged { get; set; } = false;
+        [field: SerializeField]
+        [field: Range(0.1f, 0.9f)] public float ShadowStepThresholdDistance { get; private set; } = 0.5f; 
         [field: SerializeField] public bool CanShadowStep { get; set; } = false; 
 
         #endregion
