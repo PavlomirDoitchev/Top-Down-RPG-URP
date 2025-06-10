@@ -4,8 +4,11 @@ namespace Assets.Scripts.Combat_Logic
     public class Fireball : MonoBehaviour, IProjectile
     {
         [SerializeField] private ProjectileData projectileData;
-        [SerializeField] private Transform target;
+        [SerializeField] private StatusEffectData effectData;
+        private Transform target;
         private Rigidbody rb;
+        
+        [Header("Spell Stats")]
         [SerializeField] private float offSet;
         [SerializeField] private float timer = 5f;
         Vector3 direction;
@@ -24,10 +27,7 @@ namespace Assets.Scripts.Combat_Logic
         }
         private void FixedUpdate()
         {
-            //transform.LookAt(AimLocation(target));
-            //direction = (AimLocation(target) - transform.position).normalized;
-            rb.MovePosition(transform.position + direction * projectileData.speed * Time.fixedDeltaTime);
-            
+            rb.MovePosition(transform.position + direction * projectileData.speed * Time.fixedDeltaTime);   
         }
         
         void OnTriggerEnter(Collider other)
@@ -36,9 +36,15 @@ namespace Assets.Scripts.Combat_Logic
                 || other.gameObject.layer == LayerMask.NameToLayer("Default"))
                 gameObject.SetActive(false);
 
+            if(other.TryGetComponent<IEffectable>(out var effectable)
+                && other.gameObject.layer == LayerMask.NameToLayer("MyOutlines"))
+            {
+                effectable.ApplyEffect(effectData);
+            }
             if (other.TryGetComponent<IDamagable>(out var damagable) && other.gameObject.layer == LayerMask.NameToLayer("MyOutlines"))
             {
                 damagable.TakeDamage(projectileData.damage);
+                projectileData.damageNumberPrefab.Spawn(other.transform.position, projectileData.damage);
                 gameObject.SetActive(false);
             }
         }
@@ -50,7 +56,6 @@ namespace Assets.Scripts.Combat_Logic
             direction = (aimPoint - transform.position).normalized;
 
             transform.rotation = Quaternion.LookRotation(direction);
-            Debug.DrawLine(transform.position, AimLocation(target), Color.red, 2f);
         }
         public Vector3 AimLocation(Transform target)
         {

@@ -7,7 +7,7 @@ public class EnemyAnimationEvents : MonoBehaviour
 {
     [SerializeField] private EnemyMelee[] enemyMelee;
     [SerializeField] private EnemyStateMachine enemyStateMachine;
-    [SerializeField] private EnemySpell enemySpell;
+    [SerializeField] private EnemyProjectileAbility enemySpell;
     PlayerManager playerManager;
     private void Start()
     {

@@ -7,6 +7,7 @@ namespace Assets.Scripts.Combat_Logic
     {
         public GameObject ProjectilePrefab;
         [SerializeField] int poolSize;
+        [SerializeField] Transform projectileContainer;
 
         [SerializeField] private List<GameObject> projectiles;
 
@@ -15,7 +16,7 @@ namespace Assets.Scripts.Combat_Logic
             projectiles = new List<GameObject>();
             for (int i = 0; i < poolSize; i++)
             {
-                GameObject projectile = Instantiate(ProjectilePrefab);
+                GameObject projectile = Instantiate(ProjectilePrefab, projectileContainer);
                 projectile.SetActive(false);
                 projectiles.Add(projectile);
             }
@@ -31,9 +32,12 @@ namespace Assets.Scripts.Combat_Logic
                     return projectile;
                 }
             }
+            return AddMoreProjectiles();
+        }
 
-            // If no inactive projectile is found, instantiate a new one
-            GameObject newProjectile = Instantiate(ProjectilePrefab);
+        private GameObject AddMoreProjectiles()
+        {
+            GameObject newProjectile = Instantiate(ProjectilePrefab, projectileContainer);
             projectiles.Add(newProjectile);
             return newProjectile;
         }

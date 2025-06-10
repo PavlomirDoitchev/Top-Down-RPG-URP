@@ -7,8 +7,7 @@ using Assets.Scripts.Save_Manager;
 using Assets.Scripts.Combat_Logic;
 namespace Assets.Scripts.Player
 {
-    //[RequiredInterface(typeof(IDamagable))]
-    public class PlayerStats : MonoBehaviour, IDamagable, ISaveManager
+    public class PlayerStats : MonoBehaviour, IDamagable, IEffectable, ISaveManager
     {
         public void LoadData(GameData _data)
         {
@@ -29,19 +28,6 @@ namespace Assets.Scripts.Player
             //_data.currentHealth = currentHealth;
             //_data.currentResource = currentResource;
         }
-
-        // Buff and Debuff system (commented out for now)
-
-        //public event Action<Buff> OnBuffApplied;
-        //public event Action<Buff> OnBuffExpired;
-
-        //public event Action<Debuff> OnDebuffApplied;
-        //public event Action<Debuff> OnDebuffExpired;
-
-        //private List<Buff> activeBuffs = new List<Buff>();
-        //private List<Debuff> activeDebuffs = new List<Debuff>();
-
-
 
         [Header("Player Level")]
         [SerializeField] int level = 0;
@@ -81,7 +67,7 @@ namespace Assets.Scripts.Player
         [Header("References")]
         [SerializeField] ParticleSystem levelUpEffect;
         [SerializeField] GameObject weapon; //to be removed later
-
+        [SerializeField] private StatusEffectData effectData;
         PlayerManager playerManager;
         private void Start()
         {
@@ -93,25 +79,28 @@ namespace Assets.Scripts.Player
             currentHealth = maxHealth;
             SetMaxLevel();
         }
-        //private void Update()
-        //{
+        private void Update()
+        {
+            if (effectData != null) 
+            {
+                HandleEffect();
+            }
+            //if (Input.GetKeyDown(KeyCode.UpArrow))
+            //{
+            //    if (level == maxLevel)
+            //    {
+            //        return;
+            //    }
+            //    currentXP++;
+            //    if (currentXP >= playerManager.PlayerStateMachine.CharacterLevelDataSO[CurrentLevel()].XpRequired)
+            //    {
+            //        LevelUp();
+            //        playerManager.PlayerStateMachine.EquipNewWeapon(weapon);
+            //    }
+            //}
+        }
 
-        //    //if (Input.GetKeyDown(KeyCode.UpArrow))
-        //    //{
-        //    //    if (level == maxLevel)
-        //    //    {
-        //    //        return;
-        //    //    }
-        //    //    currentXP++;
-        //    //    if (currentXP >= playerManager.PlayerStateMachine.CharacterLevelDataSO[CurrentLevel()].XpRequired)
-        //    //    {
-        //    //        LevelUp();
-        //    //        playerManager.PlayerStateMachine.EquipNewWeapon(weapon);
-        //    //    }
-        //    //}
-        //}
 
-       
         public void TakeDamage(int damage)
         {
             currentHealth -= damage;
@@ -192,78 +181,39 @@ namespace Assets.Scripts.Player
         {
             maxLevel = playerManager.PlayerStateMachine.CharacterLevelDataSO.Length - 1;
         }
+        #region Handle Status Effects
+        public void ApplyEffect(StatusEffectData _data)
+        {
+            this.effectData = _data;
+        }
 
+        public void RemoveEffect()
+        {
+            effectData = null;
+            currentEffectTime = 0f;
+            nextTickTime = 0f;
+        }
+        private float currentEffectTime = 0f;   
+        private float nextTickTime = 0f;
 
-        //public void ApplyBuff(Buff buff)
-        //{
-        //    activeBuffs.Add(buff);
-        //    OnBuffApplied?.Invoke(buff); // Notify listeners
-        //    StartCoroutine(HandleBuff(buff));
-        //}
-
-        //public void ApplyDebuff(Debuff debuff)
-        //{
-        //    activeDebuffs.Add(debuff);
-        //    OnDebuffApplied?.Invoke(debuff); // Notify listeners
-        //    StartCoroutine(HandleDebuff(debuff));
-        //}
-        //private IEnumerator HandleBuff(Buff buff)
-        //{
-        //    ApplyBuffEffect(buff, true);
-        //    yield return new WaitForSeconds(buff.Duration);
-        //    ApplyBuffEffect(buff, false);
-        //    activeBuffs.Remove(buff);
-        //    OnBuffExpired?.Invoke(buff);
-        //}
-
-        //private IEnumerator HandleDebuff(Debuff debuff)
-        //{
-        //    ApplyDebuffEffect(debuff, true);
-        //    yield return new WaitForSeconds(debuff.Duration);
-        //    ApplyDebuffEffect(debuff, false);
-        //    activeDebuffs.Remove(debuff);
-        //    OnDebuffExpired?.Invoke(debuff);
-        //}
-
-        //private void ApplyBuffEffect(Buff buff, bool isApplying)
-        //{
-        //    float modifier = isApplying ? buff.EffectStrength : -buff.EffectStrength;
-
-        //    switch (buff.Type)
-        //    {
-        //        case BuffType.AttackBoost:
-        //            ModifyAttack(modifier);
-        //            break;
-        //        case BuffType.SpeedBoost:
-        //            ModifySpeed(modifier);
-        //            break;
-        //        case BuffType.DefenseBoost:
-        //            ModifyDefense(modifier);
-        //            break;
-        //    }
-        //}
-
-        //private void ApplyDebuffEffect(Debuff debuff, bool isApplying)
-        //{
-        //    float modifier = isApplying ? debuff.EffectStrength : -debuff.EffectStrength;
-
-        //    switch (debuff.Type)
-        //    {
-        //        case DebuffType.Slow:
-        //            ModifySpeed(modifier);
-        //            break;
-        //        case DebuffType.Weaken:
-        //            ModifyAttack(modifier);
-        //            break;
-        //        case DebuffType.Stun:
-        //            ApplyStun(isApplying);
-        //            break;
-        //    }
-        //}
-
-        //private void ModifyAttack(float amount) => Debug.Log($"Attack modified by {amount}");
-        //private void ModifySpeed(float amount) => Debug.Log($"Speed modified by {amount}");
-        //private void ModifyDefense(float amount) => Debug.Log($"Defense modified by {amount}");
-        //private void ApplyStun(bool isApplying) => Debug.Log(isApplying ? "Player Stunned!" : "Player Recovered!");
+        public void HandleEffect()
+        {
+            currentEffectTime += Time.deltaTime;
+            if (currentEffectTime >= effectData.DOTDuration)
+            {
+                RemoveEffect();
+            }
+            if (effectData == null)
+            {
+                return;
+            }
+            if (effectData.DOTDamage != 0 && currentEffectTime > nextTickTime) 
+            {
+                nextTickTime += effectData.DOTInterval;
+                TakeDamage(effectData.DOTDamage);
+                effectData.DamageNumberPrefab.Spawn(transform.position, effectData.DOTDamage);
+            }
+        }
+        #endregion
     }
 }
