@@ -15,7 +15,7 @@ public class MovingPlatformDamage : MonoBehaviour
         {
             //timer -= Time.deltaTime;
 
-            damagable.TakeDamage(damage);
+            damagable.TakeDamage(damage, true);
             //hasTakenDamage = true;
             if(other.TryGetComponent<ForceReceiver>(out var forceReceiver))
             {

@@ -22,7 +22,7 @@ public class SpikeTrap : MonoBehaviour
             if (timer <= 0 && !hasTakenDamage)
             {
                 movingSpikesReference.transform.localPosition = new Vector3(spikePosition.x, spikeRiseLimit, spikePosition.z);
-                damagable.TakeDamage(damageAmount);
+                damagable.TakeDamage(damageAmount, true);
                 damageText.Spawn(other.transform.position, damageAmount);
                 hasTakenDamage = true;
                 if (other.TryGetComponent<ForceReceiver>(out var forceReceiver))

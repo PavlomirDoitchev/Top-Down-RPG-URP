@@ -43,7 +43,7 @@ namespace Assets.Scripts.Combat_Logic
             }
             if (other.TryGetComponent<IDamagable>(out var damagable) && other.gameObject.layer == LayerMask.NameToLayer("MyOutlines"))
             {
-                damagable.TakeDamage(projectileData.damage);
+                damagable.TakeDamage(projectileData.damage, true);
                 projectileData.damageNumberPrefab.Spawn(other.transform.position, projectileData.damage);
                 gameObject.SetActive(false);
             }

@@ -5,8 +5,10 @@ using UnityEngine;
 using System.Collections;
 using Assets.Scripts.Save_Manager;
 using Assets.Scripts.Combat_Logic;
+
 namespace Assets.Scripts.Player
 {
+
     public class PlayerStats : MonoBehaviour, IDamagable, IEffectable, ISaveManager
     {
         public void LoadData(GameData _data)
@@ -67,8 +69,18 @@ namespace Assets.Scripts.Player
         [Header("References")]
         [SerializeField] ParticleSystem levelUpEffect;
         [SerializeField] GameObject weapon; //to be removed later
-        [SerializeField] private StatusEffectData effectData;
+        //[SerializeField] private StatusEffectData effectData;
         PlayerManager playerManager;
+
+        private class ActiveEffect
+        {
+            public StatusEffectData Data;
+            public float ElapsedTime;
+            public float NextTickTime;
+            public int StackCount;
+        }
+
+        private Dictionary<StatusEffectData.StatusEffectType, ActiveEffect> activeEffects = new();
         private void Start()
         {
             playerManager = PlayerManager.Instance;
@@ -81,33 +93,24 @@ namespace Assets.Scripts.Player
         }
         private void Update()
         {
-            if (effectData != null) 
+            if (activeEffects != null)
             {
                 HandleEffect();
             }
-            //if (Input.GetKeyDown(KeyCode.UpArrow))
-            //{
-            //    if (level == maxLevel)
-            //    {
-            //        return;
-            //    }
-            //    currentXP++;
-            //    if (currentXP >= playerManager.PlayerStateMachine.CharacterLevelDataSO[CurrentLevel()].XpRequired)
-            //    {
-            //        LevelUp();
-            //        playerManager.PlayerStateMachine.EquipNewWeapon(weapon);
-            //    }
-            //}
         }
 
 
-        public void TakeDamage(int damage)
+        public void TakeDamage(int damage, bool applyImpulse = true)
         {
             currentHealth -= damage;
-            playerManager.PlayerStateMachine.CinemachineImpulseSource.GenerateImpulse(Vector3.up * 0.1f);
-            if (playerManager.PlayerStateMachine.PlayerCurrentState is FighterLocomotionState)
+
+            if (applyImpulse)
             {
-                playerManager.PlayerStateMachine.Animator.Play("Fighter_Hit");
+                playerManager.PlayerStateMachine.CinemachineImpulseSource.GenerateImpulse(Vector3.up * 0.1f);
+                if (playerManager.PlayerStateMachine.PlayerCurrentState is FighterLocomotionState)
+                {
+                    playerManager.PlayerStateMachine.Animator.Play("Fighter_Hit");
+                }
             }
             if (currentHealth <= 0)
                 playerManager.PlayerStateMachine.ChangeState(new PlayerDeathState(playerManager.PlayerStateMachine));
@@ -143,7 +146,7 @@ namespace Assets.Scripts.Player
         {
             resourceType = playerManager.PlayerStateMachine.CharacterLevelDataSO[CurrentLevel()].GetResourceType();
             currentResource = maxResource;
-            Debug.Log($"Player resource type set to: {resourceType}");
+            //Debug.Log($"Player resource type set to: {resourceType}");
         }
 
         public int UseResource(int amount)
@@ -155,7 +158,7 @@ namespace Assets.Scripts.Player
         public void RegainResource(int amount)
         {
             currentResource = Mathf.Min(currentResource + amount, maxResource);
-            Debug.Log($"Regained {amount} {resourceType}. Current: {currentResource}");
+            //Debug.Log($"Regained {amount} {resourceType}. Current: {currentResource}");
         }
         public CharacterLevelSO.CharacterClass GetClassType()
         {
@@ -182,38 +185,75 @@ namespace Assets.Scripts.Player
             maxLevel = playerManager.PlayerStateMachine.CharacterLevelDataSO.Length - 1;
         }
         #region Handle Status Effects
-        public void ApplyEffect(StatusEffectData _data)
+        public void ApplyEffect(StatusEffectData data)
         {
-            this.effectData = _data;
+            if (activeEffects.TryGetValue(data.statusEffectType, out var existing))
+            {
+                if (data.IsStackable)
+                {
+                    existing.StackCount = Mathf.Min(existing.StackCount + 1, data.MaxStacks);
+                    existing.ElapsedTime = 0f;
+                    existing.NextTickTime = 0f;
+
+                    if (data.StackRefreshDuration > 0)
+                        existing.ElapsedTime = 0;
+                    Debug.Log($"Stacked {data.statusEffectType} to {existing.StackCount} stacks on player.");
+                }
+                else
+                {
+                    existing.ElapsedTime = 0f;
+                    existing.NextTickTime = 0f;
+                }
+            }
+            else
+            {
+                activeEffects[data.statusEffectType] = new ActiveEffect
+                {
+                    Data = data,
+                    StackCount = 1,
+                    ElapsedTime = 0f,
+                    NextTickTime = 0f
+                };
+            }
         }
 
         public void RemoveEffect()
         {
-            effectData = null;
+            activeEffects = null;
             currentEffectTime = 0f;
             nextTickTime = 0f;
         }
-        private float currentEffectTime = 0f;   
+        private float currentEffectTime = 0f;
         private float nextTickTime = 0f;
-
         public void HandleEffect()
         {
-            currentEffectTime += Time.deltaTime;
-            if (currentEffectTime >= effectData.DOTDuration)
+            List<StatusEffectData.StatusEffectType> toRemove = new();
+
+            foreach (var kvp in activeEffects)
             {
-                RemoveEffect();
+                var effect = kvp.Value;
+                effect.ElapsedTime += Time.deltaTime;
+
+                if (effect.ElapsedTime >= effect.Data.DOTDuration)
+                {
+                    toRemove.Add(kvp.Key);
+                    continue;
+                }
+
+                if (effect.Data.DOTDamage != 0 && effect.ElapsedTime > effect.NextTickTime)
+                {
+                    effect.NextTickTime += effect.Data.DOTInterval;
+                    int totalDamage = effect.Data.DOTDamage * effect.StackCount;
+                    TakeDamage(totalDamage, false);
+                    effect.Data.DamageNumberPrefab.Spawn(transform.position, totalDamage);
+                }
             }
-            if (effectData == null)
+
+            foreach (var key in toRemove)
             {
-                return;
-            }
-            if (effectData.DOTDamage != 0 && currentEffectTime > nextTickTime) 
-            {
-                nextTickTime += effectData.DOTInterval;
-                TakeDamage(effectData.DOTDamage);
-                effectData.DamageNumberPrefab.Spawn(transform.position, effectData.DOTDamage);
+                activeEffects.Remove(key);
             }
         }
-        #endregion
     }
+    #endregion
 }

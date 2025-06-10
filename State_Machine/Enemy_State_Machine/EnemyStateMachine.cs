@@ -95,8 +95,9 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
             CurrentHealth = MaxHealth;
             ChangeState(new EnemyIdleState(this));
         }
-        public void TakeDamage(int damage)
+        public void TakeDamage(int damage, bool applyImpulse)
         {
+            applyImpulse = false;
             CurrentHealth -= damage;
             ShouldStartAttacking = true;
             if (CurrentHealth <= Mathf.RoundToInt(MaxHealth * EnrageThreshold) && CanBecomeEnraged)

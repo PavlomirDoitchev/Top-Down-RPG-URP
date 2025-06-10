@@ -44,7 +44,7 @@ namespace Assets.Scripts.Enemies
                     playerManager.PlayerStateMachine.ForceReceiver.AddForce((other.transform.position - enemyStateMachine.transform.position).normalized * enemyStateMachine.KnockBackForce);
 
                 var playerStats = playerManager.PlayerStateMachine.PlayerStats;
-                playerStats.TakeDamage(baseDamage);
+                playerStats.TakeDamage(baseDamage, true);
                 damageNumber.Spawn(other.transform.position, baseDamage, other.transform);
                 //Debug.Log("Player took " + baseDamage);
 
