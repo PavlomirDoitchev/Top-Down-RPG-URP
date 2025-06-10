@@ -10,6 +10,7 @@ public class StatusEffectData : ScriptableObject
         Poison,
         Burn,
         Slow,
+        Bleed,
         Freeze,
         Stun
     }
