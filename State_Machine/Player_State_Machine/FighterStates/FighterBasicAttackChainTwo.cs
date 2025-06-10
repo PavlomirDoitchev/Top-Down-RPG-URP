@@ -15,7 +15,7 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
         {
             base.EnterState();
             int rank = _playerStateMachine.BasicAttackRank;
-            _playerStateMachine.Animator.speed = _playerStateMachine.PlayerStats.AttackSpeed;
+            _playerStateMachine.Animator.speed = _playerStateMachine.PlayerStats.TotalAttackSpeed;
             _playerStateMachine.Animator.Play("2Hand-Sword-Attack2");
             SetMeleeDamage(rank, AbilityType.BasicAttack, PlayerStatType.Strength);
         }

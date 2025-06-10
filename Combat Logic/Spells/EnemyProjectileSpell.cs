@@ -1,20 +1,23 @@
 ﻿using UnityEngine;
 namespace Assets.Scripts.Combat_Logic
 {
-    public class Fireball : MonoBehaviour, IProjectile
+    public class EnemyProjectileSpell : MonoBehaviour, IProjectile
     {
         [SerializeField] private ProjectileData projectileData;
         [SerializeField] private StatusEffectData effectData;
+        [SerializeField] private LayerMask targetLayer;
+        [SerializeField] private LayerMask selfDestroyLayer;
         private Transform target;
         private Rigidbody rb;
         
         [Header("Spell Stats")]
         [SerializeField] private float offSet;
-        [SerializeField] private float timer = 5f;
+        [SerializeField] private float timer;
         Vector3 direction;
         void Start()
         {
             rb = GetComponent<Rigidbody>();
+            timer = projectileData.lifeTime;
         }
         private void Update()
         {
@@ -22,7 +25,7 @@ namespace Assets.Scripts.Combat_Logic
             if (timer <= 0f)
             {
                 gameObject.SetActive(false);
-                timer = 5f; 
+                timer = projectileData.lifeTime; 
             }
         }
         private void FixedUpdate()
@@ -36,7 +39,7 @@ namespace Assets.Scripts.Combat_Logic
                 || other.gameObject.layer == LayerMask.NameToLayer("Default"))
                 gameObject.SetActive(false);
 
-            if(other.TryGetComponent<IEffectable>(out var effectable)
+            if(effectData != null && other.TryGetComponent<IEffectable>(out var effectable)
                 && other.gameObject.layer == LayerMask.NameToLayer("MyOutlines"))
             {
                 effectable.ApplyEffect(effectData);

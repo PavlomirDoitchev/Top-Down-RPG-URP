@@ -17,7 +17,7 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
         public override void EnterState()
         {
             base.EnterState();
-            //Debug.Log($"Entering state: {this.GetType().Name}");
+            Debug.Log($"Entering state: {this.GetType().Name}");
         }
         protected bool CheckForGlobalTransitions()
         {
@@ -37,15 +37,21 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
             }
             if (_enemyStateMachine.ShouldStartAttacking)
             {
-                if (_enemyStateMachine.EnemyType == EnemyType.Melee)
+                switch (_enemyStateMachine.EnemyType)
                 {
-                    _enemyStateMachine.ShouldStartAttacking = false;
-                    _enemyStateMachine.ChangeState(new EnemyMeleeAttackState(_enemyStateMachine));
-                }
-                else if (_enemyStateMachine.EnemyType == EnemyType.Ranged)
-                {
-                    //_enemyStateMachine.ChangeState(new EnemyRangedAttackState(_enemyStateMachine));
+                    case EnemyType.Melee:
+                        _enemyStateMachine.ShouldStartAttacking = false;
+                        _enemyStateMachine.ChangeState(new EnemyMeleeAttackState(_enemyStateMachine));
+                        break;
+                    case EnemyType.Ranged:
+                        _enemyStateMachine.ShouldStartAttacking = false;
+                        _enemyStateMachine.ChangeState(new EnemyRangedAttackState(_enemyStateMachine));
 
+                        break;
+                    case EnemyType.MeleeRanged:
+                        _enemyStateMachine.ShouldStartAttacking = false;
+                        _enemyStateMachine.ChangeState(new EnemyRangedAttackState(_enemyStateMachine));
+                        break;
                 }
             }
             if (_enemyStateMachine.IsStunned)
@@ -210,15 +216,12 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
 
         protected bool MeleeEnemy()
         {
-            if (_enemyStateMachine.EnemyType == EnemyType.Melee)
+            if (_enemyStateMachine.EnemyType == EnemyType.Ranged
+                || _enemyStateMachine.EnemyType == EnemyType.MeleeRanged)
             {
-                return true;
-            }
-            else
-            {
-                _enemyStateMachine.EnemyType = EnemyType.Ranged;
                 return false;
             }
+            return true;
         }
     }
 }

@@ -36,10 +36,13 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
             _enemyStateMachine.Agent.SetDestination(PlayerManager.Instance.PlayerStateMachine.transform.position);
 
             if (Vector3.Distance(PlayerManager.Instance.PlayerStateMachine.transform.position, _enemyStateMachine.transform.position)
-                > _enemyStateMachine.AttackDistanceToleranceBeforeChasing)
+                > _enemyStateMachine.AttackRangeToleranceBeforeChasing && _enemyStateMachine.EnemyType == EnemyType.Melee)
             {
                 _enemyStateMachine.ChangeState(new EnemyChaseState(_enemyStateMachine));
             }
+            else if(Vector3.Distance(PlayerManager.Instance.PlayerStateMachine.transform.position, _enemyStateMachine.transform.position)
+                > _enemyStateMachine.AttackRange && _enemyStateMachine.EnemyType == EnemyType.MeleeRanged)
+                _enemyStateMachine.ChangeState(new EnemyRangedAttackState(_enemyStateMachine));
         }
         public override void ExitState()
         {

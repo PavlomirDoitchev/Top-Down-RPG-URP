@@ -53,14 +53,14 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
 
             // Check if the enemy can see the player and is a melee enemy and switch to the appropriate attack state
             if (Vector3.Distance(PlayerManager.Instance.PlayerStateMachine.transform.position, _enemyStateMachine.transform.position)
-                < _enemyStateMachine.AttackDistanceToleranceBeforeChasing
+                < _enemyStateMachine.AttackRangeToleranceBeforeChasing
                 && HasLineOfSight() 
                 && MeleeEnemy())
             {
                 _enemyStateMachine.ChangeState(new EnemyMeleeAttackState(_enemyStateMachine));
             }
             else if (Vector3.Distance(PlayerManager.Instance.PlayerStateMachine.transform.position, _enemyStateMachine.transform.position)
-                < _enemyStateMachine.RangedAttackDistance
+                < _enemyStateMachine.RangedAttackRange
                 && HasLineOfSight()
                 && !MeleeEnemy())
                 _enemyStateMachine.ChangeState(new EnemyRangedAttackState(_enemyStateMachine));

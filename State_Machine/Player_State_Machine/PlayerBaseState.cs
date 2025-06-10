@@ -51,6 +51,11 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
         {
             _playerStateMachine.Animator.speed = 1f;
         }
+        protected void SetAttackSpeed() 
+        {
+            _playerStateMachine.Animator.speed = _playerStateMachine.PlayerStats.TotalAttackSpeed;
+            Debug.Log($"Setting attack speed to {_playerStateMachine.PlayerStats.TotalAttackSpeed} in state: {this.GetType().Name}");
+        }
         /// <summary>
         /// Preserve momentum. Used in PlayerMove().
         /// </summary>
@@ -101,8 +106,9 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
         protected void PlayerMove(float deltaTime)
         {
             Vector3 movement = CalculateMovement();
-
-            Move(movement * _playerStateMachine.PlayerStats.BaseMovementSpeed, deltaTime);
+            float speedModifier = _playerStateMachine.PlayerStats.BaseMovementSpeed * (1 - _playerStateMachine.PlayerStats.TotalSlowAmount);
+            Mathf.Clamp(_playerStateMachine.PlayerStats.TotalSlowAmount, 0f, 0.95f);
+            Move(movement * speedModifier, deltaTime);
 
             if (movement != Vector3.zero)
             {
@@ -148,44 +154,16 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
             switch (statType)
             {
                 case PlayerStatType.Strength:
-                    return _playerStateMachine.PlayerStats.Strength;
+                    return _playerStateMachine.PlayerStats.Strength + _playerStateMachine.PlayerStats.TotalStatChangeStrength;
                 case PlayerStatType.Dexterity:
-                    return _playerStateMachine.PlayerStats.Dexterity;
+                    return _playerStateMachine.PlayerStats.Dexterity + _playerStateMachine.PlayerStats.TotalStatChangeDexterity;
                 case PlayerStatType.Intellect:
-                    return _playerStateMachine.PlayerStats.Intellect;
+                    return _playerStateMachine.PlayerStats.Intellect + _playerStateMachine.PlayerStats.TotalStatChangeIntellect;
                 default:
                     return 0;
             }
         }
-        /// <summary>
-        /// Determine whether the attack should apply critical strike modifiers.
-        /// </summary>
-        /// <returns></returns>
-        private bool CriticalStrikeSuccessfull() 
-        {
-            float rollForCrit = Random.Range(0f, 1f);
-            if (_playerStateMachine.PlayerStats.CriticalChance >= rollForCrit) 
-            {
-                //Debug.Log("Critical!");
-                return true;
-            }
-            return false;
-        }
-        protected float CalculateMeleeDamage(AbilityType abilityType, PlayerStatType statType)
-        {
-            int rank = GetAbilityRank(abilityType);
-            float statValue = GetStatValue(statType);
-            float damageMultiplier = GetAbilityMultiplier(abilityType, rank);
-            float baseDamage = 1 + (statValue *
-                           damageMultiplier);
-            _playerStateMachine.damageText.SetColor(Color.white);
-            if (CriticalStrikeSuccessfull())
-            {
-                baseDamage *= _playerStateMachine.PlayerStats.CriticalModifier;
-                _playerStateMachine.damageText.SetColor(Color.yellow);
-            }
-            return baseDamage;
-        }
+        
         private int GetAbilityRank(AbilityType abilityType)
         {
             switch (abilityType)
@@ -198,6 +176,16 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
                 default:
                     return 0;
             }
+        }
+        private bool CriticalStrikeSuccessfull()
+        {
+            float rollForCrit = Random.Range(0f, 1f);
+            if (_playerStateMachine.PlayerStats.CriticalChance >= rollForCrit)
+            {
+                //Debug.Log("Critical!");
+                return true;
+            }
+            return false;
         }
         private float GetAbilityMultiplier(AbilityType abilityType, int rank)
         {
@@ -212,6 +200,27 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
                     return 1f; 
             }
         }
+        protected float CalculateMeleeDamage(AbilityType abilityType, PlayerStatType statType)
+        {
+            int rank = GetAbilityRank(abilityType);
+            float statValue = GetStatValue(statType);
+            if(statValue < 0)
+            {
+                Debug.LogWarning($"Stat value for {statType} is negative: {statValue}. Using 0 instead.");
+                statValue = 0;
+            }
+            float damageMultiplier = GetAbilityMultiplier(abilityType, rank);
+            //use a percentage of your attack stat. In SetMeleeDamage 
+            float baseDamage = 1 + (statValue *
+                           damageMultiplier);
+            _playerStateMachine.damageText.SetColor(Color.white);
+            if (CriticalStrikeSuccessfull())
+            {
+                baseDamage *= _playerStateMachine.PlayerStats.CriticalModifier;
+                _playerStateMachine.damageText.SetColor(Color.yellow);
+            }
+            return baseDamage;
+        }
         /// <summary>
         /// Choose the ability rank and the stat type to use as a modifier for the melee damage.
         /// </summary>
@@ -220,11 +229,11 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
         /// <param name="statType"></param>
         protected void SetMeleeDamage(int abilityRank, AbilityType abilityType, PlayerStatType statType)
         {
-            float multiplier = CalculateMeleeDamage(abilityType, statType);
+            float calculatedDamage = CalculateMeleeDamage(abilityType, statType);
             //Debug.Log($"Using {statType} as a modifier");
             meleeWeapon.MeleeWeaponDamage
                  (Random.Range(meleeWeapon.EquippedWeaponDataSO.minDamage, meleeWeapon.EquippedWeaponDataSO.maxDamage + 1),
-                 multiplier,
+                 calculatedDamage,
                  abilityRank);
             //ApplyAbilityEffects(abilityType);
         }
@@ -242,21 +251,6 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
         //            return null;
         //    }
         //}
-        //private void ApplyAbilityEffects(AbilityType abilityType)
-        //{
-        //    Basic_Ability_SO ability = GetAbilityData(abilityType);
-
-        //    if (ability == null) return;
-
-        //    foreach (var buff in ability.buffs)
-        //    {
-        //        _playerStateMachine._PlayerStats.ApplyBuff(new Buff(buff.Type, buff.Duration, buff.EffectStrength));
-        //    }
-
-        //    foreach (var debuff in ability.debuffs)
-        //    {
-        //        _playerStateMachine._PlayerStats.ApplyDebuff(new Debuff(debuff.debuffType, debuff.duration, debuff.effectStrength));
-        //    }
-        //}
+        
     }
 }

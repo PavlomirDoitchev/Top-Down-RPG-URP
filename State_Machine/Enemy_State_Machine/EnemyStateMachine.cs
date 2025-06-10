@@ -36,9 +36,12 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
         [field: SerializeField] public float ChaseDistance { get; private set; }
         [field: SerializeField] public float MaxDistanceFromOrigin { get; private set; }
         [field: SerializeField] public float SuspicionTime { get; private set; }
-        [field: SerializeField] public float AttackDistance { get; private set; }
-        [field: SerializeField] public float AttackDistanceToleranceBeforeChasing { get; private set; }
-        [field :SerializeField] public float RangedAttackDistance { get; private set; } 
+        [field: SerializeField] public float AttackRange { get; private set; }
+        [field: SerializeField] public float AttackRangeToleranceBeforeChasing { get; private set; }
+        [field :SerializeField] public float RangedAttackRange { get; private set; }
+        [field: SerializeField] public float FleeingRange { get; private set; } //should be less than RangedAttackDistance
+        [field: SerializeField] public float FleeingDistanceAmount { get; private set; } = 5f; 
+        [field: SerializeField] public float RangedAttackCooldown { get; private set; } = 2f; 
         [field: SerializeField] public int AttackIndex { get; private set; } = 0; //used to determine which attack animation to play
         [field: SerializeField]
         [field: Range(0, 1)] public float EnrageThreshold { get; private set; } = 0.5f; //percentage of health at which the enemy becomes enraged
@@ -116,20 +119,24 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
         {
             //Gizmos.color = Color.red;
             //Gizmos.DrawWireSphere(transform.position, AggroRange);
-            //Gizmos.color = Color.yellow;
+            Gizmos.color = Color.white;
+            Gizmos.DrawWireSphere(transform.position, FleeingRange);
+            Gizmos.color = Color.yellow;
             Gizmos.DrawWireSphere(transform.position, ChaseDistance);
             Gizmos.color = Color.green;
-            Gizmos.DrawWireSphere(transform.position, AttackDistance);
+            Gizmos.DrawWireSphere(transform.position, AttackRange);
             Gizmos.color = Color.magenta;
-            //Gizmos.DrawWireSphere(transform.position, AttackDistanceToleranceBeforeChasing);
+            Gizmos.DrawWireSphere(transform.position, AttackRangeToleranceBeforeChasing);
+            Gizmos.color = Color.cyan;
+            Gizmos.DrawWireSphere(transform.position, RangedAttackRange);
             //Gizmos.color = Color.blue;
             //Gizmos.DrawWireSphere(OriginalPosition, MaxDistanceFromOrigin);
 
 
-            Vector3 position = transform.position + Vector3.up * 1.5f;
+            Vector3 position = transform.position;
             Vector3 forward = transform.forward;
 
-            Gizmos.color = Color.yellow;
+            Gizmos.color = Color.red;
             Gizmos.DrawWireSphere(position, AggroRange);
 
             Vector3 leftBoundary = Quaternion.Euler(0, -ViewAngle / 2f, 0) * forward * AggroRange;

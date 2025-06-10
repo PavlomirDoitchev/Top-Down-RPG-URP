@@ -13,7 +13,13 @@ public class StatusEffectData : ScriptableObject
         Freeze,
         Stun
     }
-
+    public enum ModifyMainStatType
+    {
+        Stamina,
+        Strength,
+        Dexterity,
+        Intellect
+    }
     public StatusEffectType statusEffectType;
     public string Name;
 
@@ -22,8 +28,12 @@ public class StatusEffectData : ScriptableObject
     public float DOTDuration;
     public float DOTInterval;
 
-    [Header("Slow/Other Effects")]
-    public float SlowAmount;
+    [Header("Extra Effects")]
+    [Tooltip("Slow amount in %. At 2, Controls get reversed. Use for Confusion style effects")]
+    [Range(0, 2)] public float SlowAmount; // 0 = no slow, 1 = 100% slow, 2 = reversed controls 
+    [Range(-1, 1)] public float ModifyAttackSpeed = 0f;
+    public ModifyMainStatType modifyStat;
+    public int ModifyMainStat = 0;
 
     [Header("Stacking Options")]
     public bool IsStackable = false;

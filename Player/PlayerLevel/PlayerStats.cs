@@ -59,6 +59,13 @@ namespace Assets.Scripts.Player
         [field: SerializeField]
         [field: Range(1, 5)] public float CriticalModifier { get; private set; }
 
+        public float TotalSlowAmount => CalculateTotalSlow();
+        public float TotalAttackSpeed => CalculateTotalAttackSpeed();
+        public int TotalStatChange => CalculateTotalStatChange();
+        public int TotalStatChangeStrength => CalculateTotalStatChange(StatusEffectData.ModifyMainStatType.Strength);
+        public int TotalStatChangeDexterity => CalculateTotalStatChange(StatusEffectData.ModifyMainStatType.Dexterity);
+        public int TotalStatChangeIntellect => CalculateTotalStatChange(StatusEffectData.ModifyMainStatType.Intellect);
+        public int TotalStatChangeStamina => CalculateTotalStatChange(StatusEffectData.ModifyMainStatType.Stamina);
 
         [Header("Resource Info")]
         private CharacterLevelSO.ResourceType resourceType;
@@ -78,6 +85,9 @@ namespace Assets.Scripts.Player
             public float ElapsedTime;
             public float NextTickTime;
             public int StackCount;
+            public float CurrentSlowAmount => Data.SlowAmount * StackCount;
+            public float CurrentAttackSpeed => Data.ModifyAttackSpeed * StackCount;
+            public int CurrentStatChange => Data.ModifyMainStat * StackCount;
         }
 
         private Dictionary<StatusEffectData.StatusEffectType, ActiveEffect> activeEffects = new();
@@ -197,7 +207,7 @@ namespace Assets.Scripts.Player
 
                     if (data.StackRefreshDuration > 0)
                         existing.ElapsedTime = 0;
-                    Debug.Log($"Stacked {data.statusEffectType} to {existing.StackCount} stacks on player.");
+                    //Debug.Log($"Stacked {data.statusEffectType} to {existing.StackCount} stacks on player.");
                 }
                 else
                 {
@@ -217,20 +227,22 @@ namespace Assets.Scripts.Player
             }
         }
 
-        public void RemoveEffect()
-        {
-            activeEffects = null;
-            currentEffectTime = 0f;
-            nextTickTime = 0f;
-        }
-        private float currentEffectTime = 0f;
-        private float nextTickTime = 0f;
+        //public void RemoveEffect()
+        //{
+        //    activeEffects = null;
+        //    currentEffectTime = 0f;
+        //    nextTickTime = 0f;
+        //}
+        //private float currentEffectTime = 0f;
+        //private float nextTickTime = 0f;
         public void HandleEffect()
         {
+
             List<StatusEffectData.StatusEffectType> toRemove = new();
 
             foreach (var kvp in activeEffects)
             {
+
                 var effect = kvp.Value;
                 effect.ElapsedTime += Time.deltaTime;
 
@@ -239,9 +251,9 @@ namespace Assets.Scripts.Player
                     toRemove.Add(kvp.Key);
                     continue;
                 }
-
                 if (effect.Data.DOTDamage != 0 && effect.ElapsedTime > effect.NextTickTime)
                 {
+
                     effect.NextTickTime += effect.Data.DOTInterval;
                     int totalDamage = effect.Data.DOTDamage * effect.StackCount;
                     TakeDamage(totalDamage, false);
@@ -254,6 +266,67 @@ namespace Assets.Scripts.Player
                 activeEffects.Remove(key);
             }
         }
+
+        private float CalculateTotalSlow()
+        {
+            float maxSlow = 0f;
+            foreach (var effect in activeEffects.Values)
+            {
+                if (effect.Data.SlowAmount > 0)
+                {
+                    maxSlow = Mathf.Max(maxSlow, effect.CurrentSlowAmount);
+                }
+            }
+            return maxSlow;
+        }
+        private float CalculateTotalAttackSpeed()
+        {
+            float totalAttackSpeed = AttackSpeed;
+            foreach (var effect in activeEffects.Values)
+            {
+                if (effect.Data.ModifyAttackSpeed != 0)
+                {
+                    totalAttackSpeed *= (1 + effect.Data.ModifyAttackSpeed);
+                }
+            }
+            return totalAttackSpeed;
+        }
+        /// <summary>
+        /// Target specific stat to change.
+        /// </summary>
+        /// <param name="status"></param>
+        /// <returns></returns>
+        private int CalculateTotalStatChange(StatusEffectData.ModifyMainStatType status)
+        {
+            int totalStatChange = 0;
+            foreach (var effect in activeEffects.Values)
+            {
+                if (effect.Data.ModifyMainStat != 0)
+                {
+                    if (effect.Data.modifyStat == status)
+                        totalStatChange += effect.Data.ModifyMainStat * effect.StackCount;
+                }
+            }
+            return totalStatChange;
+        }
+        /// <summary>
+        /// Affects all stats.
+        /// </summary>
+        /// <returns></returns>
+        private int CalculateTotalStatChange()
+        {
+            int totalStatChange = 0;
+            foreach (var effect in activeEffects.Values)
+            {
+                if (effect.Data.ModifyMainStat != 0)
+                {
+                    totalStatChange += effect.Data.ModifyMainStat * effect.StackCount; //affect all stats?
+
+                }
+            }
+            return totalStatChange;
+        }
     }
+
     #endregion
 }

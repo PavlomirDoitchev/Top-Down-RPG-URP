@@ -20,8 +20,6 @@ public class EnemyAnimationEvents : MonoBehaviour
     public void DisableOffHandWeaponDamage() => enemyMelee[1].CantHarmPlayer();
     public void KnockBack() => enemyStateMachine.ShouldKnockBackPlayer = true;
     public void DontKnockBack() => enemyStateMachine.ShouldKnockBackPlayer = false;
-    public void CastSpell() => enemySpell.Cast(PlayerManager.Instance.PlayerStateMachine.transform);
-    
 
     #endregion
 
@@ -29,4 +27,8 @@ public class EnemyAnimationEvents : MonoBehaviour
     public void DragonBruteTwoHitCombo() => enemyStateMachine.TwoHitCombo();
     #endregion
 
+    #region Spell Casting
+    public void CastSpell() => enemySpell.Cast(PlayerManager.Instance.PlayerStateMachine.transform);
+    public void ChangeAnimationAfterCast() => enemyStateMachine.Animator.CrossFadeInFixedTime(enemyStateMachine.IdleAnimationName, .1f);
+    #endregion
 }

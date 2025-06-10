@@ -72,7 +72,7 @@ public class MeleeWeapon : MonoBehaviour
 
     public void MeleeWeaponDamage(int baseDamage, float multiplier, int index)
     {
-        this.baseDamage = Mathf.RoundToInt(baseDamage * multiplier);
+        this.baseDamage = Mathf.RoundToInt(baseDamage * (multiplier * .2f));
     }
     public void ClearHitEnemies()
     {

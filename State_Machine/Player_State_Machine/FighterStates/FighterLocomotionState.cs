@@ -14,6 +14,7 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
         public override void EnterState()
         {
             base.EnterState();
+            ResetAnimationSpeed();
             particleTornado = SkillManager.Instance.fighterQ.particle;
             particleTornado.Stop();
             _playerStateMachine.Animator.CrossFadeInFixedTime("Basic_Locomotion", .1f);

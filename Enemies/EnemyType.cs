@@ -2,4 +2,5 @@
 {
     Melee,
     Ranged,
+    MeleeRanged
 }

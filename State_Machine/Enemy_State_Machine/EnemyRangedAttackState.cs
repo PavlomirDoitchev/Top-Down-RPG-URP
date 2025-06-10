@@ -1,11 +1,12 @@
 ﻿using Assets.Scripts.Player;
 using UnityEngine;
+using UnityEngine.AI;
 
 namespace Assets.Scripts.State_Machine.Enemy_State_Machine
 {
     public class EnemyRangedAttackState : EnemyBaseState
     {
-        float cooldDown = 1f;
+        float cooldDownTimer;
         public EnemyRangedAttackState(EnemyStateMachine stateMachine) : base(stateMachine)
         {
         }
@@ -15,31 +16,39 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
             base.EnterState();
             _enemyStateMachine.Agent.isStopped = true;
             RotateToPlayer();
+            cooldDownTimer = _enemyStateMachine.RangedAttackCooldown;
             _enemyStateMachine.Animator.CrossFadeInFixedTime(_enemyStateMachine.CastAnimationName, .1f);
         }
 
         public override void UpdateState(float deltaTime)
         {
-            cooldDown -= deltaTime;
+
+            cooldDownTimer -= deltaTime;
             if (CheckForGlobalTransitions()) return;
             RotateToPlayer(deltaTime);
-            if (!HasLineOfSight() || cooldDown < 0f) 
+            if (!HasLineOfSight() || cooldDownTimer < 0f)
             {
-                _enemyStateMachine.ChangeState(_enemyStateMachine.PreviousState); 
+                _enemyStateMachine.ChangeState(_enemyStateMachine.PreviousState);
                 return;
             }
             if (Vector3.Distance(PlayerManager.Instance.PlayerStateMachine.transform.position, _enemyStateMachine.transform.position)
-                > _enemyStateMachine.RangedAttackDistance)
+                > _enemyStateMachine.RangedAttackRange)
             {
                 _enemyStateMachine.ChangeState(new EnemyChaseState(_enemyStateMachine));
                 return;
             }
+
             if (Vector3.Distance(PlayerManager.Instance.PlayerStateMachine.transform.position, _enemyStateMachine.transform.position)
-                < _enemyStateMachine.AttackDistance)
+                < _enemyStateMachine.FleeingRange && _enemyStateMachine.EnemyType == EnemyType.Ranged)
+            {
+                _enemyStateMachine.ChangeState(new EnemyFleeState(_enemyStateMachine));
+               
+            }
+            else if (Vector3.Distance(PlayerManager.Instance.PlayerStateMachine.transform.position, _enemyStateMachine.transform.position)
+                < _enemyStateMachine.AttackRange && _enemyStateMachine.EnemyType == EnemyType.MeleeRanged)
             {
                 _enemyStateMachine.ChangeState(new EnemyMeleeAttackState(_enemyStateMachine));
             }
-            
         }
 
         public override void ExitState()
