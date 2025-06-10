@@ -10,6 +10,7 @@ namespace Assets.Scripts.Enemies
     {
         public WeaponDataSO EquippedWeaponDataSO;
         private int baseDamage;
+        [SerializeField] private StatusEffectData effectData;
         private readonly List<Collider> enemyColliders = new List<Collider>();
         PlayerManager playerManager;
         EnemyStateMachine enemyStateMachine;
@@ -24,6 +25,11 @@ namespace Assets.Scripts.Enemies
             if (enemyColliders.Contains(other)) return;
             if (other.gameObject.CompareTag("Player") && this.gameObject.layer == LayerMask.NameToLayer("EnemyDamage"))
             {
+                if (effectData != null && other.TryGetComponent<IEffectable>(out var effectable)
+                && other.gameObject.layer == LayerMask.NameToLayer("MyOutlines"))
+                {
+                    effectable.ApplyEffect(effectData);
+                }
                 enemyColliders.Add(other);
 
                 damageNumber.SetColor(Color.red);
