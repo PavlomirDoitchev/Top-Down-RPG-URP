@@ -149,9 +149,9 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
         protected void SnapToPlayer()
         {
             Transform playerTransform = PlayerManager.Instance.PlayerStateMachine.transform;
+            _enemyStateMachine.Animator.Play(_enemyStateMachine.SnapAnimationName);
 
-            float behindDistance = 3f;
-            Vector3 offset = -playerTransform.forward * behindDistance;
+            Vector3 offset = -playerTransform.forward * _enemyStateMachine.ShadowStepDistanceAmount;
             Vector3 snapPosition = playerTransform.position + offset;
 
             snapPosition.y = _enemyStateMachine.transform.position.y;

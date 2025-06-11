@@ -34,7 +34,7 @@ namespace Assets.Scripts.Combat_Logic
             }
             return AddMoreProjectiles();
         }
-
+        
         private GameObject AddMoreProjectiles()
         {
             GameObject newProjectile = Instantiate(ProjectilePrefab, projectileContainer);

@@ -25,6 +25,8 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
 
         #region Enemy AI Stats
         [Header("AI Stats")]
+        [Space(10)]
+        public string enemyAIName = "Enemy AI"; 
         [field: SerializeField] public float ViewAngle { get; private set; } = 120f; //degrees
         [field: SerializeField] public LayerMask ObstacleMask { get; private set; }
         [field: SerializeField] public LayerMask TargetMask { get; private set; }
@@ -46,14 +48,17 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
         [field: SerializeField]
         [field: Range(0, 1)] public float EnrageThreshold { get; private set; } = 0.5f; //percentage of health at which the enemy becomes enraged
         [field: SerializeField] public bool CanBecomeEnraged { get; set; } = false;
-        [field: SerializeField]
-        [field: Range(0.1f, 0.9f)] public float ShadowStepThresholdDistance { get; private set; } = 0.5f; 
         [field: SerializeField] public bool CanShadowStep { get; set; } = false; 
+        [field: SerializeField]
+        [field: Range(0.1f, 0.9f)] public float ShadowStepThresholdDistance { get; private set; } = 0.5f;
+        [field: SerializeField] public float ShadowStepDistanceAmount { get; private set; } = 3f; 
 
         #endregion
 
         #region Enemy Stats
-        [Header("Enemy Stats")]
+        [Header("----------Enemy Stats----------")]
+        [Space(10)]
+        public string enemyName = "Enemy"; 
         [field: SerializeField] public int MaxHealth { get; private set; } = 100;
         [field: SerializeField] public int CurrentHealth { get; private set; }
         [field: SerializeField] public int XpReward { get; private set; } = 1;
@@ -84,10 +89,12 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
         [field: SerializeField] public string StunnedAnimationName { get; private set; } = "stunned";
         [field: SerializeField] public string EnragedAnimationName { get; private set; } = "Roar";
         [field: SerializeField] public string CastAnimationName { get; private set; } = "cast";
+        [field: SerializeField] public string SnapAnimationName { get; private set; } = "snap";
         #endregion
 
         #region Global Flags
         public bool ShouldDie { get; set; } = false;
+        public bool ShouldReturnToOrigin { get; set; } = false;
         public bool IsStunned { get; set; } = false;
         public bool IsEnraged { get; set; } = false;
         public bool ShouldStartAttacking { get; set; } = false;  

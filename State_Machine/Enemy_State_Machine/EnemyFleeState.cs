@@ -6,8 +6,8 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
 {
     public class EnemyFleeState : EnemyBaseState
     {
-        float fleeRange = 0f;
-        //float fleeTimer = 5f;
+        float fleeRange;
+        float fleeTimer = 5f;
 
         public EnemyFleeState(EnemyStateMachine stateMachine) : base(stateMachine)
         {
@@ -25,12 +25,17 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
         public override void UpdateState(float deltaTime)
         {
             if (CheckForGlobalTransitions()) return;
-            //fleeTimer -= deltaTime;
-            //if(fleeTimer <= 0f)
-            //{
-            //    _enemyStateMachine.ChangeState(_enemyStateMachine.PreviousState);
-            //    return;
-            //}
+            fleeTimer -= deltaTime;
+            if (fleeTimer <= 0f && !_enemyStateMachine.CanShadowStep)
+            {
+                _enemyStateMachine.ChangeState(_enemyStateMachine.PreviousState);
+                return;
+            }
+            else if(_enemyStateMachine.CanShadowStep && fleeTimer <= 0f)
+            {
+                SnapToPlayer();
+                _enemyStateMachine.ChangeState(new EnemyChaseState(_enemyStateMachine));
+            }
             var playerPos = PlayerManager.Instance.PlayerStateMachine.transform.position;
             var enemyPos = _enemyStateMachine.transform.position;
 
@@ -43,26 +48,22 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
             {
                 Vector3 directionAway = (enemyPos - playerPos).normalized;
 
-                // Try up to N attempts to find a valid flee path
                 const int maxAttempts = 5;
                 Vector3 fleeDestination = enemyPos;
                 bool validPathFound = false;
 
                 for (int i = 0; i < maxAttempts; i++)
                 {
-                    // Random angle offset between -45 and 45 degrees
                     float randomAngle = Random.Range(-120f, 120f);
                     Quaternion rotation = Quaternion.Euler(0, randomAngle, 0);
                     Vector3 randomFleeDirection = rotation * directionAway;
 
                     Vector3 tentativeDestination = enemyPos + randomFleeDirection * _enemyStateMachine.FleeingDistanceAmount;
 
-                    // Sample position on NavMesh close to tentativeDestination
                     if (NavMesh.SamplePosition(tentativeDestination, out NavMeshHit hit, 1.0f, NavMesh.AllAreas))
                     {
                         tentativeDestination = hit.position;
 
-                        // Check if path is walkable
                         NavMeshPath path = new NavMeshPath();
                         bool pathFound = _enemyStateMachine.Agent.CalculatePath(tentativeDestination, path);
 
@@ -77,7 +78,6 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
 
                 if (!validPathFound)
                 {
-                    // No valid flee path found, set fleeing range to 0 so enemy can attack
                     fleeRange = 0;
                     return;
                 }
