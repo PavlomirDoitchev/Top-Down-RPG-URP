@@ -26,16 +26,12 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
         {
             if (CheckForGlobalTransitions()) return;
             fleeTimer -= deltaTime;
-            if (fleeTimer <= 0f && !_enemyStateMachine.CanShadowStep)
+            if (fleeTimer <= 0f)
             {
                 _enemyStateMachine.ChangeState(_enemyStateMachine.PreviousState);
                 return;
             }
-            else if(_enemyStateMachine.CanShadowStep && fleeTimer <= 0f)
-            {
-                SnapToPlayer();
-                _enemyStateMachine.ChangeState(new EnemyChaseState(_enemyStateMachine));
-            }
+            
             var playerPos = PlayerManager.Instance.PlayerStateMachine.transform.position;
             var enemyPos = _enemyStateMachine.transform.position;
 

@@ -8,42 +8,43 @@ namespace Assets.Scripts.Enemies
     {
         public ProjectilePool projectilePool;
         [SerializeField] Transform spawnPosition;
-        [SerializeField] int projectileCount = 1;
-        [SerializeField] float spreadAngle = 15f; 
+        //[SerializeField] int projectileCount = 1;
+        //[SerializeField] float spreadAngle = 15f; 
         public void Cast(Transform target)
         {
-            if(projectileCount <= 0) return;
-            if(projectileCount > 1)
-            {
-                CastMultiple(target);
-                return;
-            }
+            //if(projectileCount <= 0) return;
+            //if(projectileCount > 1)
+            //{
+            //    CastMultiple(target);
+            //    return;
+            //}
             // Cast a single projectile
             GameObject projectile = projectilePool.GetProjectile();
             projectile.transform.position = spawnPosition.transform.position;
             projectile.transform.rotation = Quaternion.identity;
-            var projectileComponent = projectile.GetComponent<IProjectile>();
+            var projectileComponent = projectile.GetComponent<EnemyProjectileSpell>();
             projectileComponent.Initialize(target);
+            projectile.SetActive(true);
         }
-        public void CastMultiple(Transform target)
-        {
-            int numProjectiles = projectileCount;
+        //public void CastMultiple(Transform target)
+        //{
+        //    int numProjectiles = projectileCount;
 
-            for (int i = 0; i < numProjectiles; i++)
-            {
-                GameObject projectile = projectilePool.GetProjectile();
-                projectile.transform.position = spawnPosition.position;
-                projectile.transform.rotation = Quaternion.identity;
+        //    for (int i = 0; i < numProjectiles; i++)
+        //    {
+        //        GameObject projectile = projectilePool.GetProjectile();
+        //        projectile.transform.position = spawnPosition.position;
+        //        projectile.transform.rotation = Quaternion.identity;
 
-                Vector3 directionToTarget = (target.position - spawnPosition.position).normalized;
+        //        Vector3 directionToTarget = (target.position - spawnPosition.position).normalized;
 
-                float angleOffset = (i - (numProjectiles - 1) / 2f) * spreadAngle;
-                Quaternion rotationOffset = Quaternion.AngleAxis(angleOffset, Vector3.up); 
-                Vector3 spreadDir = rotationOffset * directionToTarget;
+        //        float angleOffset = (i - (numProjectiles - 1) / 2f) * spreadAngle;
+        //        Quaternion rotationOffset = Quaternion.AngleAxis(angleOffset, Vector3.up); 
+        //        Vector3 spreadDir = rotationOffset * directionToTarget;
 
-                var projectileComponent = projectile.GetComponent<EnemyProjectileSpell>();
-                projectileComponent.Initialize(target, spreadDir * 0.5f);
-            }
-        }
+        //        var projectileComponent = projectile.GetComponent<EnemyProjectileSpell>();
+        //        projectileComponent.Initialize(target, spreadDir * 0.5f);
+        //    }
+        //}
     }
 }

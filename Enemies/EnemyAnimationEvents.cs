@@ -31,7 +31,6 @@ public class EnemyAnimationEvents : MonoBehaviour
 
     #region Spell Casting
     public void CastSpell() => enemySpell.Cast(PlayerManager.Instance.PlayerStateMachine.transform);
-    public void CastMultiple() => enemySpell.CastMultiple(PlayerManager.Instance.PlayerStateMachine.transform);
     public void ChangeAnimationAfterCast() => enemyStateMachine.Animator.CrossFadeInFixedTime(enemyStateMachine.IdleAnimationName, .1f);
     #endregion
 

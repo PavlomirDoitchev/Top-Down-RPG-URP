@@ -17,7 +17,6 @@ namespace Assets.Scripts.Combat_Logic
             for (int i = 0; i < poolSize; i++)
             {
                 GameObject projectile = Instantiate(ProjectilePrefab, projectileContainer);
-                projectile.SetActive(false);
                 projectiles.Add(projectile);
             }
         }
@@ -28,18 +27,18 @@ namespace Assets.Scripts.Combat_Logic
             {
                 if (!projectile.activeInHierarchy)
                 {
-                    projectile.SetActive(true);
                     return projectile;
                 }
             }
             return AddMoreProjectiles();
         }
-        
+      
         private GameObject AddMoreProjectiles()
         {
             GameObject newProjectile = Instantiate(ProjectilePrefab, projectileContainer);
             projectiles.Add(newProjectile);
             return newProjectile;
         }
+        
     }
 }
