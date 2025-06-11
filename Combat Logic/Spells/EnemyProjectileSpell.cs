@@ -76,8 +76,8 @@ namespace Assets.Scripts.Combat_Logic
             {
                 aimModifier = new Vector3(
                 Random.Range(-aimModifier_X, aimModifier_X),
-                Random.Range(-aimModifier_Y, aimModifier_Y),
-                0);
+                0,
+                Random.Range(-aimModifier_Y, aimModifier_Y));
                 
             }
             else

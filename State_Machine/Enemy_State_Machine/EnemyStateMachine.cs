@@ -134,26 +134,26 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
             Gizmos.DrawWireSphere(transform.position, ChaseDistance);
             Gizmos.color = Color.green;
             Gizmos.DrawWireSphere(transform.position, AttackRange);
-            Gizmos.color = Color.magenta;
-            Gizmos.DrawWireSphere(transform.position, AttackRangeToleranceBeforeChasing);
-            Gizmos.color = Color.cyan;
-            Gizmos.DrawWireSphere(transform.position, RangedAttackRange);
+            //Gizmos.color = Color.magenta;
+            //Gizmos.DrawWireSphere(transform.position, AttackRangeToleranceBeforeChasing);
+            //Gizmos.color = Color.cyan;
+            //Gizmos.DrawWireSphere(transform.position, RangedAttackRange);
+            ////Gizmos.color = Color.blue;
+            ////Gizmos.DrawWireSphere(OriginalPosition, MaxDistanceFromOrigin);
+
+
+            //Vector3 position = transform.position;
+            //Vector3 forward = transform.forward;
+
+            //Gizmos.color = Color.red;
+            //Gizmos.DrawWireSphere(position, AggroRange);
+
+            //Vector3 leftBoundary = Quaternion.Euler(0, -ViewAngle / 2f, 0) * forward * AggroRange;
+            //Vector3 rightBoundary = Quaternion.Euler(0, ViewAngle / 2f, 0) * forward * AggroRange;
+
             //Gizmos.color = Color.blue;
-            //Gizmos.DrawWireSphere(OriginalPosition, MaxDistanceFromOrigin);
-
-
-            Vector3 position = transform.position;
-            Vector3 forward = transform.forward;
-
-            Gizmos.color = Color.red;
-            Gizmos.DrawWireSphere(position, AggroRange);
-
-            Vector3 leftBoundary = Quaternion.Euler(0, -ViewAngle / 2f, 0) * forward * AggroRange;
-            Vector3 rightBoundary = Quaternion.Euler(0, ViewAngle / 2f, 0) * forward * AggroRange;
-
-            Gizmos.color = Color.blue;
-            Gizmos.DrawLine(position, position + leftBoundary);
-            Gizmos.DrawLine(position, position + rightBoundary);
+            //Gizmos.DrawLine(position, position + leftBoundary);
+            //Gizmos.DrawLine(position, position + rightBoundary);
         }
         public void TwoHitCombo()
         {

@@ -24,18 +24,14 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
         {
             base.EnterState();
             InitializeWeapon();
-            SetWeaponActive(false);
-            meleeWeapon.ClearHitEnemies();
+            //meleeWeapon.ClearHitEnemies();
         }
-        protected void SetWeaponActive(bool isActive)
-        {
-            meleeWeapon.gameObject.layer = isActive ? activeLayer : inactiveLayer;
-        }
+
         protected void InitializeWeapon()
         {
             if (_playerStateMachine.EquippedWeapon != null)
             {
-                meleeWeapon = _playerStateMachine.EquippedWeapon.GetComponentInChildren<MeleeWeapon>();
+                meleeWeapon = _playerStateMachine.GetComponentInChildren<MeleeWeapon>();
             }
 
             if (meleeWeapon == null)
@@ -54,7 +50,7 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
         protected void SetAttackSpeed() 
         {
             _playerStateMachine.Animator.speed = _playerStateMachine.PlayerStats.TotalAttackSpeed;
-            Debug.Log($"Setting attack speed to {_playerStateMachine.PlayerStats.TotalAttackSpeed} in state: {this.GetType().Name}");
+            //Debug.Log($"Setting attack speed to {_playerStateMachine.PlayerStats.TotalAttackSpeed} in state: {this.GetType().Name}");
         }
         /// <summary>
         /// Preserve momentum. Used in PlayerMove().

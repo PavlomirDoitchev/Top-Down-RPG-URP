@@ -42,6 +42,6 @@ public class StatusEffectData : ScriptableObject
     public float StackRefreshDuration = 0f; // refreshes duration per stack
 
     [Header("Visuals")]
-    public GameObject VFX;
+    public ParticleSystem VFX;
     public DamageNumber DamageNumberPrefab;
 }

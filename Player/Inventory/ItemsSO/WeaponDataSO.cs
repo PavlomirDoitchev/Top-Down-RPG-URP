@@ -13,13 +13,13 @@ public class WeaponDataSO : ScriptableObject, IPlayerItems
         itemId = AssetDatabase.AssetPathToGUID(path);
 #endif
     }
-    
+    [field: SerializeField] public GameObject weaponPrefab { get; set; }
     [field: SerializeField] public string ItemName { get; set; }
     [field: SerializeField] public int ItemPrice { get; set; }
     public IPlayerItems.ItemType itemType;
     public WeaponType weaponType;
     public IPlayerItems.ItemRarity rarity;
-    public string weaponName;
+
     public int minDamage;
     public int maxDamage;
     public float attackSpeed;

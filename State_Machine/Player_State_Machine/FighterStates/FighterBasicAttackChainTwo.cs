@@ -17,6 +17,7 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
             int rank = _playerStateMachine.BasicAttackRank;
             _playerStateMachine.Animator.speed = _playerStateMachine.PlayerStats.TotalAttackSpeed;
             _playerStateMachine.Animator.Play("2Hand-Sword-Attack2");
+            SetAttackSpeed();
             SetMeleeDamage(rank, AbilityType.BasicAttack, PlayerStatType.Strength);
         }
         public override void UpdateState(float deltaTime)
@@ -41,7 +42,6 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
             {
                 _playerStateMachine.ForceReceiver.AddForce(_playerStateMachine.transform.forward * _playerStateMachine.basicAbilityData[_playerStateMachine.BasicAttackRank].force);
 
-                SetWeaponActive(true);
                 rotationLocked = true;
                 SetCurrentRotation();
             }

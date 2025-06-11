@@ -15,6 +15,10 @@ namespace Assets.Scripts.Enemies
         PlayerManager playerManager;
         EnemyStateMachine enemyStateMachine;
         public DamageNumber damageNumber;
+        [SerializeField] float damageTextOffsetY = 2f; // Offset for the damage text above the enemy
+        [SerializeField] ParticleSystem hitParticleSystem;
+        Vector3 damageTextPos;
+
         private void Start()
         {
             playerManager = PlayerManager.Instance;
@@ -23,7 +27,9 @@ namespace Assets.Scripts.Enemies
         private void OnTriggerStay(Collider other)
         {
             if (enemyColliders.Contains(other)) return;
-            if (other.gameObject.CompareTag("Player") && this.gameObject.layer == LayerMask.NameToLayer("EnemyDamage"))
+            if (other.gameObject.layer == LayerMask.NameToLayer("MyOutlines") 
+                && other.TryGetComponent<IDamagable>(out var damagable)
+                && this.gameObject.layer == LayerMask.NameToLayer("EnemyDamage"))
             {
                 if (effectData != null && other.TryGetComponent<IEffectable>(out var effectable)
                 && other.gameObject.layer == LayerMask.NameToLayer("MyOutlines"))
@@ -32,6 +38,13 @@ namespace Assets.Scripts.Enemies
                 }
                 enemyColliders.Add(other);
 
+                hitParticleSystem.transform.position = other.transform.position;
+                if (hitParticleSystem.isPlaying) { 
+                    hitParticleSystem.Stop();
+                    hitParticleSystem.Clear();
+                    hitParticleSystem.Emit(1);// Clear the particle system to reset it
+                }
+                hitParticleSystem.Emit(1); // Emit a single particle at the enemy's position
                 damageNumber.SetColor(Color.red);
                 
                 if (CriticalStrikeSuccessfull())
@@ -51,7 +64,9 @@ namespace Assets.Scripts.Enemies
 
                 var playerStats = playerManager.PlayerStateMachine.PlayerStats;
                 playerStats.TakeDamage(baseDamage, true);
-                damageNumber.Spawn(other.transform.position, baseDamage, other.transform);
+
+                damageTextPos = other.transform.position + Vector3.up * damageTextOffsetY; // Adjust the position to be above the enemy
+                damageNumber.Spawn(damageTextPos, baseDamage, other.transform);
                 //Debug.Log("Player took " + baseDamage);
 
             }

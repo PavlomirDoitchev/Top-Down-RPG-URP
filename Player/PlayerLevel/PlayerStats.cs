@@ -258,12 +258,14 @@ namespace Assets.Scripts.Player
                     int totalDamage = effect.Data.DOTDamage * effect.StackCount;
                     TakeDamage(totalDamage, false);
                     effect.Data.DamageNumberPrefab.Spawn(transform.position, totalDamage);
+                   
                 }
             }
 
             foreach (var key in toRemove)
             {
                 activeEffects.Remove(key);
+                
             }
         }
 
@@ -275,6 +277,7 @@ namespace Assets.Scripts.Player
                 if (effect.Data.SlowAmount > 0)
                 {
                     maxSlow = Mathf.Max(maxSlow, effect.CurrentSlowAmount);
+                    
                 }
             }
             return maxSlow;

@@ -12,10 +12,14 @@ public class PlayerAnimationEvents : MonoBehaviour
         if (meleeWeapon == null)
             meleeWeapon = stateMachine.EquippedWeapon.GetComponent<MeleeWeapon>();
     }
-    public void BackToLocomotion()
-    {
-        stateMachine.ChangeState(new FighterLocomotionState(stateMachine));
-    }
+    public void BackToLocomotion() => stateMachine.ChangeState(new FighterLocomotionState(stateMachine));
+    
     public void EnableDisableTrails() => meleeWeapon.TrailRenderSwitcher();
     public void EnableDisableKnockback() => meleeWeapon.ShouldKnockBackSwitcher();
+
+
+    public void EnableFrontMeleeCollider() => meleeWeapon.SetWeaponActive(true, 0);
+    public void DisableFrontMeleeCollider() => meleeWeapon.SetWeaponActive(false, 0);
+    public void EnableAoEMeleeCollider() => meleeWeapon.SetWeaponActive(true, 1);
+    public void DisableAoEMeleeCollider() => meleeWeapon.SetWeaponActive(false, 1);
 }

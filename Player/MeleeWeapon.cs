@@ -13,17 +13,34 @@ public class MeleeWeapon : MonoBehaviour
     float knockbackForce;
     float knockbackDuration = 0.5f; 
     public WeaponDataSO EquippedWeaponDataSO;
-    [SerializeField] string targetLayerName;
+    [SerializeField] string targetLayerName = "Enemy";
+    [SerializeField] string noTargetLayerName = "IgnoreCollisionWithEnemy";
     [SerializeField] int ignoreInactiveLayer = 3; //In the Unity Editor, this is the Inactive layer for the player
     [SerializeField] DamageNumber damageText;
     [SerializeField] TrailRenderer trailRenderer;
+    public GameObject[] damageColliders;
     private readonly List<Collider> enemyColliders = new List<Collider>();
     PlayerManager playerManager;
     private void Start()
     {
         playerManager = PlayerManager.Instance;
+        trailRenderer = playerManager.PlayerStateMachine.EquippedWeapon.GetComponent<TrailRenderer>();
     }
-    private void OnTriggerEnter(Collider other)
+    private void Update()
+    {
+        //create a new class that handles the input for the player like this. checking each state.
+        //if (Input.GetKeyDown(KeyCode.K) && playerManager.PlayerStateMachine.PlayerCurrentState is FighterLocomotionState) 
+        //{
+        //    playerManager.PlayerStateMachine.EquipNewWeapon(EquippedWeaponDataSO.weaponPrefab);
+        //}
+        if (playerManager.PlayerStateMachine.PlayerCurrentState is FighterBasicAttackChainOne ||
+           playerManager.PlayerStateMachine.PlayerCurrentState is FighterBasicAttackChainTwo ||
+           playerManager.PlayerStateMachine.PlayerCurrentState is FighterBasicAttackChainThree)
+        {
+            damageColliders[0].layer = LayerMask.NameToLayer(targetLayerName);
+        }
+    }
+    private void OnTriggerStay(Collider other)
     {
         if (gameObject.layer == ignoreInactiveLayer) return;
         if (enemyColliders.Contains(other)) return;
@@ -77,15 +94,22 @@ public class MeleeWeapon : MonoBehaviour
     public void ClearHitEnemies()
     {
         enemyColliders.Clear();
-        //Debug.Log($"Enemy colliders {enemyColliders.Count}");
-    }
+    } 
     public void TrailRenderSwitcher()
     {
         trailRenderer.emitting = !trailRenderer.emitting;
     }
     public void ShouldKnockBackSwitcher()
     {
-
         shouldKnockback = !shouldKnockback;
+    }
+    public void SetWeaponActive(bool isActive, int index)
+    {
+        
+        if (isActive)
+            damageColliders[index].gameObject.layer = LayerMask.NameToLayer(targetLayerName);
+        else if (!isActive)
+            damageColliders[index].gameObject.layer = LayerMask.NameToLayer(noTargetLayerName);
+
     }
 }
