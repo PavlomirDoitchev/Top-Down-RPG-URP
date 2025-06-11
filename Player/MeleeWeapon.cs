@@ -7,7 +7,13 @@ using DamageNumbersPro;
 using Assets.Scripts.State_Machine.Enemy_State_Machine;
 public class MeleeWeapon : MonoBehaviour
 {
-
+    //TODO: Remove everything from playerstatemachine regarding levels, abilities, and ranks.
+    //TODO: Move all melee weapon calculations to this class.
+    //TODO: Add another ability that does not require a weapon. frontal cone AoE attack that stuns enemies in front of the player and deals damage.
+    //TODO: Simplify damage calculations.
+    //TODO: Start handling attack related stuff in AnimationEvents instead of in each state.
+    //TODO: Remove inputs from Locomotion State and move them to a new class that handles the input for the player.
+    //TODO: Implement weapon switching.
     private int baseDamage;
     private bool shouldKnockback;
     float knockbackForce;
@@ -33,14 +39,14 @@ public class MeleeWeapon : MonoBehaviour
         //{
         //    playerManager.PlayerStateMachine.EquipNewWeapon(EquippedWeaponDataSO.weaponPrefab);
         //}
-        if (playerManager.PlayerStateMachine.PlayerCurrentState is FighterBasicAttackChainOne ||
-           playerManager.PlayerStateMachine.PlayerCurrentState is FighterBasicAttackChainTwo ||
-           playerManager.PlayerStateMachine.PlayerCurrentState is FighterBasicAttackChainThree)
-        {
-            damageColliders[0].layer = LayerMask.NameToLayer(targetLayerName);
-        }
+        //if (playerManager.PlayerStateMachine.PlayerCurrentState is FighterBasicAttackChainOne ||
+        //   playerManager.PlayerStateMachine.PlayerCurrentState is FighterBasicAttackChainTwo ||
+        //   playerManager.PlayerStateMachine.PlayerCurrentState is FighterBasicAttackChainThree)
+        //{
+        //    damageColliders[0].layer = LayerMask.NameToLayer(targetLayerName);
+        //}
     }
-    private void OnTriggerStay(Collider other)
+    private void OnTriggerEnter(Collider other)
     {
         if (gameObject.layer == ignoreInactiveLayer) return;
         if (enemyColliders.Contains(other)) return;
@@ -48,6 +54,7 @@ public class MeleeWeapon : MonoBehaviour
         if (other.gameObject.layer == LayerMask.NameToLayer(targetLayerName))
         {
             enemyColliders.Add(other);
+            Debug.Log(other.name + " has been hit by " + gameObject.name + " with damage: " + baseDamage);
             IDamagable damagable = other.GetComponent<IDamagable>();
             if (damagable != null)
             {
@@ -109,7 +116,7 @@ public class MeleeWeapon : MonoBehaviour
         if (isActive)
             damageColliders[index].gameObject.layer = LayerMask.NameToLayer(targetLayerName);
         else if (!isActive)
-            damageColliders[index].gameObject.layer = LayerMask.NameToLayer(noTargetLayerName);
+            damageColliders[index].gameObject.layer = ignoreInactiveLayer;
 
     }
 }

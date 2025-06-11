@@ -36,7 +36,7 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
         public DamageNumber damageText;
         public PlayerStats PlayerStats { get; private set; }
         public Transform MainCameraTransform { get; private set; }
-        [field:SerializeField] public CinemachineImpulseSource CinemachineImpulseSource { get; private set; }
+        [field: SerializeField] public CinemachineImpulseSource CinemachineImpulseSource { get; private set; }
         private void Start()
         {
             MainCameraTransform = Camera.main.transform;
