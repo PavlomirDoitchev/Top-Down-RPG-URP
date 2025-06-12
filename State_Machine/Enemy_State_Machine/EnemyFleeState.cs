@@ -18,8 +18,9 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
             base.EnterState();
             _enemyStateMachine.Agent.isStopped = false;
             _enemyStateMachine.Agent.speed = _enemyStateMachine.RunningSpeed;
-            _enemyStateMachine.Animator.CrossFadeInFixedTime(_enemyStateMachine.RunAnimationName, .1f);
+            _enemyStateMachine.Animator.Play(_enemyStateMachine.RunAnimationName);
             fleeRange = _enemyStateMachine.FleeingRange;
+            //RotateAwayFromPlayer();
         }
 
         public override void UpdateState(float deltaTime)

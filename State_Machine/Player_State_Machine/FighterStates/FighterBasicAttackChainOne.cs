@@ -18,7 +18,7 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
             _playerStateMachine.Animator.speed = _playerStateMachine.PlayerStats.TotalAttackSpeed;
             _playerStateMachine.Animator.Play("2Hand-Sword-Attack1");
             SetAttackSpeed();
-            SetMeleeDamage(rank, AbilityType.BasicAttack, PlayerStatType.Strength);
+            //SetMeleeDamage(rank, AbilityType.BasicAttack, PlayerStatType.Strength);
         }
         public override void UpdateState(float deltaTime)
         {

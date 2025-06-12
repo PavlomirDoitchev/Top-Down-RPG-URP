@@ -15,16 +15,17 @@ public class MeleeWeapon : MonoBehaviour
     //TODO: Remove inputs from Locomotion State and move them to a new class that handles the input for the player.
     //TODO: Implement weapon switching.
     private int baseDamage;
+    int damage = 10;
     private bool shouldKnockback;
     float knockbackForce;
-    float knockbackDuration = 0.5f; 
+    float knockbackDuration = 0.5f;
     public WeaponDataSO EquippedWeaponDataSO;
     [SerializeField] string targetLayerName = "Enemy";
     [SerializeField] string noTargetLayerName = "IgnoreCollisionWithEnemy";
     [SerializeField] int ignoreInactiveLayer = 3; //In the Unity Editor, this is the Inactive layer for the player
     [SerializeField] DamageNumber damageText;
     [SerializeField] TrailRenderer trailRenderer;
-    public GameObject[] damageColliders;
+    public Collider[] damageColliders;
     private readonly List<Collider> enemyColliders = new List<Collider>();
     PlayerManager playerManager;
     private void Start()
@@ -51,17 +52,25 @@ public class MeleeWeapon : MonoBehaviour
         if (gameObject.layer == ignoreInactiveLayer) return;
         if (enemyColliders.Contains(other)) return;
 
-        if (other.gameObject.layer == LayerMask.NameToLayer(targetLayerName))
+        if (other.gameObject.layer == LayerMask.NameToLayer(targetLayerName)
+            && this.gameObject.layer == 7
+            && other.gameObject.TryGetComponent<IDamagable>(out var damagable))
         {
             enemyColliders.Add(other);
-            Debug.Log(other.name + " has been hit by " + gameObject.name + " with damage: " + baseDamage);
-            IDamagable damagable = other.GetComponent<IDamagable>();
-            if (damagable != null)
-            {
-                damagable.TakeDamage(baseDamage, false);
-                SpawnDamageText(other);
-                TryKnockbackEnemy(other);
-            }
+            Debug.Log(enemyColliders.Count + " enemies hit");
+            //Debug.Log(other.name + " has been hit by " + gameObject.name + " with damage: " + baseDamage);
+
+            damagable.TakeDamage(damage, false);
+            SpawnDamageText(other);
+            TryKnockbackEnemy(other);
+
+        }
+    }
+    private void OnTriggerExit(Collider other)
+    {
+        if (enemyColliders.Contains(other))
+        {
+            enemyColliders.Remove(other);
         }
     }
     /// <summary>
@@ -91,7 +100,7 @@ public class MeleeWeapon : MonoBehaviour
 
     private void SpawnDamageText(Collider other)
     {
-        damageText.Spawn(other.transform.position, baseDamage);
+        damageText.Spawn(other.transform.position, damage);
     }
 
     public void MeleeWeaponDamage(int baseDamage, float multiplier, int index)
@@ -101,7 +110,7 @@ public class MeleeWeapon : MonoBehaviour
     public void ClearHitEnemies()
     {
         enemyColliders.Clear();
-    } 
+    }
     public void TrailRenderSwitcher()
     {
         trailRenderer.emitting = !trailRenderer.emitting;
@@ -112,7 +121,7 @@ public class MeleeWeapon : MonoBehaviour
     }
     public void SetWeaponActive(bool isActive, int index)
     {
-        
+
         if (isActive)
             damageColliders[index].gameObject.layer = LayerMask.NameToLayer(targetLayerName);
         else if (!isActive)

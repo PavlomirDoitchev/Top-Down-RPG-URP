@@ -8,7 +8,6 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
         private bool rotationLocked = false;
         private Vector3 force;
         //private Coroutine qCoroutine;
-        int cost = 10;
         public FighterAbilityQState(PlayerStateMachine stateMachine) : base(stateMachine)
         {
         }

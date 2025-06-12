@@ -133,12 +133,27 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
             Quaternion targetRotation = Quaternion.LookRotation(direction);
             _enemyStateMachine.transform.rotation = Quaternion.Slerp(_enemyStateMachine.transform.rotation, targetRotation, deltaTime * _enemyStateMachine.RotationSpeed);
         }
+        protected void RotateAwayFromPlayer(float deltaTime)
+        {
+            Vector3 direction = _enemyStateMachine.transform.position - PlayerManager.Instance.PlayerStateMachine.transform.position;
+            direction.y = 0f;
+            Quaternion targetRotation = Quaternion.LookRotation(direction);
+            _enemyStateMachine.transform.rotation = Quaternion.Slerp(_enemyStateMachine.transform.rotation, targetRotation, deltaTime * _enemyStateMachine.RotationSpeed);
+        }
+
         /// <summary>
         /// Instantly rotates the enemy to face the player.
         /// </summary>
         protected void RotateToPlayer()
         {
             Vector3 direction = PlayerManager.Instance.PlayerStateMachine.transform.position - _enemyStateMachine.transform.position;
+            direction.y = 0f;
+            Quaternion targetRotation = Quaternion.LookRotation(direction);
+            _enemyStateMachine.transform.rotation = targetRotation;
+        }
+        protected void RotateAwayFromPlayer() 
+        {
+            Vector3 direction = _enemyStateMachine.transform.position - PlayerManager.Instance.PlayerStateMachine.transform.position;
             direction.y = 0f;
             Quaternion targetRotation = Quaternion.LookRotation(direction);
             _enemyStateMachine.transform.rotation = targetRotation;

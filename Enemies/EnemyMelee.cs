@@ -42,7 +42,7 @@ namespace Assets.Scripts.Enemies
                 if (hitParticleSystem.isPlaying) { 
                     hitParticleSystem.Stop();
                     hitParticleSystem.Clear();
-                    hitParticleSystem.Emit(1);// Clear the particle system to reset it
+                    hitParticleSystem.Emit(1);
                 }
                 hitParticleSystem.Emit(1); // Emit a single particle at the enemy's position
                 damageNumber.SetColor(Color.red);
