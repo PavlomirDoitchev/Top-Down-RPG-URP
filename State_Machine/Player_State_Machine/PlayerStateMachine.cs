@@ -9,9 +9,9 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
     public class PlayerStateMachine : StateMachine
     {
         public State PlayerCurrentState => (State)CurrentState;
-        [Header("-----Equipped Items-----")]
-        [SerializeField] public WeaponDataSO EquippedWeaponDataSO;
-        public GameObject EquippedWeapon;
+        //[Header("-----Equipped Items-----")]
+        //[SerializeField] public WeaponDataSO EquippedWeaponDataSO;
+        //public GameObject EquippedWeapon;
 
         [Header("-----Character Levels-----")]
         public CharacterLevelSO[] CharacterLevelDataSO;
@@ -60,16 +60,16 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
             Vector3 pushDir = new Vector3(hit.moveDirection.x, 0, hit.moveDirection.z);
             rb.linearVelocity = pushDir * PlayerStats.PushObjectsForce;
         }
-        public void EquipNewWeapon(GameObject weaponPrefab)
-        {
-            if (EquippedWeapon != null)
-            {
-                Destroy(EquippedWeapon);
-            }
-            //GameObject newWeapon = Instantiate(weaponPrefab, rightHandEquipSlot.transform.position,
-            //    Quaternion.identity, rightHandEquipSlot.transform);
-            GameObject newWeapon = Instantiate(weaponPrefab, Animator.GetBoneTransform(HumanBodyBones.RightIndexProximal));
-            EquippedWeapon = newWeapon;
-        }
+        //public void EquipNewWeapon(GameObject weaponPrefab)
+        //{
+        //    if (EquippedWeapon != null)
+        //    {
+        //        Destroy(EquippedWeapon);
+        //    }
+        //    //GameObject newWeapon = Instantiate(weaponPrefab, rightHandEquipSlot.transform.position,
+        //    //    Quaternion.identity, rightHandEquipSlot.transform);
+        //    GameObject newWeapon = Instantiate(weaponPrefab, Animator.GetBoneTransform(HumanBodyBones.RightIndexProximal));
+        //    EquippedWeapon = newWeapon;
+        //}
     }
 }

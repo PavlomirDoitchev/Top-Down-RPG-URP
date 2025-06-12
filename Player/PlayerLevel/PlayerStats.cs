@@ -75,8 +75,7 @@ namespace Assets.Scripts.Player
 
         [Header("References")]
         [SerializeField] ParticleSystem levelUpEffect;
-        [SerializeField] GameObject weapon; //to be removed later
-        //[SerializeField] private StatusEffectData effectData;
+        
         PlayerManager playerManager;
 
         private class ActiveEffect

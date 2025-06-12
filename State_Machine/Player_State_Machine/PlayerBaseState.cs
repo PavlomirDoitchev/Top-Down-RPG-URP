@@ -23,22 +23,24 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
         public override void EnterState()
         {
             base.EnterState();
-            InitializeWeapon();
+            Debug.Log($"Entering state: {this.GetType().Name}");
+
+            //InitializeWeapon();
             //meleeWeapon.ClearHitEnemies();
         }
 
-        protected void InitializeWeapon()
-        {
-            if (_playerStateMachine.EquippedWeapon != null)
-            {
-                meleeWeapon = _playerStateMachine.GetComponentInChildren<MeleeWeapon>();
-            }
+        //protected void InitializeWeapon()
+        //{
+        //    if (_playerStateMachine.EquippedWeapon != null)
+        //    {
+        //        meleeWeapon = _playerStateMachine.GetComponentInChildren<MeleeWeapon>();
+        //    }
 
-            if (meleeWeapon == null)
-            {
-                Debug.LogError("No weapon equipped in state: " + this.GetType().Name);
-            }
-        }
+        //    if (meleeWeapon == null)
+        //    {
+        //        Debug.LogError("No weapon equipped in state: " + this.GetType().Name);
+        //    }
+        //}
         /// <summary>
         /// Set animation speed back to normal playback. 
         /// Commonly used in Exit State after using an ability
@@ -138,14 +140,7 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
             Dexterity,
             Intellect
         }
-        public enum AbilityType
-        {
-            BasicAttack,
-            AbilityQ,
-            AbilityE,
-            AbilityR
-        }
-        private float GetStatValue(PlayerStatType statType)
+        protected float GetStatValue(PlayerStatType statType)
         {
             switch (statType)
             {
@@ -159,94 +154,85 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
                     return 0;
             }
         }
+        //public enum AbilityType
+        //{
+        //    BasicAttack,
+        //    AbilityQ,
+        //    AbilityE,
+        //    AbilityR
+        //}
         
-        private int GetAbilityRank(AbilityType abilityType)
-        {
-            switch (abilityType)
-            {
-                case AbilityType.BasicAttack:
-                    return _playerStateMachine.BasicAttackRank;
-                case AbilityType.AbilityQ:
-                    return _playerStateMachine.QAbilityRank;
-                // Add more abilities as needed
-                default:
-                    return 0;
-            }
-        }
-        private bool CriticalStrikeSuccessfull()
-        {
-            float rollForCrit = Random.Range(0f, 1f);
-            if (_playerStateMachine.PlayerStats.CriticalChance >= rollForCrit)
-            {
-                //Debug.Log("Critical!");
-                return true;
-            }
-            return false;
-        }
-        private float GetAbilityMultiplier(AbilityType abilityType, int rank)
-        {
-            switch (abilityType)
-            {
-                case AbilityType.BasicAttack:
-                    return _playerStateMachine.basicAbilityData[rank].damageMultiplier;
-                case AbilityType.AbilityQ:
-                    return _playerStateMachine.qAbilityData[rank].damageMultiplier;
-                // Add cases for AbilityE and AbilityR 
-                default:
-                    return 1f; 
-            }
-        }
-        protected float CalculateMeleeDamage(AbilityType abilityType, PlayerStatType statType)
-        {
-            int rank = GetAbilityRank(abilityType);
-            float statValue = GetStatValue(statType);
-            if(statValue < 0)
-            {
-                Debug.LogWarning($"Stat value for {statType} is negative: {statValue}. Using 0 instead.");
-                statValue = 0;
-            }
-            float damageMultiplier = GetAbilityMultiplier(abilityType, rank);
-            //use a percentage of your attack stat. In SetMeleeDamage 
-            float baseDamage = 1 + (statValue *
-                           damageMultiplier);
-            _playerStateMachine.damageText.SetColor(Color.white);
-            if (CriticalStrikeSuccessfull())
-            {
-                baseDamage *= _playerStateMachine.PlayerStats.CriticalModifier;
-                _playerStateMachine.damageText.SetColor(Color.yellow);
-            }
-            return baseDamage;
-        }
+        //private int GetAbilityRank(AbilityType abilityType)
+        //{
+        //    switch (abilityType)
+        //    {
+        //        case AbilityType.BasicAttack:
+        //            return _playerStateMachine.BasicAttackRank;
+        //        case AbilityType.AbilityQ:
+        //            return _playerStateMachine.QAbilityRank;
+        //        // Add more abilities as needed
+        //        default:
+        //            return 0;
+        //    }
+        //}
+        //private bool CriticalStrikeSuccessfull()
+        //{
+        //    float rollForCrit = Random.Range(0f, 1f);
+        //    if (_playerStateMachine.PlayerStats.CriticalChance >= rollForCrit)
+        //    {
+        //        //Debug.Log("Critical!");
+        //        return true;
+        //    }
+        //    return false;
+        //}
+        //private float GetAbilityMultiplier(AbilityType abilityType, int rank)
+        //{
+        //    switch (abilityType)
+        //    {
+        //        case AbilityType.BasicAttack:
+        //            return _playerStateMachine.basicAbilityData[rank].damageMultiplier;
+        //        case AbilityType.AbilityQ:
+        //            return _playerStateMachine.qAbilityData[rank].damageMultiplier;
+        //        // Add cases for AbilityE and AbilityR 
+        //        default:
+        //            return 1f; 
+        //    }
+        //}
+        //protected float CalculateMeleeDamage(AbilityType abilityType, PlayerStatType statType)
+        //{
+        //    int rank = GetAbilityRank(abilityType);
+        //    float statValue = GetStatValue(statType);
+        //    if(statValue < 0)
+        //    {
+        //        Debug.LogWarning($"Stat value for {statType} is negative: {statValue}. Using 0 instead.");
+        //        statValue = 0;
+        //    }
+        //    float damageMultiplier = GetAbilityMultiplier(abilityType, rank);
+        //    //use a percentage of your attack stat. In SetMeleeDamage 
+        //    float baseDamage = 1 + (statValue *
+        //                   damageMultiplier);
+        //    _playerStateMachine.damageText.SetColor(Color.white);
+        //    if (CriticalStrikeSuccessfull())
+        //    {
+        //        baseDamage *= _playerStateMachine.PlayerStats.CriticalModifier;
+        //        _playerStateMachine.damageText.SetColor(Color.yellow);
+        //    }
+        //    return baseDamage;
+        //}
         /// <summary>
         /// Choose the ability rank and the stat type to use as a modifier for the melee damage.
         /// </summary>
         /// <param name="abilityRank"></param>
         /// <param name="abilityType"></param>
         /// <param name="statType"></param>
-        protected void SetMeleeDamage(int abilityRank, AbilityType abilityType, PlayerStatType statType)
-        {
-            float calculatedDamage = CalculateMeleeDamage(abilityType, statType);
-            //Debug.Log($"Using {statType} as a modifier");
-            meleeWeapon.MeleeWeaponDamage
-                 (Random.Range(meleeWeapon.EquippedWeaponDataSO.minDamage, meleeWeapon.EquippedWeaponDataSO.maxDamage + 1),
-                 calculatedDamage,
-                 abilityRank);
-            //ApplyAbilityEffects(abilityType);
-        }
-        //private Basic_Ability_SO GetAbilityData(AbilityType abilityType)
+        //protected void SetMeleeDamage(int abilityRank, AbilityType abilityType, PlayerStatType statType)
         //{
-        //    switch (abilityType)
-        //    {
-        //        case AbilityType.BasicAttack:
-        //            return _playerStateMachine.basicAbilityData[_playerStateMachine.BasicAbilityRank];
-
-        //        case AbilityType.AbilityQ:
-        //            return _playerStateMachine.qAbilityData[_playerStateMachine.QAbilityRank];
-        //        default:
-        //            Debug.LogWarning($"AbilityType {abilityType} not found!");
-        //            return null;
-        //    }
+        //    float calculatedDamage = CalculateMeleeDamage(abilityType, statType);
+        //    meleeWeapon.MeleeWeaponDamage
+        //         (Random.Range(meleeWeapon.EquippedWeaponDataSO.minDamage, meleeWeapon.EquippedWeaponDataSO.maxDamage + 1),
+        //         calculatedDamage,
+        //         abilityRank);
         //}
-        
+     
     }
 }

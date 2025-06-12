@@ -27,26 +27,29 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
                 return;
             }
             
-            if (Input.GetKey(_playerStateMachine.InputManager.GetKey("Dodge")))
-            {
-                if (_playerStateMachine.CharacterController.velocity.x != 0 || _playerStateMachine.CharacterController.velocity.z != 0)
-                {
-                    _playerStateMachine.ChangeState(new FighterDodgeState(_playerStateMachine));
-                }
-            }
-            if (Input.GetKey(_playerStateMachine.InputManager.GetKey("Jump")) && _playerStateMachine.CharacterController.isGrounded)
-            {
-                _playerStateMachine.ChangeState(new PlayerJumpState(_playerStateMachine));
-            }
-            if (_playerStateMachine.InputManager.IsAttacking)
-            {
-                if (SkillManager.Instance.fighterBasicAttack.CanUseSkill()) { }
-            }
-            if (_playerStateMachine.InputManager.IsUsingAbility_Q && _playerStateMachine.QAbilityRank > 0)
-            {
-                if (SkillManager.Instance.fighterQ.CanUseSkill()) { }
-            }
-            PlayerMove(deltaTime);
+            //if (Input.GetKey(_playerStateMachine.InputManager.GetKey("Dodge")))
+            //{
+            //    if (_playerStateMachine.CharacterController.velocity.x != 0 || _playerStateMachine.CharacterController.velocity.z != 0)
+            //    {
+            //        _playerStateMachine.ChangeState(new FighterDodgeState(_playerStateMachine));
+            //    }
+            //}
+            
+            //if (_playerStateMachine.InputManager.IsAttacking)
+            //{
+            //    if (SkillManager.Instance.fighterBasicAttack.CanUseSkill()) 
+            //    {
+            //        _playerStateMachine.ChangeState(new FighterBasicAttackChainOne(_playerStateMachine));
+            //    }
+            //}
+            //if (_playerStateMachine.InputManager.IsUsingAbility_Q && _playerStateMachine.QAbilityRank > 0)
+            //{
+            //    if (SkillManager.Instance.fighterQ.CanUseSkill()) 
+            //    {
+            //        _playerStateMachine.ChangeState(new FighterAbilityQState(_playerStateMachine));
+            //    }
+                
+            //}
         }
 
 

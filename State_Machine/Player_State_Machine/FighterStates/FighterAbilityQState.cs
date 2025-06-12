@@ -20,17 +20,12 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
             _playerStateMachine.Animator.speed = _playerStateMachine.PlayerStats.TotalAttackSpeed;
             _playerStateMachine.Animator.Play("ARPG_Dual_Wield_Attack_Heavy1");
             SetAttackSpeed();
-            SetMeleeDamage(rank, AbilityType.AbilityQ, PlayerStatType.Strength);
+            //SetMeleeDamage(rank, AbilityType.AbilityQ, PlayerStatType.Strength);
             force = _playerStateMachine.transform.forward * _playerStateMachine.qAbilityData[rank].force;
-            //qCoroutine = _playerStateMachine.StartCoroutine(QAbilityRoutine());
         }
-        //public override void UpdateState(float deltaTime)
-        //{
-        //    PlayerMove(deltaTime);
-        //}
+        
         public override void UpdateState(float deltaTime)
         {
-            PlayerMove(deltaTime);
             if (!rotationLocked)
             {
                 RotateToMouse(deltaTime);
@@ -60,19 +55,6 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
             _playerStateMachine.Animator.StopPlayback();
             ResetAnimationSpeed();
         }
-        //private IEnumerator QAbilityRoutine()
-        //{
-        //    while (_playerStateMachine.InputManager.IsUsingAbility_Q && _playerStateMachine.PlayerStats.GetCurrentResource() >= cost)
-        //    {
-        //        SetWeaponActive(true);
-        //        _playerStateMachine.PlayerStats.UseResource(cost);
-        //        _playerStateMachine.Animator.Play("ARPG_Dual_Wield_Attack_Heavy1");
-
-        //        meleeWeapon.ClearHitEnemies();
-
-        //        yield return new WaitForSeconds(_playerStateMachine.PlayerStats.AttackSpeed);
-        //    }
-        //    _playerStateMachine.ChangeState(new FighterLocomotionState(_playerStateMachine));
-        //}
+       
     }
 }

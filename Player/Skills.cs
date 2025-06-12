@@ -22,7 +22,11 @@ namespace Assets.Scripts.Player
             }
             return false;
         }
-        public virtual void UseSkill() { }
+        public virtual void UseSkill() 
+        {
+            var playerStats = PlayerManager.Instance.PlayerStateMachine.PlayerStats;
+            playerStats.UseResource(GetSkillCost());
+        }
         public int GetSkillCost() => this.cost;
     }
 }

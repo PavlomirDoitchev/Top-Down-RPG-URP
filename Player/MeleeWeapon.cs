@@ -14,24 +14,14 @@ public class MeleeWeapon : MonoBehaviour
     //TODO: Start handling attack related stuff in AnimationEvents instead of in each state.
     //TODO: Remove inputs from Locomotion State and move them to a new class that handles the input for the player.
     //TODO: Implement weapon switching.
-    private int baseDamage;
-    int damage = 10;
-    private bool shouldKnockback;
-    float knockbackForce;
-    float knockbackDuration = 0.5f;
-    public WeaponDataSO EquippedWeaponDataSO;
-    [SerializeField] string targetLayerName = "Enemy";
-    [SerializeField] string noTargetLayerName = "IgnoreCollisionWithEnemy";
-    [SerializeField] int ignoreInactiveLayer = 3; //In the Unity Editor, this is the Inactive layer for the player
-    [SerializeField] DamageNumber damageText;
-    [SerializeField] TrailRenderer trailRenderer;
-    public Collider[] damageColliders;
     private readonly List<Collider> enemyColliders = new List<Collider>();
-    PlayerManager playerManager;
+    int ignoreInactiveLayer = 3;
+    string targetLayerName = "Enemy";
+    [SerializeField] private PlayerMelee _playerMelee;
+    private PlayerManager _playerManager;
     private void Start()
     {
-        playerManager = PlayerManager.Instance;
-        trailRenderer = playerManager.PlayerStateMachine.EquippedWeapon.GetComponent<TrailRenderer>();
+        _playerManager = PlayerManager.Instance;
     }
     private void Update()
     {
@@ -57,21 +47,17 @@ public class MeleeWeapon : MonoBehaviour
             && other.gameObject.TryGetComponent<IDamagable>(out var damagable))
         {
             enemyColliders.Add(other);
-            Debug.Log(enemyColliders.Count + " enemies hit");
-            //Debug.Log(other.name + " has been hit by " + gameObject.name + " with damage: " + baseDamage);
+            //Debug.Log(enemyColliders.Count + " enemies hit");
 
-            damagable.TakeDamage(damage, false);
-            SpawnDamageText(other);
+            damagable.TakeDamage(_playerMelee.EquippedWeaponDataSO.maxDamage, false);
+            _playerMelee.SpawnDamageText(other);
             TryKnockbackEnemy(other);
 
         }
     }
     private void OnTriggerExit(Collider other)
     {
-        if (enemyColliders.Contains(other))
-        {
-            enemyColliders.Remove(other);
-        }
+        ClearHitEnemies(other);
     }
     /// <summary>
     /// Knock back the enemy if the player is in a state that allows it and the enemy is not enraged.
@@ -81,51 +67,28 @@ public class MeleeWeapon : MonoBehaviour
     {
         if (other.TryGetComponent<ForceReceiver>(out var forceReceiver)
                             && other.TryGetComponent<EnemyStateMachine>(out var enemyStateMachine)
-                            && shouldKnockback
+                            && _playerMelee.ShouldKnockback
                             && !enemyStateMachine.IsEnraged)
         {
-            if (playerManager.PlayerStateMachine.PlayerCurrentState is FighterAbilityQState /*add other melee abilities knockback*/)
+            if (_playerManager.PlayerStateMachine.PlayerCurrentState is FighterAbilityQState /*add other melee abilities knockback*/)
             {
-                knockbackForce = playerManager.PlayerStateMachine.qAbilityData[playerManager.PlayerStateMachine.QAbilityRank].knockbackForce;
+                _playerMelee.KnockbackForce = _playerManager.PlayerStateMachine.qAbilityData[_playerManager.PlayerStateMachine.QAbilityRank].knockbackForce;
             }
             else
             {
-                knockbackForce = 50f; //for debugging only
+                _playerMelee.KnockbackForce = 50f; //for debugging only
             }
-            Vector3 knockbackDir = (other.transform.position - playerManager.PlayerStateMachine.transform.position).normalized;
-            forceReceiver.AddForce(knockbackDir * knockbackForce);
-            enemyStateMachine.ChangeState(new EnemyKnockbackState(enemyStateMachine, knockbackDuration));
+            Vector3 knockbackDir = (other.transform.position - _playerManager.PlayerStateMachine.transform.position).normalized;
+            forceReceiver.AddForce(knockbackDir * _playerMelee.KnockbackForce);
+            enemyStateMachine.ChangeState(new EnemyKnockbackState(enemyStateMachine, _playerMelee.KnockbackDuration));
         }
     }
 
-    private void SpawnDamageText(Collider other)
+    public void ClearHitEnemies(Collider other)
     {
-        damageText.Spawn(other.transform.position, damage);
-    }
-
-    public void MeleeWeaponDamage(int baseDamage, float multiplier, int index)
-    {
-        this.baseDamage = Mathf.RoundToInt(baseDamage * (multiplier * .2f));
-    }
-    public void ClearHitEnemies()
-    {
-        enemyColliders.Clear();
-    }
-    public void TrailRenderSwitcher()
-    {
-        trailRenderer.emitting = !trailRenderer.emitting;
-    }
-    public void ShouldKnockBackSwitcher()
-    {
-        shouldKnockback = !shouldKnockback;
-    }
-    public void SetWeaponActive(bool isActive, int index)
-    {
-
-        if (isActive)
-            damageColliders[index].gameObject.layer = LayerMask.NameToLayer(targetLayerName);
-        else if (!isActive)
-            damageColliders[index].gameObject.layer = ignoreInactiveLayer;
-
+        if (enemyColliders.Contains(other))
+        {
+            enemyColliders.Remove(other);
+        }
     }
 }

@@ -12,6 +12,7 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
 
         public override void EnterState()
         {
+            Debug.Log("Entering Jump State");
             _playerStateMachine.Animator.CrossFadeInFixedTime("2Hand-Sword-Jump", .1f);
             _playerStateMachine.ForceReceiver.Jump(_playerStateMachine.PlayerStats.JumpForce);
             momentum = _playerStateMachine.CharacterController.velocity;
@@ -19,7 +20,7 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
         }
         public override void UpdateState(float deltaTime)
         {
-            PlayerMove(deltaTime);
+            //PlayerMove(deltaTime);
             //Move(momentum, deltaTime);
             if (_playerStateMachine.CharacterController.velocity.y <= 0)
             {

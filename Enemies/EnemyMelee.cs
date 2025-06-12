@@ -8,15 +8,18 @@ namespace Assets.Scripts.Enemies
 {
     public class EnemyMelee : MonoBehaviour
     {
-        public WeaponDataSO EquippedWeaponDataSO;
-        private int baseDamage;
-        [SerializeField] private StatusEffectData effectData;
         private readonly List<Collider> enemyColliders = new List<Collider>();
-        PlayerManager playerManager;
+        
+        [Header("References")]
+        public WeaponDataSO EquippedWeaponDataSO;
+        [SerializeField] private StatusEffectData effectData;
         EnemyStateMachine enemyStateMachine;
+        PlayerManager playerManager;
         public DamageNumber damageNumber;
         [SerializeField] float damageTextOffsetY = 2f; // Offset for the damage text above the enemy
         [SerializeField] ParticleSystem hitParticleSystem;
+
+        private int baseDamage;
         Vector3 damageTextPos;
 
         private void Start()

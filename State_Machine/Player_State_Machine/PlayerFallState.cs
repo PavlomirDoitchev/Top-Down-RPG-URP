@@ -13,6 +13,7 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
 
         public override void EnterState()
         {
+            Debug.Log("Entering fall state");
             _playerStateMachine.Animator.CrossFadeInFixedTime("2Hand-Sword-Fall", 0.1f);
             momentum = _playerStateMachine.CharacterController.velocity;
             momentum.y = 0;
@@ -21,7 +22,6 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
 
         public override void UpdateState(float deltaTime)
         {
-            Move(momentum, deltaTime);
 
             if (_playerStateMachine.CharacterController.velocity.y < maxFallSpeed)
                 maxFallSpeed = _playerStateMachine.CharacterController.velocity.y;
