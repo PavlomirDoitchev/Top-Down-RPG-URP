@@ -56,7 +56,7 @@ namespace Assets.Scripts.Player
         [field: SerializeField] public float AttackSpeed { get; private set; }
         [field: SerializeField]
         [field: Range(0, 1)] public float CriticalChance { get; private set; }
-        [field: SerializeField]
+        [field: SerializeField] 
         [field: Range(1, 5)] public float CriticalModifier { get; private set; }
 
         public float TotalSlowAmount => CalculateTotalSlow();

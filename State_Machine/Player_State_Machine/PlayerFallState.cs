@@ -13,7 +13,7 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
 
         public override void EnterState()
         {
-            Debug.Log("Entering fall state");
+            //Debug.Log("Entering fall state");
             _playerStateMachine.Animator.CrossFadeInFixedTime("2Hand-Sword-Fall", 0.1f);
             momentum = _playerStateMachine.CharacterController.velocity;
             momentum.y = 0;
@@ -36,7 +36,7 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
                 }
                 if(fallDamage > 0)
                 {
-                    _playerStateMachine.damageText.Spawn(_playerStateMachine.transform.position, fallDamage);
+                    _playerStateMachine.DamageText.Spawn(_playerStateMachine.transform.position, fallDamage);
                 }
                 if (_playerStateMachine.PlayerStats.GetCurrentHealth() > 0)
                 {

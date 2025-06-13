@@ -70,7 +70,7 @@ public class MeleeWeapon : MonoBehaviour
                             && _playerMelee.ShouldKnockback
                             && !enemyStateMachine.IsEnraged)
         {
-            if (_playerManager.PlayerStateMachine.PlayerCurrentState is Assets.Scripts.State_Machine.Player_State_Machine.FighterAbilityOneState /*add other melee abilities knockback*/)
+            if (_playerManager.PlayerStateMachine.PlayerCurrentState is FighterAbilityOneState /*add other melee abilities knockback*/)
             {
 				_playerMelee.KnockbackForce = _playerManager.PlayerStateMachine.Ability_One_Data[_playerManager.PlayerStateMachine.Ability_One_Rank].knockbackForce;
             }
@@ -80,7 +80,7 @@ public class MeleeWeapon : MonoBehaviour
             }
             Vector3 knockbackDir = (other.transform.position - _playerManager.PlayerStateMachine.transform.position).normalized;
             forceReceiver.AddForce(knockbackDir * _playerMelee.KnockbackForce);
-            enemyStateMachine.ChangeState(new EnemyKnockbackState(enemyStateMachine, _playerMelee.KnockbackDuration));
+            //enemyStateMachine.ChangeState(new EnemyKnockbackState(enemyStateMachine, _playerMelee.KnockbackDuration));
         }
     }
 

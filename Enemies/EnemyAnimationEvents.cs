@@ -9,7 +9,8 @@ public class EnemyAnimationEvents : MonoBehaviour
     [SerializeField] private EnemyMelee[] enemyMelee;
     [SerializeField] private EnemyStateMachine enemyStateMachine;
     [SerializeField] private EnemyProjectileAbility enemySpell;
-    [SerializeField] ArcherHideArrow archerArrow;
+    [SerializeField] private ParticleSystem[] castingVFX;
+	[SerializeField] ArcherHideArrow archerArrow;
     PlayerManager playerManager;
     private void Start()
     {
@@ -29,13 +30,24 @@ public class EnemyAnimationEvents : MonoBehaviour
     public void DragonBruteTwoHitCombo() => enemyStateMachine.TwoHitCombo();
     #endregion
 
-    #region Spell Casting
+    #region Spellcasting
     public void CastSpell() => enemySpell.Cast(PlayerManager.Instance.PlayerStateMachine.transform);
-    public void ChangeAnimationAfterCast() => enemyStateMachine.Animator.CrossFadeInFixedTime(enemyStateMachine.IdleAnimationName, .1f);
-    #endregion
+    public void ChangeAnimationToChannel() => enemyStateMachine.Animator.CrossFadeInFixedTime(enemyStateMachine.ChannelAnimationName, .1f);
+	public void ChangeToIdleAnimation() => enemyStateMachine.Animator.CrossFadeInFixedTime(enemyStateMachine.IdleAnimationName, .1f);
+    public void VFXDuringCast_0() 
+    {
+        bool isCasting = false;
+        if (castingVFX != null) 
+        {
+            isCasting = !isCasting;
+            castingVFX[0].gameObject.SetActive(isCasting);
+        }
+	}
+   
+	#endregion
 
-    #region Skeleton Archer Animation Events
-    public void HideArrow() => archerArrow.HideArrow();
+	#region Archer Animation Events
+	public void HideArrow() => archerArrow.HideArrow();
     public void ShowArrow() => archerArrow.ShowArrow();
     #endregion
 }

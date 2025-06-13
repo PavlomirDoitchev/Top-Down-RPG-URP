@@ -18,14 +18,16 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
 
         [Header("-----Ability Data-----")]
         [Header("Basic Attack")]
-        public Fighter_Ability_SO[] basicAbilityData;
-        [field: SerializeField] public int BasicAttackRank { get; set; }
+        [field: SerializeField] public Fighter_Ability_SO[] BasicAttackData { get; private set; }
+		[field: SerializeField] public int BasicAttackRank { get; set; }
 
         [Tooltip("Value must be above 0 to be unlocked!")]
-        [Header("Q Ability Ranks")]
-        public Fighter_Ability_SO[] Ability_One_Data;
-        [field: SerializeField] public int Ability_One_Rank { get; set; }   
-        [Header("-----References-----")]
+        [Header("Ability One Ranks")]
+        [field: SerializeField] public Fighter_Ability_SO[] Ability_One_Data { get; private set; }
+        [field: SerializeField] public int Ability_One_Rank { get; set; }
+        [field: SerializeField] public Fighter_Ability_SO[] Ability_Two_Data { get; private set; }
+		[field: SerializeField] public int Ability_Two_Rank { get; set; }
+		[Header("-----References-----")]
         [SerializeField] private GameObject rightHandEquipSlot;
         [SerializeField] private GameObject leftHandEquipSlot;
         [field: SerializeField] public InputManager InputManager { get; private set; }
@@ -34,8 +36,8 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
         [field: SerializeField] public AnimationNamesData AnimationNamesData { get; private set; }
 		[field: SerializeField] public ForceReceiver ForceReceiver { get; private set; }
 
-        public DamageNumber damageText;
-        public PlayerStats PlayerStats { get; private set; }
+        [field: SerializeField] public DamageNumber DamageText { get; private set; }
+		public PlayerStats PlayerStats { get; private set; }
         public Transform MainCameraTransform { get; private set; }
         [field: SerializeField] public CinemachineImpulseSource CinemachineImpulseSource { get; private set; }
         private void Start()

@@ -26,8 +26,9 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
         #region Enemy AI Stats
         [Header("AI Stats")]
         [Space(10)]
-        public string enemyAIName = "Enemy AI"; 
-        [field: SerializeField] public float ViewAngle { get; private set; } = 120f; //degrees
+        public string enemyAIName = "Enemy AI";
+		public Cooldown RangedAttackCooldown = new(); //create a new instance of this if you want to track a different ability CD
+		[field: SerializeField] public float ViewAngle { get; private set; } = 120f; //degrees
         [field: SerializeField] public LayerMask ObstacleMask { get; private set; }
         [field: SerializeField] public LayerMask TargetMask { get; private set; }
         [field: SerializeField] public float RunningSpeed { get; private set; }
@@ -43,7 +44,7 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
         [field :SerializeField] public float RangedAttackRange { get; private set; }
         [field: SerializeField] public float FleeingRange { get; private set; } //should be less than RangedAttackDistance
         [field: SerializeField] public float FleeingDistanceAmount { get; private set; } = 5f; 
-        [field: SerializeField] public float RangedAttackCooldown { get; private set; } = 2f; 
+        [field: SerializeField] public float RangedAttackCooldownDuration { get; private set; } = 2f; 
         [field: SerializeField] public int AttackIndex { get; private set; } = 0; //used to determine which attack animation to play
         [field: SerializeField]
         [field: Range(0, 1)] public float EnrageThreshold { get; private set; } = 0.5f; //percentage of health at which the enemy becomes enraged
@@ -51,12 +52,11 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
         [field: SerializeField] public bool CanShadowStep { get; set; } = false; 
         [field: SerializeField]
         [field: Range(0.1f, 0.9f)] public float ShadowStepThresholdDistance { get; private set; } = 0.5f;
-        [field: SerializeField] public float ShadowStepDistanceAmount { get; private set; } = 3f; 
+        [field: SerializeField] public float ShadowStepDistanceAmount { get; private set; } = 3f;
+		#endregion
 
-        #endregion
-
-        #region Enemy Stats
-        [Header("----------Enemy Stats----------")]
+		#region Enemy Stats
+		[Header("----------Enemy Stats----------")]
         [Space(10)]
         public string enemyName = "Enemy"; 
         [field: SerializeField] public int MaxHealth { get; private set; } = 100;
@@ -89,7 +89,8 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
         [field: SerializeField] public string StunnedAnimationName { get; private set; } = "stunned";
         [field: SerializeField] public string EnragedAnimationName { get; private set; } = "Roar";
         [field: SerializeField] public string CastAnimationName { get; private set; } = "cast";
-        [field: SerializeField] public string SnapAnimationName { get; private set; } = "snap";
+        [field: SerializeField] public string ChannelAnimationName { get; private set; } = "SpellA_Channel";
+		[field: SerializeField] public string SnapAnimationName { get; private set; } = "snap";
         #endregion
 
         #region Global Flags
@@ -107,6 +108,10 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
             CurrentHealth = MaxHealth;
             ChangeState(new EnemyIdleState(this));
         }
+        //private void Update()
+        //{
+        //    GlobalTimer -= Time.deltaTime;
+        //}
         public void TakeDamage(int damage, bool applyImpulse)
         {
             applyImpulse = false;
@@ -122,6 +127,14 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
             {
                 ShouldDie = true;
                 player.PlayerStateMachine.PlayerStats.GainXP(XpReward);
+            }
+        }
+        public void TwoHitCombo()
+        {
+            if (this.CurrentState is EnemyMeleeAttackState)
+            {
+                Animator.CrossFadeInFixedTime(AttackAnimationName[AttackIndex], .1f);
+                AttackIndex = 1 - AttackIndex;
             }
         }
         public void OnDrawGizmosSelected()
@@ -154,14 +167,6 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
             //Gizmos.color = Color.blue;
             //Gizmos.DrawLine(position, position + leftBoundary);
             //Gizmos.DrawLine(position, position + rightBoundary);
-        }
-        public void TwoHitCombo()
-        {
-            if (this.CurrentState is EnemyMeleeAttackState)
-            {
-                Animator.CrossFadeInFixedTime(AttackAnimationName[AttackIndex], .1f);
-                AttackIndex = 1 - AttackIndex;
-            }
         }
     }
 }

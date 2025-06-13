@@ -1,4 +1,5 @@
 ﻿using Assets.Scripts.State_Machine.Player_State_Machine;
+using Assets.Scripts.State_Machine.Player_State_Machine.FighterStates;
 using UnityEngine;
 
 public class PlayerAnimationEvents : MonoBehaviour
@@ -16,10 +17,7 @@ public class PlayerAnimationEvents : MonoBehaviour
 
 
 	}
-	private void Update()
-	{
-		
-	}
+	
 	public void BackToLocomotion() => _stateMachine.ChangeState(new FighterLocomotionState(_stateMachine));
     public void EnableFrontMeleeCollider() => _playerMelee.SetWeaponActive(true, 0);
 	public void DisableFrontMeleeCollider() => _playerMelee.SetWeaponActive(false, 0);
@@ -27,9 +25,10 @@ public class PlayerAnimationEvents : MonoBehaviour
 	public void DisableAoEMeleeCollider() => _playerMelee.SetWeaponActive(false, 1);
 	public void EnableDisableKnockback() => _playerMelee.ShouldKnockBackSwitcher();
 	public void EnableDisableTrails() => _trailRenderer.emitting = !_trailRenderer.emitting;
-    public void EnableParticles()
+    public void EnableSpellVFX()
     {
-        spellVFX[0].gameObject.SetActive(true);
+        if(_stateMachine.PlayerCurrentState is FighterAbilityTwoState)
+            spellVFX[0].gameObject.SetActive(true);
     }
 
 
