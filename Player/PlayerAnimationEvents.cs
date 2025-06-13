@@ -4,21 +4,34 @@ using UnityEngine;
 public class PlayerAnimationEvents : MonoBehaviour
 {
     public PlayerStateMachine _stateMachine;
-    [SerializeField] private PlayerMelee meleeWeapon;
+    [SerializeField] private PlayerMelee _playerMelee;
+    [SerializeField] private TrailRenderer _trailRenderer;
+    public ParticleSystem[] spellVFX;
     private void Start()
     {
         if (_stateMachine == null)
             _stateMachine = GetComponent<PlayerStateMachine>();
+		if (_playerMelee == null)
+            _playerMelee = GetComponentInChildren<PlayerMelee>();   
 
+
+	}
+	private void Update()
+	{
+		
+	}
+	public void BackToLocomotion() => _stateMachine.ChangeState(new FighterLocomotionState(_stateMachine));
+    public void EnableFrontMeleeCollider() => _playerMelee.SetWeaponActive(true, 0);
+	public void DisableFrontMeleeCollider() => _playerMelee.SetWeaponActive(false, 0);
+    public void EnableAoEMeleeCollider() => _playerMelee.SetWeaponActive(true, 1);
+	public void DisableAoEMeleeCollider() => _playerMelee.SetWeaponActive(false, 1);
+	public void EnableDisableKnockback() => _playerMelee.ShouldKnockBackSwitcher();
+	public void EnableDisableTrails() => _trailRenderer.emitting = !_trailRenderer.emitting;
+    public void EnableParticles()
+    {
+        spellVFX[0].gameObject.SetActive(true);
     }
-    public void BackToLocomotion() => _stateMachine.ChangeState(new FighterLocomotionState(_stateMachine));
-    public void EnableFrontMeleeCollider() => meleeWeapon.SetWeaponActive(true, 0);
-    //public void EnableDisableTrails() => meleeWeapon.TrailRenderSwitcher();
-    //public void EnableDisableKnockback() => meleeWeapon.ShouldKnockBackSwitcher();
 
 
-    //public void EnableFrontMeleeCollider() => meleeWeapon.SetWeaponActive(true, 0);
-    //public void DisableFrontMeleeCollider() => meleeWeapon.SetWeaponActive(false, 0);
-    //public void EnableAoEMeleeCollider() => meleeWeapon.SetWeaponActive(true, 1);
-    //public void DisableAoEMeleeCollider() => meleeWeapon.SetWeaponActive(false, 1);
+
 }

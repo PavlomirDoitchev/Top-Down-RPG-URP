@@ -1,4 +1,6 @@
-﻿using Assets.Scripts.State_Machine.Player_State_Machine;
+﻿using Assets.Scripts.Player.Abilities;
+using Assets.Scripts.Player.Abilities.Fighter_Abilities;
+using Assets.Scripts.State_Machine.Player_State_Machine;
 using System.Collections.Generic;
 using UnityEngine;
 namespace Assets.Scripts.Player
@@ -6,9 +8,13 @@ namespace Assets.Scripts.Player
     public class SkillManager : MonoBehaviour
     {
         public static SkillManager Instance;
-        public FighterBasicAttack fighterBasicAttack { get; private set; }
-        public FighterQ fighterQ { get; private set; }
-        private void Awake()
+
+        public Dodge Dodge { get; private set; }
+		public FighterBasicAttack FighterBasicAttack { get; private set; }
+        public FighterAbilityOne FighterAbilityOne { get; private set; }
+        public FighterAbilityTwo FighterAbilityTwo { get; private set; }
+
+		private void Awake()
         {
             if (Instance != null)            
                 Destroy(Instance.gameObject);
@@ -18,10 +24,12 @@ namespace Assets.Scripts.Player
         }
         private void Start()
         {
-            if (PlayerManager.Instance.PlayerStateMachine.CharacterLevelDataSO[0].characterClass == CharacterLevelSO.CharacterClass.Fighter)
+			Dodge = GetComponent<Dodge>();
+			if (PlayerManager.Instance.PlayerStateMachine.CharacterLevelDataSO[0].characterClass == CharacterLevelSO.CharacterClass.Fighter)
             {
-                fighterQ = GetComponent<FighterQ>();
-                fighterBasicAttack = GetComponent<FighterBasicAttack>();
+				FighterAbilityTwo = GetComponent<FighterAbilityTwo>();
+				FighterAbilityOne = GetComponent<FighterAbilityOne>();
+                FighterBasicAttack = GetComponent<FighterBasicAttack>();
             }
             else if (PlayerManager.Instance.PlayerStateMachine.CharacterLevelDataSO[0].characterClass == CharacterLevelSO.CharacterClass.Mage)
             {

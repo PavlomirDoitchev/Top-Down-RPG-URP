@@ -12,9 +12,7 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
     public abstract class PlayerBaseState : State
     {
         protected PlayerStateMachine _playerStateMachine;
-        protected MeleeWeapon meleeWeapon;
-        protected readonly int activeLayer = 7;
-        protected readonly int inactiveLayer = 3;
+        
         private Quaternion lockedRotation;
         public PlayerBaseState(PlayerStateMachine stateMachine)
         {
@@ -23,24 +21,11 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
         public override void EnterState()
         {
             base.EnterState();
-            Debug.Log($"Entering state: {this.GetType().Name}");
+            //Debug.Log($"Entering state: {this.GetType().Name}");
 
-            //InitializeWeapon();
-            //meleeWeapon.ClearHitEnemies();
+            
         }
 
-        //protected void InitializeWeapon()
-        //{
-        //    if (_playerStateMachine.EquippedWeapon != null)
-        //    {
-        //        meleeWeapon = _playerStateMachine.GetComponentInChildren<MeleeWeapon>();
-        //    }
-
-        //    if (meleeWeapon == null)
-        //    {
-        //        Debug.LogError("No weapon equipped in state: " + this.GetType().Name);
-        //    }
-        //}
         /// <summary>
         /// Set animation speed back to normal playback. 
         /// Commonly used in Exit State after using an ability
@@ -52,7 +37,6 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
         protected void SetAttackSpeed() 
         {
             _playerStateMachine.Animator.speed = _playerStateMachine.PlayerStats.TotalAttackSpeed;
-            //Debug.Log($"Setting attack speed to {_playerStateMachine.PlayerStats.TotalAttackSpeed} in state: {this.GetType().Name}");
         }
         /// <summary>
         /// Preserve momentum. Used in PlayerMove().
@@ -97,11 +81,22 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
                     _playerStateMachine.PlayerStats.RotationSpeed * deltaTime);
             }
         }
-        /// <summary>
-        /// Player Movement Logic
-        /// </summary>
-        /// <param name="deltaTime"></param>
-        protected void PlayerMove(float deltaTime)
+        protected void RotateToMouse()
+		{
+			Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+			if (Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity, LayerMask.GetMask("Ground")))
+			{
+				Vector3 targetPoint = hit.point;
+				targetPoint.y = _playerStateMachine.transform.position.y;
+				Quaternion targetRotation = Quaternion.LookRotation(targetPoint - _playerStateMachine.transform.position);
+				_playerStateMachine.transform.rotation = targetRotation;
+			}
+		}
+		/// <summary>
+		/// Player Movement Logic
+		/// </summary>
+		/// <param name="deltaTime"></param>
+		protected void PlayerMove(float deltaTime)
         {
             Vector3 movement = CalculateMovement();
             float speedModifier = _playerStateMachine.PlayerStats.BaseMovementSpeed * (1 - _playerStateMachine.PlayerStats.TotalSlowAmount);
@@ -129,8 +124,8 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
             //forward.Normalize();
             //right.Normalize();
 
-            Vector2 moveInput = _playerStateMachine.InputManager.MoveInput;
-            Vector3 moveDirection = new Vector3(moveInput.x, 0, moveInput.y);
+            Vector2 moveInput = _playerStateMachine.InputManager.MovementInput();
+			Vector3 moveDirection = new Vector3(moveInput.x, 0, moveInput.y);
             //Vector3 moveDirection = forward moveInput.y + right moveInput.x;
             return moveDirection.normalized;
         }

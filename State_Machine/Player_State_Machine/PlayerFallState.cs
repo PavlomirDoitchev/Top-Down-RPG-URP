@@ -22,8 +22,8 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
 
         public override void UpdateState(float deltaTime)
         {
-
-            if (_playerStateMachine.CharacterController.velocity.y < maxFallSpeed)
+            PlayerMove(deltaTime);
+			if (_playerStateMachine.CharacterController.velocity.y < maxFallSpeed)
                 maxFallSpeed = _playerStateMachine.CharacterController.velocity.y;
 
 

@@ -3,19 +3,18 @@ using UnityEngine;
 
 namespace Assets.Scripts.Player
 {
-    public class FighterQ : Skills
+    public class FighterAbilityOne : Skills
     {
-        public ParticleSystem particle;
-        public override void UseSkill()
+        [field: SerializeField] public ParticleSystem particle { get; private set; }
+		public override void UseSkill()
         {
             base.UseSkill();
-            
-            if (particle.isPlaying) 
+            if (particle.isPlaying)
             {
                 particle.Stop();
             }
-            particle.Play();
-        }
+			particle.Play();
+		}
 
     }
 }

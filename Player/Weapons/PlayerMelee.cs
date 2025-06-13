@@ -14,37 +14,38 @@ public class PlayerMelee : MonoBehaviour
     [field: SerializeField] public float KnockbackForce { get;  set; }
     [field: SerializeField] public bool ShouldKnockback { get; private set; }
     [field: SerializeField] public float KnockbackDuration { get; private set; } = 0.5f;
-
-    [SerializeField] private WeaponDataSO newWeapon;
+	[SerializeField] private WeaponDataSO newWeapon;
     private void Start()
     {
         playerManager = PlayerManager.Instance;
-    }
-    private void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.V))
-        {
-            EquipNewWeapon(newWeapon);
-        }
-    }
-    public void SetWeaponActive(bool isActive, int index)
+	}
+   
+
+	#region Animation Events Functions
+	/// <summary>
+	/// Specify which collider to activate or deactivate based on the index. 
+	/// </summary>
+	/// <param name="isActive"></param>
+	/// <param name="index"></param>
+	public void SetWeaponActive(bool isActive, int index)
     {
         if (isActive)
             damageColliders[index].gameObject.layer = LayerMask.NameToLayer("Enemy");
         else if (!isActive)
             damageColliders[index].gameObject.layer = 3;
     }
-    /// <summary>
-    /// Used in Animation Events to toggle the knockback effect on and off.
-    /// </summary>
+   
     public void ShouldKnockBackSwitcher()
     {
         ShouldKnockback = !ShouldKnockback;
     }
-    public void SpawnDamageText(Collider other)
+	#endregion
+	public void SpawnDamageText(Collider other)
     {
         damageText.Spawn(other.transform.position, EquippedWeaponDataSO.maxDamage);
     }
+
+    
     public void EquipNewWeapon(WeaponDataSO weaponData)
     {
         if (EquippedWeaponDataSO != null)

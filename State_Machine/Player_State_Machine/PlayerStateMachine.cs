@@ -23,15 +23,16 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
 
         [Tooltip("Value must be above 0 to be unlocked!")]
         [Header("Q Ability Ranks")]
-        public Fighter_Ability_SO[] qAbilityData;
-        [field: SerializeField] public int QAbilityRank { get; set; }   
+        public Fighter_Ability_SO[] Ability_One_Data;
+        [field: SerializeField] public int Ability_One_Rank { get; set; }   
         [Header("-----References-----")]
         [SerializeField] private GameObject rightHandEquipSlot;
         [SerializeField] private GameObject leftHandEquipSlot;
         [field: SerializeField] public InputManager InputManager { get; private set; }
         [field: SerializeField] public CharacterController CharacterController { get; private set; }
         [field: SerializeField] public Animator Animator { get; private set; }
-        [field: SerializeField] public ForceReceiver ForceReceiver { get; private set; }
+        [field: SerializeField] public AnimationNamesData AnimationNamesData { get; private set; }
+		[field: SerializeField] public ForceReceiver ForceReceiver { get; private set; }
 
         public DamageNumber damageText;
         public PlayerStats PlayerStats { get; private set; }
@@ -60,16 +61,6 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
             Vector3 pushDir = new Vector3(hit.moveDirection.x, 0, hit.moveDirection.z);
             rb.linearVelocity = pushDir * PlayerStats.PushObjectsForce;
         }
-        //public void EquipNewWeapon(GameObject weaponPrefab)
-        //{
-        //    if (EquippedWeapon != null)
-        //    {
-        //        Destroy(EquippedWeapon);
-        //    }
-        //    //GameObject newWeapon = Instantiate(weaponPrefab, rightHandEquipSlot.transform.position,
-        //    //    Quaternion.identity, rightHandEquipSlot.transform);
-        //    GameObject newWeapon = Instantiate(weaponPrefab, Animator.GetBoneTransform(HumanBodyBones.RightIndexProximal));
-        //    EquippedWeapon = newWeapon;
-        //}
+       
     }
 }

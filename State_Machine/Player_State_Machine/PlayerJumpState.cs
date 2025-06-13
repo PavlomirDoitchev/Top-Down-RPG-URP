@@ -20,7 +20,7 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
         }
         public override void UpdateState(float deltaTime)
         {
-            //PlayerMove(deltaTime);
+            PlayerMove(deltaTime);
             //Move(momentum, deltaTime);
             if (_playerStateMachine.CharacterController.velocity.y <= 0)
             {
