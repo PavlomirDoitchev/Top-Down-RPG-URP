@@ -63,7 +63,8 @@ namespace Assets.Scripts.Enemies
                     baseDamage = Mathf.RoundToInt(baseDamage * enemyStateMachine.EnragedDamageMultiplier);
                 }
                 if (enemyStateMachine.ShouldKnockBackPlayer)
-                    playerManager.PlayerStateMachine.ForceReceiver.AddForce((other.transform.position - enemyStateMachine.transform.position).normalized * enemyStateMachine.KnockBackForce);
+                    playerManager.PlayerStateMachine.ForceReceiver
+                        .AddForce((other.transform.position - enemyStateMachine.transform.position).normalized * enemyStateMachine.KnockBackForce);
 
                 var playerStats = playerManager.PlayerStateMachine.PlayerStats;
                 playerStats.TakeDamage(baseDamage, true);

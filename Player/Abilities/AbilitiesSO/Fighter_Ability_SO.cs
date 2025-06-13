@@ -7,5 +7,6 @@ public class Fighter_Ability_SO : ScriptableObject
     public float damageMultiplier;
     public float force;
     public float knockbackForce;
+    public bool canKnockback;
     //public ParticleSystem VFX;
 }

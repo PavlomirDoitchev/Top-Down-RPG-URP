@@ -19,11 +19,11 @@ public class PlayerMelee : MonoBehaviour
 	/// <param name="index"></param>
 	public void SetWeaponActive(bool isActive, int index)
     {
-        if (isActive)
-            damageColliders[index].gameObject.layer = 13;
-        else if (!isActive)
-            damageColliders[index].gameObject.layer = 3;
-    }
+		if (isActive)
+			damageColliders[index].gameObject.SetActive(true);
+		else if (!isActive)
+			damageColliders[index].gameObject.SetActive(false);
+	}
    
     
 	#endregion

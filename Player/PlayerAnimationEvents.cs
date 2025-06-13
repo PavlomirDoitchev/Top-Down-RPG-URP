@@ -6,6 +6,7 @@ public class PlayerAnimationEvents : MonoBehaviour
 {
     public PlayerStateMachine _stateMachine;
     [SerializeField] private PlayerMelee _playerMelee;
+    [SerializeField] private MeleeWeapon[] _meleeWeapon;
     [SerializeField] private TrailRenderer _trailRenderer;
     public ParticleSystem[] spellVFX;
     private void Start()
@@ -23,6 +24,8 @@ public class PlayerAnimationEvents : MonoBehaviour
 	public void DisableFrontMeleeCollider() => _playerMelee.SetWeaponActive(false, 0);
     public void EnableAoEMeleeCollider() => _playerMelee.SetWeaponActive(true, 1);
 	public void DisableAoEMeleeCollider() => _playerMelee.SetWeaponActive(false, 1);
+    public void ClearAllEnemiesFrontCollider() => _meleeWeapon[0].enemyColliders.Clear();
+    public void ClearAllEnemiesAoECollider() => _meleeWeapon[1].enemyColliders.Clear();
     public void EnableDisableKnockback() 
     {
         _stateMachine.PlayerStats.ShouldKnockback = !_stateMachine.PlayerStats.ShouldKnockback;

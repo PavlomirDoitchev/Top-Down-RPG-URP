@@ -8,7 +8,7 @@ using Assets.Scripts.State_Machine.Enemy_State_Machine;
 using Assets.Scripts.State_Machine.Player_State_Machine.FighterStates;
 public class MeleeWeapon : MonoBehaviour
 {
-	private readonly List<Collider> enemyColliders = new List<Collider>();
+	public readonly List<Collider> enemyColliders = new List<Collider>();
 	int ignoreInactiveLayer = 3;
 	string targetLayerName = "Enemy";
 	private PlayerManager _playerManager;
@@ -20,14 +20,14 @@ public class MeleeWeapon : MonoBehaviour
 		_playerManager = PlayerManager.Instance;
 	}
 
-	private void OnTriggerStay(Collider other)
+	private void OnTriggerEnter(Collider other)
 	{
 
+		if (enemyColliders.Contains(other)) return;
 		if (other.gameObject.layer == 7
 			&& this.gameObject.layer == 13
 			&& other.gameObject.TryGetComponent<IDamagable>(out var damagable))
 		{
-			if (enemyColliders.Contains(other)) return;
 			enemyColliders.Add(other);
 			TryKnockbackEnemy(other);
 			//Debug.Log(enemyColliders.Count + " enemies hit");
@@ -40,7 +40,7 @@ public class MeleeWeapon : MonoBehaviour
 			}
 			else
 				multiplier = _playerManager.PlayerStateMachine.BasicAttackData[_playerManager.PlayerStateMachine.BasicAttackRank].damageMultiplier;
-			
+
 			if (_playerManager.PlayerStateMachine.CriticalStrikeSuccess())
 			{
 				damage = Mathf.RoundToInt(_playerManager.PlayerStateMachine.WeaponDamage(damage, multiplier)
@@ -70,16 +70,21 @@ public class MeleeWeapon : MonoBehaviour
 	{
 		if (other.TryGetComponent<ForceReceiver>(out var forceReceiver)
 							&& other.TryGetComponent<EnemyStateMachine>(out var enemyStateMachine)
-							&& _playerManager.PlayerStateMachine.PlayerStats.ShouldKnockback
 							&& !enemyStateMachine.IsEnraged)
 		{
 			if (_playerManager.PlayerStateMachine.PlayerCurrentState is FighterAbilityOneState /*add other melee abilities knockback*/)
 			{
+				if (!_playerManager.PlayerStateMachine.Ability_One_Data[_playerManager.PlayerStateMachine.Ability_One_Rank].canKnockback)
+					return;
 				knockBackForce = _playerManager.PlayerStateMachine.Ability_One_Data[_playerManager.PlayerStateMachine.Ability_One_Rank].knockbackForce;
 			}
+			else
+			{
+				knockBackForce = 0f;
+			}
 			Vector3 knockbackDir = (other.transform.position - _playerManager.PlayerStateMachine.transform.position).normalized;
-			forceReceiver.AddForce(knockbackDir * 50);
-			//enemyStateMachine.ChangeState(new EnemyKnockbackState(enemyStateMachine, _playerMelee.KnockbackDuration));
+			forceReceiver.AddForce(knockbackDir * knockBackForce);
+			enemyStateMachine.ChangeState(new EnemyKnockbackState(enemyStateMachine, .5f));
 		}
 	}
 

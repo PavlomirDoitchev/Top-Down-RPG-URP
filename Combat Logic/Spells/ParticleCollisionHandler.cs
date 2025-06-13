@@ -7,18 +7,7 @@ public class ParticleCollisionHandler : MonoBehaviour
 {
 	[SerializeField] bool shouldShakeCamera = true;
 	private readonly List<GameObject> enemyList = new();
-	//float timer = 2f;
-	//private void Update()
-	//{
-	//	//if (timer > 0)
-	//	//{
-	//	//	timer -= Time.deltaTime;
-	//	//}
- // //      else
- // //      {
- // //          gameObject.SetActive(false);
-	//	//}
- //   }
+
 	private void OnEnable()
 	{
 		if (shouldShakeCamera)
@@ -26,7 +15,6 @@ public class ParticleCollisionHandler : MonoBehaviour
 	}
 	private void OnDisable()
 	{
-		//timer = 2f;
 		enemyList.Clear();
 	}
 	void OnParticleCollision(GameObject other)
@@ -37,7 +25,7 @@ public class ParticleCollisionHandler : MonoBehaviour
 		if (other.gameObject.layer == 7 && other.TryGetComponent<IDamagable>(out var damagable)) 
 		{
 			enemyList.Add(other);
-			Debug.Log(enemyList.Count + " enemies hit by particle collision");
+			//Debug.Log(enemyList.Count + " enemies hit by particle collision");
 			int damage = Mathf.RoundToInt(10 *
 				PlayerManager.Instance.PlayerStateMachine.BasicAttackData[PlayerManager.Instance.PlayerStateMachine.BasicAttackRank].damageMultiplier);
 			damagable.TakeDamage(damage, false);
