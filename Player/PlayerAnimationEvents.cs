@@ -23,7 +23,10 @@ public class PlayerAnimationEvents : MonoBehaviour
 	public void DisableFrontMeleeCollider() => _playerMelee.SetWeaponActive(false, 0);
     public void EnableAoEMeleeCollider() => _playerMelee.SetWeaponActive(true, 1);
 	public void DisableAoEMeleeCollider() => _playerMelee.SetWeaponActive(false, 1);
-	public void EnableDisableKnockback() => _playerMelee.ShouldKnockBackSwitcher();
+    public void EnableDisableKnockback() 
+    {
+        _stateMachine.PlayerStats.ShouldKnockback = !_stateMachine.PlayerStats.ShouldKnockback;
+	}
 	public void EnableDisableTrails() => _trailRenderer.emitting = !_trailRenderer.emitting;
     public void EnableSpellVFX()
     {

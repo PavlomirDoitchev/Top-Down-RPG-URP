@@ -57,7 +57,8 @@ namespace Assets.Scripts.Player
         [field: SerializeField]
         [field: Range(0, 1)] public float CriticalChance { get; private set; }
         [field: SerializeField] 
-        [field: Range(1, 5)] public float CriticalModifier { get; private set; }
+        [field: Range(1, 5)] public float CriticalDamageModifier { get; private set; }
+        public bool ShouldKnockback { get; set; } = false;
 
         public float TotalSlowAmount => CalculateTotalSlow();
         public float TotalAttackSpeed => CalculateTotalAttackSpeed();
@@ -226,14 +227,6 @@ namespace Assets.Scripts.Player
             }
         }
 
-        //public void RemoveEffect()
-        //{
-        //    activeEffects = null;
-        //    currentEffectTime = 0f;
-        //    nextTickTime = 0f;
-        //}
-        //private float currentEffectTime = 0f;
-        //private float nextTickTime = 0f;
         public void HandleEffect()
         {
 

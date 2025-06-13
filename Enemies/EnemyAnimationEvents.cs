@@ -36,12 +36,17 @@ public class EnemyAnimationEvents : MonoBehaviour
 	public void ChangeToIdleAnimation() => enemyStateMachine.Animator.CrossFadeInFixedTime(enemyStateMachine.IdleAnimationName, .1f);
     public void VFXDuringCast_0() 
     {
-        bool isCasting = false;
         if (castingVFX != null) 
         {
-            isCasting = !isCasting;
-            castingVFX[0].gameObject.SetActive(isCasting);
-        }
+            castingVFX[0].gameObject.SetActive(true);
+		}
+	}
+    public void DisableVFXDuringCast_0() 
+    {
+        if(castingVFX != null)
+		{
+			castingVFX[0].gameObject.SetActive(false);
+		}
 	}
    
 	#endregion

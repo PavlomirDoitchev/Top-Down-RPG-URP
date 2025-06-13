@@ -1,7 +1,4 @@
 using UnityEngine;
-using Assets.Scripts.State_Machine;
-using Assets.Scripts.Player;
-using DamageNumbersPro;
 namespace Assets.Scripts.State_Machine.Player_State_Machine
 {
     /// <summary>
@@ -25,7 +22,7 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
 
             
         }
-
+       
         /// <summary>
         /// Set animation speed back to normal playback. 
         /// Commonly used in Exit State after using an ability
@@ -129,26 +126,7 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
             //Vector3 moveDirection = forward moveInput.y + right moveInput.x;
             return moveDirection.normalized;
         }
-        public enum PlayerStatType
-        {
-            Strength,
-            Dexterity,
-            Intellect
-        }
-        protected float GetStatValue(PlayerStatType statType)
-        {
-            switch (statType)
-            {
-                case PlayerStatType.Strength:
-                    return _playerStateMachine.PlayerStats.Strength + _playerStateMachine.PlayerStats.TotalStatChangeStrength;
-                case PlayerStatType.Dexterity:
-                    return _playerStateMachine.PlayerStats.Dexterity + _playerStateMachine.PlayerStats.TotalStatChangeDexterity;
-                case PlayerStatType.Intellect:
-                    return _playerStateMachine.PlayerStats.Intellect + _playerStateMachine.PlayerStats.TotalStatChangeIntellect;
-                default:
-                    return 0;
-            }
-        }
+       
         //public enum AbilityType
         //{
         //    BasicAttack,

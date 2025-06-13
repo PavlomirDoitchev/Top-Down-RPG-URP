@@ -20,44 +20,69 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
 		}
 		public override void UpdateState(float deltaTime)
 		{
+			Fall();
 			PlayerMove(deltaTime);
-			if (_playerStateMachine.CharacterController.velocity.y <= -10)
-			{
-				_playerStateMachine.ChangeState(new PlayerFallState(_playerStateMachine));
-				return;
-			}
-			if (_playerStateMachine.InputManager.PlayerJumpInput() && _playerStateMachine.CharacterController.isGrounded)
-			{
-				_playerStateMachine.ChangeState(new PlayerJumpState(_playerStateMachine));
-			}
-			if (_playerStateMachine.InputManager.PlayerDodgeInput()
-				&& _playerStateMachine.CharacterController.isGrounded
-				&& SkillManager.Instance.Dodge.CanUseSkill()
-				&& (_playerStateMachine.CharacterController.velocity.x != 0 || _playerStateMachine.CharacterController.velocity.z != 0))
-			{
-				_playerStateMachine.ChangeState(new FighterDodgeState(_playerStateMachine));
-			}
+			DoJump();
+			DoDodge();
 
-			if (_playerStateMachine.InputManager.IsAttacking
+			if (_playerStateMachine.InputManager.BasicAttackInput()
 				&& SkillManager.Instance.FighterBasicAttack.CanUseSkill())
 			{
 				_playerStateMachine.ChangeState(new FighterBasicAttackChainOne(_playerStateMachine));
 			}
 
-			if (_playerStateMachine.InputManager.AbilityOneInput()
-				&& _playerStateMachine.Ability_One_Rank > 0
-				&& SkillManager.Instance.FighterAbilityOne.CanUseSkill())
+			DoAbilityOne();
+			DoAbilityTwo();
+		}
+
+		private void Fall()
+		{
+			if (_playerStateMachine.CharacterController.velocity.y <= -10)
 			{
-				_playerStateMachine.ChangeState(new FighterAbilityOneState(_playerStateMachine));
+				_playerStateMachine.ChangeState(new PlayerFallState(_playerStateMachine));
+				return;
 			}
+		}
+
+		private void DoJump()
+		{
+			if (_playerStateMachine.InputManager.PlayerJumpInput() && _playerStateMachine.CharacterController.isGrounded)
+			{
+				_playerStateMachine.ChangeState(new PlayerJumpState(_playerStateMachine));
+			}
+		}
+
+		private void DoAbilityTwo()
+		{
 			if (_playerStateMachine.InputManager.AbilityTwoInput()
-				&& _playerStateMachine.Ability_One_Rank > 0
-				&& SkillManager.Instance.FighterAbilityTwo.CanUseSkill())
+							&& _playerStateMachine.Ability_One_Rank > 0
+							&& SkillManager.Instance.FighterAbilityTwo.CanUseSkill())
 			{
 				_playerStateMachine.ChangeState(new FighterAbilityTwoState(_playerStateMachine));
 			}
 		}
 
+		private void DoAbilityOne()
+		{
+			if (_playerStateMachine.InputManager.AbilityOneInput()
+							&& _playerStateMachine.Ability_One_Rank > 0
+							&& SkillManager.Instance.FighterAbilityOne.CanUseSkill())
+			{
+				_playerStateMachine.ChangeState(new FighterAbilityOneState(_playerStateMachine));
+			}
+		}
+
+		private void DoDodge()
+		{
+			if (_playerStateMachine.InputManager.PlayerDodgeInput()
+							&& _playerStateMachine.CharacterController.isGrounded
+							&& SkillManager.Instance.Dodge.CanUseSkill()
+							&& (_playerStateMachine.CharacterController.velocity.x != 0 
+							|| _playerStateMachine.CharacterController.velocity.z != 0))
+			{
+				_playerStateMachine.ChangeState(new FighterDodgeState(_playerStateMachine));
+			}
+		}
 
 		public override void ExitState()
 		{

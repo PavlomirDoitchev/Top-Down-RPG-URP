@@ -41,8 +41,7 @@ public class ParticleCollisionHandler : MonoBehaviour
 			int damage = Mathf.RoundToInt(10 *
 				PlayerManager.Instance.PlayerStateMachine.BasicAttackData[PlayerManager.Instance.PlayerStateMachine.BasicAttackRank].damageMultiplier);
 			damagable.TakeDamage(damage, false);
-			Debug.Log($"Dealt {damage} damage to {other.name}");
-			PlayerManager.Instance.PlayerStateMachine.DamageText.Spawn(other.transform.position, damage);
+			PlayerManager.Instance.PlayerStateMachine.DamageText[3].Spawn(other.transform.position + Vector3.up * 2f, damage);
 		}
 	}
 }

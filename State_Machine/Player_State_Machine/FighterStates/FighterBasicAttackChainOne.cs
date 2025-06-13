@@ -7,26 +7,23 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
     public class FighterBasicAttackChainOne : PlayerBaseState
     {
         private bool rotationLocked = false;
-
+        Vector3 momentum;
         public FighterBasicAttackChainOne(PlayerStateMachine stateMachine) : base(stateMachine)
         {
         }
         public override void EnterState()
         {
             base.EnterState();
-            int rank = _playerStateMachine.BasicAttackRank;
             _playerStateMachine.Animator.speed = _playerStateMachine.PlayerStats.TotalAttackSpeed;
             _playerStateMachine.Animator.Play("2Hand-Sword-Attack1");
             SetAttackSpeed();
-            //SetMeleeDamage(rank, AbilityType.BasicAttack, PlayerStatType.Strength);
+			momentum = _playerStateMachine.CharacterController.velocity * 0.5f;
         }
         public override void UpdateState(float deltaTime)
         {
-            int rank = _playerStateMachine.BasicAttackRank;
-
-            Move(deltaTime);
-            if (_playerStateMachine.InputManager.IsAttacking
-                && _playerStateMachine.Animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= .75f)
+			Move(momentum, deltaTime);
+            if (_playerStateMachine.InputManager.BasicAttackInput()
+				&& _playerStateMachine.Animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= .75f)
             {
                 _playerStateMachine.ForceReceiver.AddForce(-_playerStateMachine.transform.forward * _playerStateMachine.BasicAttackData[_playerStateMachine.BasicAttackRank].force);
 
@@ -48,7 +45,7 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
                 rotationLocked = true;
                 SetCurrentRotation();
             }
-            if (_playerStateMachine.Animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1f)
+            if (_playerStateMachine.Animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= .85f)
             {
                 _playerStateMachine.ChangeState(new FighterLocomotionState(_playerStateMachine));
             }

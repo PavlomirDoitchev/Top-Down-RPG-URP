@@ -4,13 +4,13 @@ using UnityEngine;
 public class DestroyParticle : MonoBehaviour
 {
     [SerializeField] float timer;
-    public void Start()
-    {
-        StartCoroutine(DestroyThis());
-    }
-    IEnumerator DestroyThis() 
-    {
-        yield return new WaitForSeconds(timer);
-        Destroy(this.gameObject);
-    }
+	private void Update()
+	{
+		timer -= Time.deltaTime;
+		if (timer <= 0f)
+		{
+			Destroy(gameObject);
+		}
+	}
 }
+

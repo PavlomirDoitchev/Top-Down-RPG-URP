@@ -36,7 +36,7 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
                 }
                 if(fallDamage > 0)
                 {
-                    _playerStateMachine.DamageText.Spawn(_playerStateMachine.transform.position, fallDamage);
+                    _playerStateMachine.DamageText[0].Spawn(_playerStateMachine.transform.position, fallDamage);
                 }
                 if (_playerStateMachine.PlayerStats.GetCurrentHealth() > 0)
                 {

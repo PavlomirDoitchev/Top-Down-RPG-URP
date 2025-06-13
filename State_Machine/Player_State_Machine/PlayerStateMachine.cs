@@ -17,16 +17,22 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
         public CharacterLevelSO[] CharacterLevelDataSO;
 
         [Header("-----Ability Data-----")]
-        [Header("Basic Attack")]
         [field: SerializeField] public Fighter_Ability_SO[] BasicAttackData { get; private set; }
 		[field: SerializeField] public int BasicAttackRank { get; set; }
-
-        [Tooltip("Value must be above 0 to be unlocked!")]
-        [Header("Ability One Ranks")]
         [field: SerializeField] public Fighter_Ability_SO[] Ability_One_Data { get; private set; }
         [field: SerializeField] public int Ability_One_Rank { get; set; }
         [field: SerializeField] public Fighter_Ability_SO[] Ability_Two_Data { get; private set; }
 		[field: SerializeField] public int Ability_Two_Rank { get; set; }
+
+        #region Equipment
+        [field: SerializeField] public WeaponDataSO Weapon { get; set; }
+		#endregion
+
+		#region Global Flags
+		//public bool ShouldKnockback { get; set; }
+		
+		#endregion
+		[Space(20)]
 		[Header("-----References-----")]
         [SerializeField] private GameObject rightHandEquipSlot;
         [SerializeField] private GameObject leftHandEquipSlot;
@@ -36,7 +42,7 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
         [field: SerializeField] public AnimationNamesData AnimationNamesData { get; private set; }
 		[field: SerializeField] public ForceReceiver ForceReceiver { get; private set; }
 
-        [field: SerializeField] public DamageNumber DamageText { get; private set; }
+        [field: SerializeField] public DamageNumber[] DamageText { get; private set; }
 		public PlayerStats PlayerStats { get; private set; }
         public Transform MainCameraTransform { get; private set; }
         [field: SerializeField] public CinemachineImpulseSource CinemachineImpulseSource { get; private set; }
@@ -49,20 +55,64 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
             else if (PlayerStats.GetClassType() == CharacterLevelSO.CharacterClass.Mage)
                 Debug.Log("where is the mage?!");
         }
+		public void OnControllerColliderHit(ControllerColliderHit hit)
+		{
+			Rigidbody rb = hit.collider.attachedRigidbody;
 
-        public void OnControllerColliderHit(ControllerColliderHit hit)
+			if (rb == null || rb.isKinematic)
+				return;
+
+			if (hit.moveDirection.y < -0.3f)
+				return;
+
+			Vector3 pushDir = new Vector3(hit.moveDirection.x, 0, hit.moveDirection.z);
+			rb.linearVelocity = pushDir * PlayerStats.PushObjectsForce;
+		}
+		public bool IsInState<T>() where T : State
+		{
+			return CurrentState is T;
+		}
+        public bool CriticalStrikeSuccess()
+		{
+			return Random.Range(0f, 1f) <= PlayerStats.CriticalChance;
+		}
+        public int WeaponDamage(int damage, float abilityMultiplier) 
         {
-            Rigidbody rb = hit.collider.attachedRigidbody;
-
-            if (rb == null || rb.isKinematic)
-                return;
-
-            if (hit.moveDirection.y < -0.3f)
-                return;
-
-            Vector3 pushDir = new Vector3(hit.moveDirection.x, 0, hit.moveDirection.z);
-            rb.linearVelocity = pushDir * PlayerStats.PushObjectsForce;
-        }
+            damage = Mathf.RoundToInt(Random.Range(Weapon.minDamage, Weapon.maxDamage + 1));
+            if (Weapon.weaponType == WeaponDataSO.WeaponType.Warhammer 
+				|| Weapon.weaponType == WeaponDataSO.WeaponType.Sword
+				|| Weapon.weaponType == WeaponDataSO.WeaponType.Axe)
+			{
+				damage += Mathf.RoundToInt(GetStatValue(PlayerStatType.Strength) * abilityMultiplier);
+			}
+			else if (Weapon.weaponType == WeaponDataSO.WeaponType.Staff)
+			{
+				damage += Mathf.RoundToInt(GetStatValue(PlayerStatType.Intellect) * abilityMultiplier);
+			}
+			//Add more weapons if needed
+			return damage;
+		}
+		public enum PlayerStatType
+		{
+			Strength,
+			Dexterity,
+			Intellect
+		}
+		public float GetStatValue(PlayerStatType statType)
+		{
+			switch (statType)
+			{
+				case PlayerStatType.Strength:
+					return PlayerStats.Strength + PlayerStats.TotalStatChangeStrength;
+				case PlayerStatType.Dexterity:
+					return PlayerStats.Dexterity + PlayerStats.TotalStatChangeDexterity;
+				case PlayerStatType.Intellect:
+					return PlayerStats.Intellect + PlayerStats.TotalStatChangeIntellect;
+				default:
+					return 0;
+			}
+		}
+		
        
     }
 }
