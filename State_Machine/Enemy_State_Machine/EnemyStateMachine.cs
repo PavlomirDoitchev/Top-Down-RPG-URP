@@ -86,7 +86,9 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
         [field: SerializeField] public string[] AttackAnimationName { get; private set; }
         [field: SerializeField] public string DeathAnimationName { get; private set; } = "Death";
         [field: SerializeField] public string HitAnimationName { get; private set; } = "hit";
-        [field: SerializeField] public string StunnedAnimationName { get; private set; } = "stunned";
+		[field: SerializeField] public string KnockedUpAnimationName { get; private set; } = "JumpLoop";
+		[field: SerializeField] public string FallAnimationName { get; private set; } = "JumpEnd";
+		[field: SerializeField] public string StunnedAnimationName { get; private set; } = "stunned";
         [field: SerializeField] public string EnragedAnimationName { get; private set; } = "Roar";
         [field: SerializeField] public string CastAnimationName { get; private set; } = "cast";
         [field: SerializeField] public string ChannelAnimationName { get; private set; } = "SpellA_Channel";
@@ -97,7 +99,8 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
         public bool ShouldDie { get; set; } = false;
         public bool ShouldReturnToOrigin { get; set; } = false;
         public bool IsStunned { get; set; } = false;
-        public bool IsEnraged { get; set; } = false;
+        public bool IsKnockedUp { get; set; } = false;
+		public bool IsEnraged { get; set; } = false;
         public bool ShouldStartAttacking { get; set; } = false;  
         public bool ShouldShadowStep { get; set; } = false; 
         #endregion

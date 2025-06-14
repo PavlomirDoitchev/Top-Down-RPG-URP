@@ -41,18 +41,16 @@ public class Shockwave : MonoBehaviour
 		timer -= Time.deltaTime;
 		if (timer <= 0f)
 		{
-			// Spell finished, disable or reset as needed
 			gameObject.SetActive(false);
 		}
 		else
 		{
-			// Periodic cone collision check
 			damageCheckInterval -= Time.deltaTime;
 			if (damageCheckInterval <= 0f)
 			{
 				ImpactCheck();
 				CheckConeCollision();
-				damageCheckInterval = 0.1f; // reset interval
+				damageCheckInterval = 0.1f; // resets interval
 			}
 		}
 	}
@@ -88,7 +86,7 @@ public class Shockwave : MonoBehaviour
 				Vector3 samplePoint = origin + direction * stepDistance * j;
 				Vector3 rayStart = samplePoint + Vector3.up * 5f;
 
-				if (Physics.Raycast(rayStart, Vector3.down, out RaycastHit hit, 10f, enemyLayer | (1 << 6))) // Layer 6 = ground
+				if (Physics.Raycast(rayStart, Vector3.down, out RaycastHit hit, 10f, enemyLayer | (1 << 6))) // Layer 6
 				{
 					Collider[] hits = Physics.OverlapSphere(hit.point, 0.5f, enemyLayer);
 					foreach (Collider enemy in hits)
@@ -140,9 +138,14 @@ public class Shockwave : MonoBehaviour
 
 			knockBackForce = PlayerManager.Instance.PlayerStateMachine.Ability_Two_Data[PlayerManager.Instance.PlayerStateMachine.Ability_Two_Rank].knockbackForce;
 
-			Vector3 knockbackDir = (PlayerManager.Instance.PlayerStateMachine.transform.position - other.transform.position).normalized;
-			forceReceiver.AddForce(knockbackDir * knockBackForce);
-			enemyStateMachine.ChangeState(new EnemyKnockbackState(enemyStateMachine, .5f));
+			Vector3 pullDir = (PlayerManager.Instance.PlayerStateMachine.transform.position - other.transform.position).normalized;
+			Vector3 knockDir = (other.transform.position - PlayerManager.Instance.PlayerStateMachine.transform.position).normalized;
+			if (enemyStateMachine.IsKnockedUp)
+				return;
+			forceReceiver.AddForce(knockDir * knockBackForce);
+			forceReceiver.KnockUp(knockBackForce * 0.2f);
+			enemyStateMachine.ChangeState(new EnemyKnockedUpState(enemyStateMachine));
+			//enemyStateMachine.ChangeState(new EnemyKnockbackState(enemyStateMachine, .5f));
 		}
 	}
 
@@ -158,15 +161,12 @@ public class Shockwave : MonoBehaviour
 			forward = Vector3.ProjectOnPlane(forward, hit.normal).normalized;
 		}
 
-		// Draw outer radius
 		Gizmos.color = Color.red;
 		Gizmos.DrawWireSphere(origin, maxRadius);
 
-		// Draw impact sphere
 		Gizmos.color = Color.yellow;
 		Gizmos.DrawWireSphere(origin, impactRadius);
 
-		// Draw cone lines
 		Gizmos.color = Color.cyan;
 		int stepCount = 30;
 		float angleStep = coneAngle / stepCount;

@@ -17,8 +17,9 @@ public class ForceReceiver : MonoBehaviour
     {
         if (verticalVelocity < 0f && characterController.isGrounded)
         {
-            verticalVelocity = Physics.gravity.y * Time.deltaTime;
-        }
+            //verticalVelocity = Physics.gravity.y * Time.deltaTime;
+            verticalVelocity = 0f; // Reset vertical velocity when grounded
+		}
         else
         {
             verticalVelocity += Physics.gravity.y * fallMultiplier * Time.deltaTime;
@@ -48,4 +49,19 @@ public class ForceReceiver : MonoBehaviour
         //if (agent != null)
         //    agent.enabled = false; 
     }
+    public void KnockUp(float force) 
+    {
+        verticalVelocity = force;
+
+	}
+    public void KnockDown(float force)
+	{
+		verticalVelocity = -force;
+	}
+	public void ResetForces()
+	{
+		impact = Vector3.zero;
+		verticalVelocity = 0f;
+		dampingVelocity = Vector3.zero;
+	}
 }

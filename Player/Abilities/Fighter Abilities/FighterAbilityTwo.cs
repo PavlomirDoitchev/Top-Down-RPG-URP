@@ -7,7 +7,6 @@ namespace Assets.Scripts.Player.Abilities.Fighter_Abilities
 		public override void UseSkill()
 		{
 			base.UseSkill();
-		
 		}
 	}
 }
