@@ -180,7 +180,7 @@ namespace Assets.Scripts.Player
         }
         public int GetCurrentResource()
         {
-            return currentResource;
+            return currentResource + playerManager.PlayerStateMachine.Weapon.resourceModifier;
         }
         public int GetCurrentHealth()
         {
@@ -276,7 +276,7 @@ namespace Assets.Scripts.Player
         }
         private float CalculateTotalAttackSpeed()
         {
-            float totalAttackSpeed = AttackSpeed;
+            float totalAttackSpeed = AttackSpeed + playerManager.PlayerStateMachine.Weapon.attackSpeedModifier;
             foreach (var effect in activeEffects.Values)
             {
                 if (effect.Data.ModifyAttackSpeed != 0)
@@ -293,7 +293,7 @@ namespace Assets.Scripts.Player
         /// <returns></returns>
         private int CalculateTotalStatChange(StatusEffectData.ModifyMainStatType status)
         {
-            int totalStatChange = 0;
+            int totalStatChange = 0 + playerManager.PlayerStateMachine.Weapon.strengthModifier;
             foreach (var effect in activeEffects.Values)
             {
                 if (effect.Data.ModifyMainStat != 0)

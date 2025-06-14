@@ -74,14 +74,14 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
 		}
         public bool CriticalStrikeSuccess()
 		{
-			return Random.Range(0f, 1f) <= PlayerStats.CriticalChance;
+			return Random.Range(0f, 1f) <= PlayerStats.CriticalChance + Weapon.criticalChanceModifier;
 		}
         public int WeaponDamage(int damage, float abilityMultiplier) 
         {
             damage = Mathf.RoundToInt(Random.Range(Weapon.minDamage, Weapon.maxDamage + 1));
             if (Weapon.weaponType == WeaponDataSO.WeaponType.Warhammer 
-				|| Weapon.weaponType == WeaponDataSO.WeaponType.Sword
-				|| Weapon.weaponType == WeaponDataSO.WeaponType.Axe)
+				|| Weapon.weaponType == WeaponDataSO.WeaponType.TwoHandedSword
+				|| Weapon.weaponType == WeaponDataSO.WeaponType.TwoHandedAxe)
 			{
 				damage += Mathf.RoundToInt(GetStatValue(PlayerStatType.Strength) * abilityMultiplier);
 			}

@@ -24,17 +24,25 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
 			PlayerMove(deltaTime);
 			DoJump();
 			DoDodge();
-
-			if (_playerStateMachine.InputManager.BasicAttackInput()
-				&& SkillManager.Instance.FighterBasicAttack.CanUseSkill())
-			{
-				_playerStateMachine.ChangeState(new FighterBasicAttackChainOne(_playerStateMachine));
-			}
-
+			DoBasicAttack();
 			DoAbilityOne();
 			DoAbilityTwo();
 		}
+		public override void ExitState()
+		{
+			ResetAnimationSpeed();
+		}
 
+
+		#region Helper Methods
+		private void DoBasicAttack()
+		{
+			if (_playerStateMachine.InputManager.BasicAttackInput()
+							&& SkillManager.Instance.FighterBasicAttack.CanUseSkill())
+			{
+				_playerStateMachine.ChangeState(new FighterBasicAttackChainOne(_playerStateMachine));
+			}
+		}
 		private void Fall()
 		{
 			if (_playerStateMachine.CharacterController.velocity.y <= -10)
@@ -83,11 +91,8 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
 				_playerStateMachine.ChangeState(new FighterDodgeState(_playerStateMachine));
 			}
 		}
-
-		public override void ExitState()
-		{
-			ResetAnimationSpeed();
-		}
+		#endregion
+	
 
 	}
 }

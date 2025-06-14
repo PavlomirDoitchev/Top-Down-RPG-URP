@@ -14,29 +14,41 @@ public class WeaponDataSO : ScriptableObject, IPlayerItems
 #endif
     }
     [field: SerializeField] public GameObject weaponPrefab { get; set; }
+	[field: SerializeField] public Sprite ItemIcon { get; set; }
     [field: SerializeField] public string ItemName { get; set; }
     [field: SerializeField] public int ItemPrice { get; set; }
+
     public IPlayerItems.ItemType itemType;
     public WeaponType weaponType;
     public IPlayerItems.ItemRarity rarity;
 
-    public int minDamage;
+	public int minDamage;
     public int maxDamage;
-    public float attackSpeed;
-    public float criticalChance;
+	public int staminaModifier;
+    public int strengthModifier;
+    public int dexterityModifier;
+	public int intelligenceModifier;
+    public int wisdomModifier;
 
-    [field: SerializeField] public bool IsStackable { get; set; } = false;
+
+    public float attackSpeedModifier;
+    [Range(0,1)] public float criticalChanceModifier;
+    [Range(0,2)] public float criticalDamageModifier;
+	public int resourceModifier;
+    public float movementSpeedModifier;
+    public int armorModifier;
+
+	[field: SerializeField] public bool IsStackable { get; set; } = false;
     [field: SerializeField] public bool IsEquippable { get; set; } = true;
     public enum WeaponType
     {
-        Sword,
-        Axe,
+        TwoHandedSword,
+        TwoHandedAxe,
         Warhammer,
         Spear,
-        Dagger,
+		OneHandedSword,
+		Dagger,
         Bow,
-        Crossbow,
-        Scythe,
         Staff,
         Shield
     }

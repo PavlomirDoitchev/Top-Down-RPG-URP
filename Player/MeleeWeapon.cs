@@ -9,8 +9,6 @@ using Assets.Scripts.State_Machine.Player_State_Machine.FighterStates;
 public class MeleeWeapon : MonoBehaviour
 {
 	public readonly List<Collider> enemyColliders = new List<Collider>();
-	int ignoreInactiveLayer = 3;
-	string targetLayerName = "Enemy";
 	private PlayerManager _playerManager;
 	int damage;
 	float multiplier;
@@ -44,7 +42,7 @@ public class MeleeWeapon : MonoBehaviour
 			if (_playerManager.PlayerStateMachine.CriticalStrikeSuccess())
 			{
 				damage = Mathf.RoundToInt(_playerManager.PlayerStateMachine.WeaponDamage(damage, multiplier)
-					* _playerManager.PlayerStateMachine.PlayerStats.CriticalDamageModifier);
+					* (_playerManager.PlayerStateMachine.PlayerStats.CriticalDamageModifier + _playerManager.PlayerStateMachine.Weapon.criticalDamageModifier));
 				damagable.TakeDamage(damage, false);
 				_playerManager.PlayerStateMachine.DamageText[2].Spawn(other.transform.position + Vector3.up * 2f, damage);
 			}
