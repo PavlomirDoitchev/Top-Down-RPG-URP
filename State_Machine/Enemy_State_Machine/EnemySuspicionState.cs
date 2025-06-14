@@ -39,7 +39,7 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
                 InvestigateLastPlayerPosition(deltaTime);
                 if (_suspicionTimer >= _enemyStateMachine.SuspicionTime)
                 {
-                    WalkBackToYourDuties();
+                    RunBack();
 
                     if (_enemyStateMachine.PatrolPath == null)
                         _enemyStateMachine.Agent.SetDestination(_enemyStateMachine.OriginalPosition);
@@ -59,13 +59,13 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
             ResetAnimationSpeed();
         }
 
-        private void WalkBackToYourDuties()
+        private void RunBack()
         {
             _isReturningToOrigin = true;
             _enemyStateMachine.Agent.isStopped = false;
 
-            _enemyStateMachine.Animator.Play(_enemyStateMachine.WalkAnimationName);
-            _enemyStateMachine.Agent.speed = _enemyStateMachine.WalkingSpeed;
+            _enemyStateMachine.Animator.Play(_enemyStateMachine.RunAnimationName);
+            _enemyStateMachine.Agent.speed = _enemyStateMachine.RunningSpeed;
             _suspicionTimer = 0f;
         }
 

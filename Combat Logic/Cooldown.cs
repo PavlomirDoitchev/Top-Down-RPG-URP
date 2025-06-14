@@ -19,7 +19,7 @@ namespace Assets.Scripts.Combat_Logic
 		{
 			if (timeRemaining > 0f)
 				timeRemaining -= deltaTime;
-			Debug.Log($"Cooldown time remaining: {timeRemaining}");
+			//Debug.Log($"Cooldown time remaining: {timeRemaining}");
 		}
 	}
 }
