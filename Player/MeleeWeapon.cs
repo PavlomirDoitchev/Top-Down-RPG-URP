@@ -3,7 +3,6 @@ using Assets.Scripts.Player;
 using Assets.Scripts.State_Machine.Player_State_Machine;
 using System.Collections.Generic;
 using UnityEngine;
-using DamageNumbersPro;
 using Assets.Scripts.State_Machine.Enemy_State_Machine;
 using Assets.Scripts.State_Machine.Player_State_Machine.FighterStates;
 public class MeleeWeapon : MonoBehaviour
@@ -70,16 +69,22 @@ public class MeleeWeapon : MonoBehaviour
 							&& other.TryGetComponent<EnemyStateMachine>(out var enemyStateMachine)
 							&& !enemyStateMachine.IsEnraged)
 		{
-			if (_playerManager.PlayerStateMachine.PlayerCurrentState is FighterAbilityOneState /*add other melee abilities knockback*/)
+			switch (_playerManager.PlayerStateMachine.PlayerCurrentState)
 			{
-				if (!_playerManager.PlayerStateMachine.Ability_One_Data[_playerManager.PlayerStateMachine.Ability_One_Rank].canKnockback)
-					return;
-				knockBackForce = _playerManager.PlayerStateMachine.Ability_One_Data[_playerManager.PlayerStateMachine.Ability_One_Rank].knockbackForce;
+				case FighterAbilityOneState:
+					if (!_playerManager.PlayerStateMachine.Ability_One_Data[_playerManager.PlayerStateMachine.Ability_One_Rank].canKnockback)
+						return;
+					knockBackForce = _playerManager.PlayerStateMachine.Ability_One_Data[_playerManager.PlayerStateMachine.Ability_One_Rank].knockbackForce;
+					break;
+				case FighterBasicAttackChainOne:
+				case FighterBasicAttackChainTwo:
+				case FighterBasicAttackChainThree:
+					if (!_playerManager.PlayerStateMachine.BasicAttackData[_playerManager.PlayerStateMachine.BasicAttackRank].canKnockback)
+						return;
+					knockBackForce = _playerManager.PlayerStateMachine.BasicAttackData[_playerManager.PlayerStateMachine.BasicAttackRank].knockbackForce;
+					break;
 			}
-			else
-			{
-				knockBackForce = 0f;
-			}
+
 			Vector3 knockbackDir = (other.transform.position - _playerManager.PlayerStateMachine.transform.position).normalized;
 			forceReceiver.AddForce(knockbackDir * knockBackForce);
 			enemyStateMachine.ChangeState(new EnemyKnockbackState(enemyStateMachine, .5f));

@@ -13,7 +13,6 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
         {
             base.EnterState();
 			_playerStateMachine.Animator.Play("ARPG_Dual_Wield_Attack_Heavy1");
-            SetAttackSpeed();
             
         }
         

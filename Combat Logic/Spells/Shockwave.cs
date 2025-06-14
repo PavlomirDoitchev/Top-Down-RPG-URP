@@ -7,140 +7,177 @@ using Assets.Scripts.State_Machine.Player_State_Machine;
 
 public class Shockwave : MonoBehaviour
 {
-    [SerializeField] bool shouldShakeCamera = true;
+	[SerializeField] bool shouldShakeCamera = true;
 
-    private readonly List<Collider> enemyList = new();
+	private readonly List<Collider> enemyList = new();
 
-    float knockBackForce;
-    int damage;
-    float multiplier;
+	float knockBackForce;
+	int damage;
+	float multiplier;
 
-    [Header("Cone Settings")]
-    [SerializeField] float maxRadius = 5f;
-    [SerializeField] float coneAngle = 60f;
-    [SerializeField] LayerMask enemyLayer;
-    [SerializeField] float damageCheckInterval = 0.1f;
+	[Header("Cone Settings")]
+	[SerializeField] float maxRadius = 5f;
+	[SerializeField] float coneAngle = 60f;
+	[SerializeField] LayerMask enemyLayer;
+	[SerializeField] float damageCheckInterval = 0.1f;
+	[SerializeField] float impactRadius = 2f;
 
-    [Header("Spell Settings")]
-    //[SerializeField] Collider spellCollider;  // You might still want this for visuals or triggers?
-    [SerializeField] float maxDuration = 1f;
-    float timer;
+	[Header("Spell Settings")]
+	//[SerializeField] Collider spellCollider;  // You might still want this for visuals or triggers?
+	[SerializeField] float maxDuration = 1f;
+	float timer;
 
-    private void OnEnable()
-    {
-        timer = maxDuration;
-        enemyList.Clear();
+	private void OnEnable()
+	{
+		timer = maxDuration;
+		enemyList.Clear();
 
-        if (shouldShakeCamera)
-            PlayerManager.Instance.PlayerStateMachine.CinemachineImpulseSource.GenerateImpulse();
-    }
+		if (shouldShakeCamera)
+			PlayerManager.Instance.PlayerStateMachine.CinemachineImpulseSource.GenerateImpulse();
+	}
 
-    private void Update()
-    {
-        timer -= Time.deltaTime;
-        if (timer <= 0f)
-        {
-            // Spell finished, disable or reset as needed
-            gameObject.SetActive(false);
-        }
-        else
-        {
-            // Periodic cone collision check
-            damageCheckInterval -= Time.deltaTime;
-            if (damageCheckInterval <= 0f)
-            {
-                CheckConeCollision();
-                damageCheckInterval = 0.1f; // reset interval
-            }
-        }
-    }
+	private void Update()
+	{
+		timer -= Time.deltaTime;
+		if (timer <= 0f)
+		{
+			// Spell finished, disable or reset as needed
+			gameObject.SetActive(false);
+		}
+		else
+		{
+			// Periodic cone collision check
+			damageCheckInterval -= Time.deltaTime;
+			if (damageCheckInterval <= 0f)
+			{
+				ImpactCheck();
+				CheckConeCollision();
+				damageCheckInterval = 0.1f; // reset interval
+			}
+		}
+	}
+	void ImpactCheck()
+	{
 
-    private void CheckConeCollision()
-    {
-        Vector3 origin = transform.position;
-        Vector3 forward = transform.forward;
+		Collider[] hits = Physics.OverlapSphere(transform.position, impactRadius, enemyLayer);
+		foreach (Collider enemy in hits)
+		{
+			if (enemyList.Contains(enemy))
+				continue;
+			PullEnemies(enemy);
+			ApplyDamageTo(enemy);
+			enemyList.Add(enemy);
+		}
+	}
+	private void CheckConeCollision()
+	{
+		Vector3 origin = transform.position;
+		Vector3 forward = transform.forward;
+		int radialSteps = 30;
+		float stepAngle = coneAngle / radialSteps;
+		float stepDistance = maxRadius / 10f;
 
-        Collider[] hits = Physics.OverlapSphere(origin, maxRadius, enemyLayer);
-        foreach (Collider hit in hits)
-        {
-            if (enemyList.Contains(hit))
-                continue;
+		for (int i = 0; i <= radialSteps; i++)
+		{
+			float angle = -coneAngle / 2f + stepAngle * i;
+			Quaternion rotation = Quaternion.AngleAxis(angle, Vector3.up);
+			Vector3 direction = rotation * forward;
 
-            Vector3 toTarget = (hit.transform.position - origin).normalized;
+			for (int j = 1; j <= 10; j++)
+			{
+				Vector3 samplePoint = origin + direction * stepDistance * j;
+				Vector3 rayStart = samplePoint + Vector3.up * 5f;
 
-            float angle = Vector3.Angle(forward, toTarget);
-            if (angle <= coneAngle * 0.5f)
-            {
-                enemyList.Add(hit);
-                TryKnockbackEnemy(hit);
-                ApplyDamageTo(hit);
-            }
-        }
-    }
+				if (Physics.Raycast(rayStart, Vector3.down, out RaycastHit hit, 10f, enemyLayer | (1 << 6))) // Layer 6 = ground
+				{
+					Collider[] hits = Physics.OverlapSphere(hit.point, 0.5f, enemyLayer);
+					foreach (Collider enemy in hits)
+					{
+						if (enemyList.Contains(enemy)) continue;
+						enemyList.Add(enemy);
+						PullEnemies(enemy);
+						ApplyDamageTo(enemy);
+					}
+				}
+			}
+		}
+	}
 
-    private void ApplyDamageTo(Collider other)
-    {
-        if (other.gameObject.TryGetComponent<IDamagable>(out var damagable))
-        {
-            multiplier = PlayerManager.Instance.PlayerStateMachine.Ability_Two_Data[PlayerManager.Instance.PlayerStateMachine.Ability_Two_Rank].damageMultiplier;
+	private void ApplyDamageTo(Collider other)
+	{
+		if (other.gameObject.TryGetComponent<IDamagable>(out var damagable))
+		{
+			multiplier = PlayerManager.Instance.PlayerStateMachine.Ability_Two_Data[PlayerManager.Instance.PlayerStateMachine.Ability_Two_Rank].damageMultiplier;
 
-            if (PlayerManager.Instance.PlayerStateMachine.CriticalStrikeSuccess())
-            {
-                damage = Mathf.RoundToInt(PlayerManager.Instance.PlayerStateMachine.WeaponDamage(damage, multiplier)
-                    * (PlayerManager.Instance.PlayerStateMachine.PlayerStats.CriticalDamageModifier
-                    + PlayerManager.Instance.PlayerStateMachine.Weapon.criticalDamageModifier));
-                damagable.TakeDamage(damage, false);
-                PlayerManager.Instance.PlayerStateMachine.DamageText[4].Spawn(other.transform.position + Vector3.up * 2f, damage);
-            }
-            else
-            {
-                damage = Mathf.RoundToInt(PlayerManager.Instance.PlayerStateMachine.WeaponDamage(damage, multiplier));
-                damagable.TakeDamage(damage, false);
-                PlayerManager.Instance.PlayerStateMachine.DamageText[3].Spawn(other.transform.position + Vector3.up * 2f, damage);
-            }
+			if (PlayerManager.Instance.PlayerStateMachine.CriticalStrikeSuccess())
+			{
+				damage = Mathf.RoundToInt(PlayerManager.Instance.PlayerStateMachine.WeaponDamage(damage, multiplier)
+					* (PlayerManager.Instance.PlayerStateMachine.PlayerStats.CriticalDamageModifier
+					+ PlayerManager.Instance.PlayerStateMachine.Weapon.criticalDamageModifier));
+				damagable.TakeDamage(damage, false);
+				PlayerManager.Instance.PlayerStateMachine.DamageText[4].Spawn(other.transform.position + Vector3.up * 2f, damage);
+			}
+			else
+			{
+				damage = Mathf.RoundToInt(PlayerManager.Instance.PlayerStateMachine.WeaponDamage(damage, multiplier));
+				damagable.TakeDamage(damage, false);
+				PlayerManager.Instance.PlayerStateMachine.DamageText[3].Spawn(other.transform.position + Vector3.up * 2f, damage);
+			}
 
-            Debug.Log($"Cone hit: {other.gameObject.name}");
-            Debug.Log(enemyList.Count + " enemies hit by cone.");
-        }
-    }
+			Debug.Log($"Cone hit: {other.gameObject.name}");
+			Debug.Log(enemyList.Count + " enemies hit by cone.");
+		}
+	}
 
-    private void TryKnockbackEnemy(Collider other)
-    {
-        if (other.TryGetComponent<ForceReceiver>(out var forceReceiver)
-            && other.TryGetComponent<EnemyStateMachine>(out var enemyStateMachine)
-            && !enemyStateMachine.IsEnraged)
-        {
-            if (!PlayerManager.Instance.PlayerStateMachine.Ability_Two_Data[PlayerManager.Instance.PlayerStateMachine.Ability_Two_Rank].canKnockback)
-                return;
+	private void PullEnemies(Collider other)
+	{
+		if (other.TryGetComponent<ForceReceiver>(out var forceReceiver)
+			&& other.TryGetComponent<EnemyStateMachine>(out var enemyStateMachine)
+			&& !enemyStateMachine.IsEnraged)
+		{
+			if (!PlayerManager.Instance.PlayerStateMachine.Ability_Two_Data[PlayerManager.Instance.PlayerStateMachine.Ability_Two_Rank].canKnockback)
+				return;
 
-            knockBackForce = PlayerManager.Instance.PlayerStateMachine.Ability_Two_Data[PlayerManager.Instance.PlayerStateMachine.Ability_Two_Rank].knockbackForce;
+			knockBackForce = PlayerManager.Instance.PlayerStateMachine.Ability_Two_Data[PlayerManager.Instance.PlayerStateMachine.Ability_Two_Rank].knockbackForce;
 
-            Vector3 knockbackDir = (other.transform.position - PlayerManager.Instance.PlayerStateMachine.transform.position).normalized;
-            forceReceiver.AddForce(knockbackDir * knockBackForce);
-            enemyStateMachine.ChangeState(new EnemyKnockbackState(enemyStateMachine, .5f));
-        }
-    }
+			Vector3 knockbackDir = (PlayerManager.Instance.PlayerStateMachine.transform.position - other.transform.position).normalized;
+			forceReceiver.AddForce(knockbackDir * knockBackForce);
+			enemyStateMachine.ChangeState(new EnemyKnockbackState(enemyStateMachine, .5f));
+		}
+	}
 
 #if UNITY_EDITOR
-    private void OnDrawGizmosSelected()
-    {
-        Vector3 origin = transform.position;
-        Vector3 forward = transform.forward;
+	private void OnDrawGizmos()
+	{
+		Vector3 origin = transform.position;
+		Vector3 forward = transform.forward;
 
-        Gizmos.color = Color.red;
-        Gizmos.DrawWireSphere(origin, maxRadius);
+		// Get ground normal
+		if (Physics.Raycast(origin + Vector3.up * 0.5f, Vector3.down, out RaycastHit hit, 2f, 1 << 6))
+		{
+			forward = Vector3.ProjectOnPlane(forward, hit.normal).normalized;
+		}
 
-        int stepCount = 30;
-        float angleStep = coneAngle / stepCount;
-        Quaternion startRotation = Quaternion.AngleAxis(-coneAngle / 2f, Vector3.up);
+		// Draw outer radius
+		Gizmos.color = Color.red;
+		Gizmos.DrawWireSphere(origin, maxRadius);
 
-        for (int i = 0; i <= stepCount; i++)
-        {
-            Quaternion rotation = startRotation * Quaternion.AngleAxis(i * angleStep, Vector3.up);
-            Vector3 direction = rotation * forward;
+		// Draw impact sphere
+		Gizmos.color = Color.yellow;
+		Gizmos.DrawWireSphere(origin, impactRadius);
 
-            Gizmos.DrawLine(origin, origin + direction * maxRadius);
-        }
-    }
+		// Draw cone lines
+		Gizmos.color = Color.cyan;
+		int stepCount = 30;
+		float angleStep = coneAngle / stepCount;
+		Quaternion startRotation = Quaternion.AngleAxis(-coneAngle / 2f, Vector3.up);
+
+		for (int i = 0; i <= stepCount; i++)
+		{
+			Quaternion rotation = startRotation * Quaternion.AngleAxis(i * angleStep, Vector3.up);
+			Vector3 direction = rotation * forward;
+			Gizmos.DrawLine(origin, origin + direction * maxRadius);
+		}
+	}
 #endif
 }

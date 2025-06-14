@@ -67,7 +67,7 @@ namespace Assets.Scripts.Enemies
                         .AddForce((other.transform.position - enemyStateMachine.transform.position).normalized * enemyStateMachine.KnockBackForce);
 
                 var playerStats = playerManager.PlayerStateMachine.PlayerStats;
-                playerStats.TakeDamage(baseDamage, true);
+                playerStats.TakeDamage(baseDamage, false);
 
                 damageTextPos = other.transform.position + Vector3.up * damageTextOffsetY; // Adjust the position to be above the enemy
                 damageNumber.Spawn(damageTextPos, baseDamage, other.transform);
