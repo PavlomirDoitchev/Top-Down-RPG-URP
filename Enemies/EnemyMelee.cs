@@ -41,13 +41,17 @@ namespace Assets.Scripts.Enemies
                 }
                 enemyColliders.Add(other);
 
-                hitParticleSystem.transform.position = other.transform.position;
-                if (hitParticleSystem.isPlaying) { 
-                    hitParticleSystem.Stop();
-                    hitParticleSystem.Clear();
-                    hitParticleSystem.Emit(1);
+                if (hitParticleSystem != null)
+                {
+                    hitParticleSystem.transform.position = other.transform.position;
+                    if (hitParticleSystem.isPlaying)
+                    {
+                        hitParticleSystem.Stop();
+                        hitParticleSystem.Clear();
+                        hitParticleSystem.Emit(1);
+                    }
+                    hitParticleSystem.Emit(1); // Emit a single particle at the enemy's position
                 }
-                hitParticleSystem.Emit(1); // Emit a single particle at the enemy's position
                 damageNumber.SetColor(Color.red);
                 
                 if (CriticalStrikeSuccessfull())
