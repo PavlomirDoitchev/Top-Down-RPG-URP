@@ -12,7 +12,7 @@ namespace Assets.Scripts.Player
         public Dodge Dodge { get; private set; }
 		public FighterBasicAttack FighterBasicAttack { get; private set; }
         public FighterAbilityOne FighterAbilityOne { get; private set; }
-        public FighterAbilityTwo FighterAbilityTwo { get; private set; }
+        public ShockwaveAbility FighterAbilityTwo { get; private set; }
 
 		private void Awake()
         {
@@ -27,7 +27,7 @@ namespace Assets.Scripts.Player
 			Dodge = GetComponent<Dodge>();
 			if (PlayerManager.Instance.PlayerStateMachine.CharacterLevelDataSO[0].characterClass == CharacterLevelSO.CharacterClass.Fighter)
             {
-				FighterAbilityTwo = GetComponent<FighterAbilityTwo>();
+				FighterAbilityTwo = GetComponent<ShockwaveAbility>();
 				FighterAbilityOne = GetComponent<FighterAbilityOne>();
                 FighterBasicAttack = GetComponent<FighterBasicAttack>();
             }

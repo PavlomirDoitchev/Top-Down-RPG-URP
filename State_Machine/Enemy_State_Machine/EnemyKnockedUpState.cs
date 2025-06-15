@@ -17,7 +17,6 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
 			_enemyStateMachine.Agent.enabled = false;
 			_enemyStateMachine.Animator.Play(_enemyStateMachine.KnockedUpAnimationName);
 			_enemyStateMachine.IsKnockedUp = true;
-			//_enemyStateMachine.ForceReceiver.AddForce(momentum * 0.5f); // Apply some force to the enemy
 			momentum = _enemyStateMachine.CharacterController.velocity;
 			momentum.y = 0;
 		}

@@ -2,7 +2,7 @@
 
 namespace Assets.Scripts.Player.Abilities.Fighter_Abilities
 {
-	public class FighterAbilityTwo : Skills
+	public class ShockwaveAbility : Skills
 	{
 		public override void UseSkill()
 		{

@@ -1,11 +1,6 @@
 using UnityEngine;
 namespace Assets.Scripts.State_Machine.Player_State_Machine
 {
-	/// <summary>
-	/// Initialize the Statemachine. Retrieve the equipped collider and the Player Stats.
-	/// All other states derive from here. Methods written here can be applied to all states. 
-	/// Consider adding references and methods here.
-	/// </summary>
 	public abstract class PlayerBaseState : State
 	{
 		protected PlayerStateMachine _playerStateMachine;
@@ -140,86 +135,5 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
 			//Vector3 moveDirection = forward moveInput.y + right moveInput.x;
 			return moveDirection.normalized;
 		}
-
-		//public enum AbilityType
-		//{
-		//    BasicAttack,
-		//    AbilityQ,
-		//    AbilityE,
-		//    AbilityR
-		//}
-
-		//private int GetAbilityRank(AbilityType abilityType)
-		//{
-		//    switch (abilityType)
-		//    {
-		//        case AbilityType.BasicAttack:
-		//            return _playerStateMachine.BasicAttackRank;
-		//        case AbilityType.AbilityQ:
-		//            return _playerStateMachine.QAbilityRank;
-		//        // Add more abilities as needed
-		//        default:
-		//            return 0;
-		//    }
-		//}
-		//private bool CriticalStrikeSuccessfull()
-		//{
-		//    float rollForCrit = Random.Range(0f, 1f);
-		//    if (_playerStateMachine.PlayerStats.CriticalChance >= rollForCrit)
-		//    {
-		//        //Debug.Log("Critical!");
-		//        return true;
-		//    }
-		//    return false;
-		//}
-		//private float GetAbilityMultiplier(AbilityType abilityType, int rank)
-		//{
-		//    switch (abilityType)
-		//    {
-		//        case AbilityType.BasicAttack:
-		//            return _playerStateMachine.basicAbilityData[rank].damageMultiplier;
-		//        case AbilityType.AbilityQ:
-		//            return _playerStateMachine.qAbilityData[rank].damageMultiplier;
-		//        // Add cases for AbilityE and AbilityR 
-		//        default:
-		//            return 1f; 
-		//    }
-		//}
-		//protected float CalculateMeleeDamage(AbilityType abilityType, PlayerStatType statType)
-		//{
-		//    int rank = GetAbilityRank(abilityType);
-		//    float statValue = GetStatValue(statType);
-		//    if(statValue < 0)
-		//    {
-		//        Debug.LogWarning($"Stat value for {statType} is negative: {statValue}. Using 0 instead.");
-		//        statValue = 0;
-		//    }
-		//    float damageMultiplier = GetAbilityMultiplier(abilityType, rank);
-		//    //use a percentage of your attack stat. In SetMeleeDamage 
-		//    float baseDamage = 1 + (statValue *
-		//                   damageMultiplier);
-		//    _playerStateMachine.damageText.SetColor(Color.white);
-		//    if (CriticalStrikeSuccessfull())
-		//    {
-		//        baseDamage *= _playerStateMachine.PlayerStats.CriticalModifier;
-		//        _playerStateMachine.damageText.SetColor(Color.yellow);
-		//    }
-		//    return baseDamage;
-		//}
-		/// <summary>
-		/// Choose the ability rank and the stat type to use as a modifier for the melee damage.
-		/// </summary>
-		/// <param name="abilityRank"></param>
-		/// <param name="abilityType"></param>
-		/// <param name="statType"></param>
-		//protected void SetMeleeDamage(int abilityRank, AbilityType abilityType, PlayerStatType statType)
-		//{
-		//    float calculatedDamage = CalculateMeleeDamage(abilityType, statType);
-		//    meleeWeapon.MeleeWeaponDamage
-		//         (Random.Range(meleeWeapon.EquippedWeaponDataSO.minDamage, meleeWeapon.EquippedWeaponDataSO.maxDamage + 1),
-		//         calculatedDamage,
-		//         abilityRank);
-		//}
-
 	}
 }

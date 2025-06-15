@@ -49,7 +49,8 @@ namespace Assets.Scripts.Combat_Logic
 			if (other.gameObject.layer == LayerMask.NameToLayer("Ground")
 				|| other.gameObject.layer == LayerMask.NameToLayer("Default"))
 			{
-				Instantiate(spellHitPrefab, this.transform.position, Quaternion.identity);
+				if(spellHitPrefab != null)
+					Instantiate(spellHitPrefab, this.transform.position, Quaternion.identity);
 				gameObject.SetActive(false);
 			}
 
@@ -61,7 +62,8 @@ namespace Assets.Scripts.Combat_Logic
 
 			if (other.TryGetComponent<IDamagable>(out var damagable) && other.gameObject.layer == LayerMask.NameToLayer("MyOutlines"))
 			{
-				Instantiate(spellHitPrefab, this.transform.position, Quaternion.identity);
+				if(spellHitPrefab != null)
+					Instantiate(spellHitPrefab, this.transform.position, Quaternion.identity);
 				damagable.TakeDamage(projectileData.damage, false);
 				projectileData.damageNumberPrefab.Spawn(other.transform.position, projectileData.damage);
 				gameObject.SetActive(false);

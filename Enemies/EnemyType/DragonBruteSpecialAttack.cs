@@ -19,7 +19,7 @@ namespace Assets.Scripts.Enemies.EnemyType
             {
                 if (!fireBreathEffect.isPlaying)
                     fireBreathEffect.Play();
-                Collider[] hits = Physics.OverlapSphere(transform.position, radius, playerLayer);
+                Collider[] hits = Physics.OverlapSphere(transform.position, radius, 3);
                 foreach (var hit in hits)
                 {
                     if (hit.TryGetComponent<PlayerStateMachine>(out var player))

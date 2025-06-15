@@ -62,7 +62,7 @@ public class Shockwave : MonoBehaviour
 		{
 			if (enemyList.Contains(enemy))
 				continue;
-			PullEnemies(enemy);
+			KnockUp(enemy);
 			ApplyDamageTo(enemy);
 			enemyList.Add(enemy);
 		}
@@ -93,7 +93,7 @@ public class Shockwave : MonoBehaviour
 					{
 						if (enemyList.Contains(enemy)) continue;
 						enemyList.Add(enemy);
-						PullEnemies(enemy);
+						KnockUp(enemy);
 						ApplyDamageTo(enemy);
 					}
 				}
@@ -122,12 +122,12 @@ public class Shockwave : MonoBehaviour
 				PlayerManager.Instance.PlayerStateMachine.DamageText[3].Spawn(other.transform.position + Vector3.up * 2f, damage);
 			}
 
-			Debug.Log($"Cone hit: {other.gameObject.name}");
-			Debug.Log(enemyList.Count + " enemies hit by cone.");
+			//Debug.Log($"Cone hit: {other.gameObject.name}");
+			//Debug.Log(enemyList.Count + " enemies hit by cone.");
 		}
 	}
 
-	private void PullEnemies(Collider other)
+	private void KnockUp(Collider other)
 	{
 		if (other.TryGetComponent<ForceReceiver>(out var forceReceiver)
 			&& other.TryGetComponent<EnemyStateMachine>(out var enemyStateMachine)
@@ -139,7 +139,7 @@ public class Shockwave : MonoBehaviour
 			knockBackForce = PlayerManager.Instance.PlayerStateMachine.Ability_Two_Data[PlayerManager.Instance.PlayerStateMachine.Ability_Two_Rank].knockbackForce;
 
 			Vector3 pullDir = (PlayerManager.Instance.PlayerStateMachine.transform.position - other.transform.position).normalized;
-			Vector3 knockDir = (other.transform.position - PlayerManager.Instance.PlayerStateMachine.transform.position).normalized;
+			Vector3 knockDir = (PlayerManager.Instance.PlayerStateMachine.transform.position - other.transform.position).normalized;
 			if (enemyStateMachine.IsKnockedUp)
 				return;
 			forceReceiver.AddForce(knockDir * knockBackForce);
