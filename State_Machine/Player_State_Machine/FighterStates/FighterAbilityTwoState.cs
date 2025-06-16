@@ -12,7 +12,7 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine.FighterStates
 		public override void EnterState()
 		{
 			base.EnterState();
-			
+			SkillManager.Instance.ShockwaveAbility.UseSkill();
 			_playerStateMachine.Animator.Play("ARPG_Halberd_Attack_Heavy2 1");
 			SetAttackSpeed();
 			RotateToMouse();

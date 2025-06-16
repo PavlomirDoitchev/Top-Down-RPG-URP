@@ -63,9 +63,10 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
         {
             _isReturningToOrigin = true;
             _enemyStateMachine.Agent.isStopped = false;
-
-            _enemyStateMachine.Animator.Play(_enemyStateMachine.RunAnimationName);
-            _enemyStateMachine.Agent.speed = _enemyStateMachine.RunningSpeed;
+            //BecomeTargetable();
+            _enemyStateMachine.CurrentHealth = _enemyStateMachine.MaxHealth;
+			_enemyStateMachine.Animator.Play(_enemyStateMachine.RunAnimationName);
+            _enemyStateMachine.Agent.speed = _enemyStateMachine.RunningSpeed * 3;
             _suspicionTimer = 0f;
         }
 

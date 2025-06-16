@@ -34,14 +34,8 @@ namespace Assets.Scripts.Player.Abilities.Fighter_Abilities
 				{
 					if (enemyColliders.Contains(hit)) continue;
 					enemyColliders.Add(hit);
-					if (hit.gameObject.TryGetComponent<IDamagable>(out var damagable)) 
-					{
-						damagable.TakeDamage(damage, false);
-					PlayerManager.Instance.PlayerStateMachine.DamageText[3].Spawn(hit.transform.position + Vector3.up * 2f, damage);
-
-
-					}
-					//ApplyDamageTo(hit);
+					
+					ApplyDamageTo(hit);
 				}
 				timer = damageCheckInterval;
 					enemyColliders.Clear();

@@ -51,7 +51,15 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
 				if (checkInterval <= 0f)
 				{
 					_skill.UseSkill();
+					Debug.Log($"Using skill: {_skill.animationName}");
 					checkInterval = _skill.CostCheckInterval;
+					if(_playerStateMachine.PlayerStats.GetCurrentResource() < _skill.GetSkillCost())
+					{
+						_skill.CastingVFX.gameObject.SetActive(false);
+						_skill.ResetCooldown();
+						_playerStateMachine.ChangeState(new FighterLocomotionState(_playerStateMachine));
+						return;
+					}
 				}
 				timer -= deltaTime;
 

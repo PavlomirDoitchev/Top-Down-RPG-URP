@@ -27,7 +27,7 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
 			DoBasicAttack();
 			DoAbilityOne();
 			DoAbilityTwo();
-			CastFireball();
+			CastRainOfFire();
 		}
 		public override void ExitState()
 		{
@@ -61,10 +61,10 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
 				_playerStateMachine.ChangeState(new PlayerJumpState(_playerStateMachine));
 			}
 		}
-		private void CastFireball()
+		private void CastRainOfFire()
 		{
 			if (_playerStateMachine.InputManager.AbilityThreeInput()
-				&& SkillManager.Instance.FireballAbility.CanUseSkill()
+				&& SkillManager.Instance.FireballAbility.CanUseChanneledSkill()
 				&& _playerStateMachine.Ability_Three_Data.Rank > 0) 
 			{
 				_playerStateMachine.ChangeState(new CastingAbilityState(_playerStateMachine, SkillManager.Instance.FireballAbility));
@@ -76,6 +76,7 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
 							&& _playerStateMachine.Ability_One_Rank > 0
 							&& SkillManager.Instance.ShockwaveAbility.CanUseSkill())
 			{
+				//_playerStateMachine.PlayerStats.UseResource(SkillManager.Instance.ShockwaveAbility.GetSkillCost());
 				_playerStateMachine.ChangeState(new FighterAbilityTwoState(_playerStateMachine));
 			}
 		}

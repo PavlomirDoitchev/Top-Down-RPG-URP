@@ -19,20 +19,29 @@ namespace Assets.Scripts.Player
 		protected float cooldownTimer;
 
 		public virtual void Update() => cooldownTimer -= Time.deltaTime;
-		public virtual void UseSkill() => PlayerManager.Instance.PlayerStateMachine.PlayerStats.UseResource(cost);
 		public int GetSkillCost() => this.cost;
 		public bool CanChannel() => IsChanneled && PlayerManager.Instance.PlayerStateMachine.PlayerStats.GetCurrentResource() >= cost;
 		public void ResetCooldown() => cooldownTimer = coolDown;
+		public virtual void UseSkill()
+		{
+			cooldownTimer = coolDown;
+			PlayerManager.Instance.PlayerStateMachine.PlayerStats.UseResource(cost);
+		}
 		public virtual bool CanUseSkill()
 		{
 			if (cooldownTimer <= 0 && cost <= PlayerManager.Instance.PlayerStateMachine.PlayerStats.GetCurrentResource())
 			{
-				UseSkill();
-				cooldownTimer = coolDown;
 				return true;
 			}
 			return false;
 		}
-		
+		public bool CanUseChanneledSkill()
+		{
+			if (IsChanneled && cooldownTimer <= 0 && cost <= PlayerManager.Instance.PlayerStateMachine.PlayerStats.GetCurrentResource())
+			{
+				return true;
+			}
+			return false;
+		}
 	}
 }

@@ -17,7 +17,8 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
         public override void EnterState()
         {
             base.EnterState();
-        }
+            Debug.Log($"Entering state: {this.GetType().Name}");
+		}
         protected bool CheckForGlobalTransitions()
         {
             if (_enemyStateMachine.ShouldDie)

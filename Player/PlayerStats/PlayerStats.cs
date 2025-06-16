@@ -161,8 +161,7 @@ namespace Assets.Scripts.Player
 
 		public int UseResource(int amount)
 		{
-			if (currentResource < 0)
-				currentResource = 0;
+			currentResource = Mathf.Max(currentResource - amount, 0);
 			return currentResource -= amount;
 		}
 		public void RegainResource(int amount)
