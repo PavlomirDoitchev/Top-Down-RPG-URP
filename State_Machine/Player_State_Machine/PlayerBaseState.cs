@@ -62,7 +62,9 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
 		protected void RotateToMouse(float deltaTime)
 		{
 			Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-			if (Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity, LayerMask.GetMask("Ground")))
+			int layerMask = LayerMask.GetMask("Ground", "Enemy", "Default");
+
+			if (Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity, layerMask))
 			{
 				Vector3 targetPoint = hit.point;
 				targetPoint.y = _playerStateMachine.transform.position.y;
@@ -73,10 +75,14 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
 					_playerStateMachine.PlayerStats.RotationSpeed * deltaTime);
 			}
 		}
+		/// <summary>
+		/// Instant rotation to the mouse position. 
+		/// </summary>
 		protected void RotateToMouse()
 		{
 			Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-			if (Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity, LayerMask.GetMask("Ground")))
+			int layerMask = LayerMask.GetMask("Ground", "Enemy", "Default");
+			if (Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity, layerMask))
 			{
 				Vector3 targetPoint = hit.point;
 				targetPoint.y = _playerStateMachine.transform.position.y;
@@ -84,6 +90,7 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
 				_playerStateMachine.transform.rotation = targetRotation;
 			}
 		}
+
 		/// <summary>
 		/// Player Movement Logic
 		/// </summary>

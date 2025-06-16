@@ -6,12 +6,18 @@ namespace Assets.Scripts.Enemies
 {
     public class EnemyProjectileAbility : MonoBehaviour
     {
-        public ProjectilePool projectilePool;
-        [SerializeField] Transform spawnPosition;
         //[SerializeField] int projectileCount = 1;
         //[SerializeField] float spreadAngle = 15f; 
+        public ProjectilePool projectilePool;
+        [SerializeField] Transform spawnPosition;
         public void Cast(Transform target)
         {
+            GameObject projectile = projectilePool.GetProjectile();
+            projectile.transform.position = spawnPosition.transform.position;
+            projectile.transform.rotation = Quaternion.identity;
+            var projectileComponent = projectile.GetComponent<ProjectileSpell>();
+            projectileComponent.Initialize(target);
+            projectile.SetActive(true);
             //if(projectileCount <= 0) return;
             //if(projectileCount > 1)
             //{
@@ -19,12 +25,6 @@ namespace Assets.Scripts.Enemies
             //    return;
             //}
             // Cast a single projectile
-            GameObject projectile = projectilePool.GetProjectile();
-            projectile.transform.position = spawnPosition.transform.position;
-            projectile.transform.rotation = Quaternion.identity;
-            var projectileComponent = projectile.GetComponent<EnemyProjectileSpell>();
-            projectileComponent.Initialize(target);
-            projectile.SetActive(true);
         }
         //public void CastMultiple(Transform target)
         //{

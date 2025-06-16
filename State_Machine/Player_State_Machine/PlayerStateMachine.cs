@@ -23,9 +23,12 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
         [field: SerializeField] public int Ability_One_Rank { get; set; }
         [field: SerializeField] public Fighter_Ability_SO[] Ability_Two_Data { get; private set; }
 		[field: SerializeField] public int Ability_Two_Rank { get; set; }
+		[field: SerializeField] public Fighter_Ability_SO[] Ability_Three_Data { get; private set; }
+		[field: SerializeField] public int Ability_Three_Rank { get; set; }
 
-        #region Equipment
-        [field: SerializeField] public WeaponDataSO Weapon { get; set; }
+
+		#region Equipment
+		[field: SerializeField] public WeaponDataSO Weapon { get; set; }
 		#endregion
 
 		#region Global Flags

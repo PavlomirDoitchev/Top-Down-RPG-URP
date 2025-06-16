@@ -31,11 +31,17 @@ public class PlayerAnimationEvents : MonoBehaviour
         _stateMachine.PlayerStats.ShouldKnockback = !_stateMachine.PlayerStats.ShouldKnockback;
 	}
 	public void EnableDisableTrails() => _trailRenderer.emitting = !_trailRenderer.emitting;
-    public void EnableSpellVFX()
+    public void EnableSpellVFX(int index)
     {
-        if(_stateMachine.PlayerCurrentState is FighterAbilityTwoState)
-            spellVFX[0].gameObject.SetActive(true);
-    }
+		if (index >= 0 && index < spellVFX.Length)
+		{
+			spellVFX[index].gameObject.SetActive(true);
+		}
+		else
+		{
+			Debug.LogWarning($"Invalid VFX index: {index}");
+		}
+	}
 
 
 

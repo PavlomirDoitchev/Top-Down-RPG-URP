@@ -100,7 +100,6 @@ namespace Assets.Scripts.Player
 			maxHealth *= (Stamina / 10);
 			currentHealth = maxHealth;
 			SetMaxLevel();
-			Debug.Log($"Player stats initialized: Level {level}, Class {GetClassType()}, Resource Type {GetResourceType()}");
 		}
 		private void Update()
 		{

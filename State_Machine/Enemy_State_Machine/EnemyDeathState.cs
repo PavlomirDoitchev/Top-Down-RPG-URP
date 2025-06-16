@@ -19,7 +19,6 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
             BecomeUntargtable();
             _enemyStateMachine.CharacterController.enabled = false;
             
-            //_enemyStateMachine.BodyCollider.enabled = false;
             _enemyStateMachine.Agent.enabled = false;
         }
         public override void UpdateState(float deltaTime)
@@ -29,7 +28,6 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
 			timer += deltaTime;
             if(timer > 10f)
 			{
-				// Destroy the enemy after 10 seconds
 				Object.Destroy(_enemyStateMachine.gameObject);
 			}
 		}

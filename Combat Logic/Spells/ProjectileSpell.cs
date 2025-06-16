@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 namespace Assets.Scripts.Combat_Logic
 {
-	public class EnemyProjectileSpell : MonoBehaviour, IProjectile
+	public class ProjectileSpell : MonoBehaviour, IProjectile
 	{
 		[SerializeField] private ProjectileData projectileData;
 		[SerializeField] private StatusEffectData effectData;

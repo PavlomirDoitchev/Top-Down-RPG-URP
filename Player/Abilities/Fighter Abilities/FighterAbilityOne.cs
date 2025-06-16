@@ -6,6 +6,9 @@ namespace Assets.Scripts.Player
     public class FighterAbilityOne : Skills
     {
         [field: SerializeField] public ParticleSystem particle { get; private set; }
+
+		
+
 		public override void UseSkill()
         {
             base.UseSkill();
@@ -13,8 +16,8 @@ namespace Assets.Scripts.Player
             {
                 particle.Stop();
             }
-			particle.Play();
-		}
+            particle.Play();
+        }
 
     }
 }

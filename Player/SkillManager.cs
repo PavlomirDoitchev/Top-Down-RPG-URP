@@ -12,7 +12,8 @@ namespace Assets.Scripts.Player
         public Dodge Dodge { get; private set; }
 		public FighterBasicAttack FighterBasicAttack { get; private set; }
         public FighterAbilityOne FighterAbilityOne { get; private set; }
-        public ShockwaveAbility FighterAbilityTwo { get; private set; }
+        public ShockwaveAbility ShockwaveAbility { get; private set; }
+        public FireballAbility FireballAbility { get; private set; }
 
 		private void Awake()
         {
@@ -27,10 +28,11 @@ namespace Assets.Scripts.Player
 			Dodge = GetComponent<Dodge>();
 			if (PlayerManager.Instance.PlayerStateMachine.CharacterLevelDataSO[0].characterClass == CharacterLevelSO.CharacterClass.Fighter)
             {
-				FighterAbilityTwo = GetComponent<ShockwaveAbility>();
+				ShockwaveAbility = GetComponent<ShockwaveAbility>();
 				FighterAbilityOne = GetComponent<FighterAbilityOne>();
                 FighterBasicAttack = GetComponent<FighterBasicAttack>();
-            }
+				FireballAbility = GetComponent<FireballAbility>();
+			}
             else if (PlayerManager.Instance.PlayerStateMachine.CharacterLevelDataSO[0].characterClass == CharacterLevelSO.CharacterClass.Mage)
             {
                 //TODO:Add Mage skills
@@ -42,5 +44,16 @@ namespace Assets.Scripts.Player
             
             }
         }
-    }
+		public virtual Vector3 AimSpell()
+		{
+			Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+			int layerMask = LayerMask.GetMask("Ground", "Enemy", "Default");
+			if (Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity, layerMask))
+			{
+				Vector3 aimPoint = hit.point;
+				return aimPoint;
+			}
+			else return Vector3.zero;
+		}
+	}
 }

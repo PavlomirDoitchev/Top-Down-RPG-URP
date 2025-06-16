@@ -27,6 +27,7 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
 			DoBasicAttack();
 			DoAbilityOne();
 			DoAbilityTwo();
+			CastFireball();
 		}
 		public override void ExitState()
 		{
@@ -35,6 +36,7 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
 
 
 		#region Helper Methods
+		
 		private void DoBasicAttack()
 		{
 			if (_playerStateMachine.InputManager.BasicAttackInput()
@@ -59,12 +61,20 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
 				_playerStateMachine.ChangeState(new PlayerJumpState(_playerStateMachine));
 			}
 		}
-
+		private void CastFireball()
+		{
+			if (_playerStateMachine.InputManager.AbilityThreeInput()
+				&& SkillManager.Instance.FireballAbility.CanUseSkill()
+				&& _playerStateMachine.Ability_Three_Data.Rank > 0) 
+			{
+				_playerStateMachine.ChangeState(new CastingAbilityState(_playerStateMachine, SkillManager.Instance.FireballAbility));
+			}
+		}
 		private void DoAbilityTwo()
 		{
 			if (_playerStateMachine.InputManager.AbilityTwoInput()
 							&& _playerStateMachine.Ability_One_Rank > 0
-							&& SkillManager.Instance.FighterAbilityTwo.CanUseSkill())
+							&& SkillManager.Instance.ShockwaveAbility.CanUseSkill())
 			{
 				_playerStateMachine.ChangeState(new FighterAbilityTwoState(_playerStateMachine));
 			}
