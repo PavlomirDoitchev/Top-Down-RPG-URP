@@ -1,22 +1,83 @@
-﻿using UnityEngine;
+﻿using Assets.Scripts.Combat_Logic;
+using System.Collections.Generic;
+using UnityEngine;
 namespace Assets.Scripts.Player.Abilities.Fighter_Abilities
 {
 	public class Fireball : MonoBehaviour
 	{
-		Vector3 direction;
 
-		[SerializeField] Rigidbody rb;
+		[SerializeField] float radius = 2f;
+		[SerializeField] float damageCheckInterval;
+		float timer;
+		private readonly List<Collider> enemyColliders = new();
+		int damage = 10;
+		float multiplier;
+		int layerMask = 1 << 7;
 		private void OnEnable()
 		{
-			direction = SkillManager.Instance.AimSpell();
+			transform.position = SkillManager.Instance.AimSpell();
+			enemyColliders.Clear();
+			timer = damageCheckInterval;
 		}
-		private void FixedUpdate()
-		{
-			rb.MovePosition(transform.position + direction *1 * Time.fixedDeltaTime);
-		}
+
 		private void OnDisable()
 		{
 			transform.position = Vector3.zero;
+		}
+		private void Update()
+		{
+			timer -= Time.deltaTime;
+			if (timer <= 0f)
+			{
+				Collider[] hits = Physics.OverlapSphere(transform.position, radius, layerMask);
+				foreach (Collider hit in hits)
+				{
+					if (enemyColliders.Contains(hit)) continue;
+					enemyColliders.Add(hit);
+					if (hit.gameObject.TryGetComponent<IDamagable>(out var damagable)) 
+					{
+						damagable.TakeDamage(damage, false);
+					PlayerManager.Instance.PlayerStateMachine.DamageText[3].Spawn(hit.transform.position + Vector3.up * 2f, damage);
+
+
+					}
+					//ApplyDamageTo(hit);
+				}
+				timer = damageCheckInterval;
+					enemyColliders.Clear();
+			}
+
+		}
+
+		private void ApplyDamageTo(Collider other)
+		{
+			if (other.gameObject.TryGetComponent<IDamagable>(out var damagable))
+			{
+				multiplier = PlayerManager.Instance.PlayerStateMachine.Ability_Three_Data[PlayerManager.Instance.PlayerStateMachine.Ability_Three_Rank].damageMultiplier;
+
+				if (PlayerManager.Instance.PlayerStateMachine.CriticalStrikeSuccess())
+				{
+					damage = Mathf.RoundToInt(PlayerManager.Instance.PlayerStateMachine.WeaponDamage(damage, multiplier)
+						* (PlayerManager.Instance.PlayerStateMachine.PlayerStats.CriticalDamageModifier
+						+ PlayerManager.Instance.PlayerStateMachine.Weapon.criticalDamageModifier));
+					damagable.TakeDamage(damage, false);
+					PlayerManager.Instance.PlayerStateMachine.DamageText[4].Spawn(other.transform.position + Vector3.up * 2f, damage);
+				}
+				else
+				{
+					damage = Mathf.RoundToInt(PlayerManager.Instance.PlayerStateMachine.WeaponDamage(damage, multiplier));
+					damagable.TakeDamage(damage, false);
+					PlayerManager.Instance.PlayerStateMachine.DamageText[3].Spawn(other.transform.position + Vector3.up * 2f, damage);
+				}
+
+				//Debug.Log($"Cone hit: {other.gameObject.name}");
+				//Debug.Log(enemyList.Count + " enemies hit by cone.");
+			}
+		}
+		private void OnDrawGizmos()
+		{
+			Gizmos.color = Color.red;
+			Gizmos.DrawWireSphere(transform.position, radius);
 		}
 	}
 }

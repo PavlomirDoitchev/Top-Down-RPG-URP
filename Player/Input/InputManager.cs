@@ -19,7 +19,7 @@ public class InputManager : MonoBehaviour
 	[SerializeField] private KeyCode _moveRightKey = KeyCode.D;
 	[SerializeField] private KeyCode _moveUpKey = KeyCode.W;
 	[SerializeField] private KeyCode _moveDownKey = KeyCode.S;
-	PlayerManager _playerManager;
+	//PlayerManager _playerManager;
 	private Dictionary<string, KeyCode> keyBindings;
 	[field: SerializeField] public bool IsAttacking { get; set; }
 	public Vector2 MoveInput { get; private set; }
@@ -40,17 +40,17 @@ public class InputManager : MonoBehaviour
 			{ "MoveDown", _moveDownKey }
 		};
 	}
-	private void Start()
-	{
-		_playerManager = PlayerManager.Instance;
-	}
+	//private void Start()
+	//{
+	//	_playerManager = PlayerManager.Instance;
+	//}
 	
 	public bool PlayerJumpInput() => Input.GetKey(keyBindings["Jump"]);
 	public bool PlayerDodgeInput() => Input.GetKey(keyBindings["Dodge"]);
 	public bool BasicAttackInput() => Input.GetKey(keyBindings["Attack"]); 
 	public bool AbilityOneInput() => Input.GetKeyDown(keyBindings["AbilityOne"]); 
 	public bool AbilityTwoInput() => Input.GetKeyDown(keyBindings["AbilityTwo"]);
-	public bool AbilityThreeInput() => Input.GetKeyDown(keyBindings["AbilityThree"]);
+	public bool AbilityThreeInput() => Input.GetKeyUp(keyBindings["AbilityThree"]);
 	public Vector2 MovementInput()
 	{
 		float horizontal = GetAxis("Horizontal");
