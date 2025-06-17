@@ -9,7 +9,6 @@ public class EnemyAnimationEvents : MonoBehaviour
     [SerializeField] private EnemyMelee[] enemyMelee;
     [SerializeField] private EnemyStateMachine enemyStateMachine;
     [SerializeField] private EnemyProjectileAbility enemySpell;
-    [SerializeField] private ParticleSystem[] castingVFX;
 	[SerializeField] ArcherHideArrow archerArrow;
     PlayerManager playerManager;
     private void Start()
@@ -34,20 +33,7 @@ public class EnemyAnimationEvents : MonoBehaviour
     public void CastSpell() => enemySpell.Cast(PlayerManager.Instance.PlayerStateMachine.transform);
     public void ChangeAnimationToChannel() => enemyStateMachine.Animator.CrossFadeInFixedTime(enemyStateMachine.ChannelAnimationName, .1f);
 	public void ChangeToIdleAnimation() => enemyStateMachine.Animator.CrossFadeInFixedTime(enemyStateMachine.IdleAnimationName, .1f);
-    public void VFXDuringCast_0() 
-    {
-        if (castingVFX != null) 
-        {
-            castingVFX[0].gameObject.SetActive(true);
-		}
-	}
-    public void DisableVFXDuringCast_0() 
-    {
-        if(castingVFX != null)
-		{
-			castingVFX[0].gameObject.SetActive(false);
-		}
-	}
+  
    
 	#endregion
 

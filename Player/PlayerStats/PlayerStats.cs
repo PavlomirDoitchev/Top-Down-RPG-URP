@@ -103,7 +103,7 @@ namespace Assets.Scripts.Player
 		}
 		private void Update()
 		{
-			if (activeEffects != null)
+			if (activeEffects != null && activeEffects.Count > 0)
 			{
 				HandleEffect();
 			}
@@ -113,6 +113,7 @@ namespace Assets.Scripts.Player
 		public void TakeDamage(int damage, bool applyImpulse = true)
 		{
 			currentHealth -= damage;
+			//TODO: Add bool to TakeDamage - ShouldPlayHitAnimation
 			if (playerManager.PlayerStateMachine.PlayerCurrentState is FighterLocomotionState)
 			{
 				playerManager.PlayerStateMachine.Animator.Play("Fighter_Hit");

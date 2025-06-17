@@ -26,7 +26,7 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
 			if (!_skill.AllowMovementWhileCasting	
 				&& _playerStateMachine.CharacterController.velocity != Vector3.zero) 
 			{
-				Debug.Log("Cannot move while casting!");
+				//Debug.Log("Cannot move while casting!");
 				_playerStateMachine.ChangeState(new FighterLocomotionState(_playerStateMachine));
 				return;
 			}

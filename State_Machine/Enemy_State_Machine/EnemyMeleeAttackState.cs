@@ -10,7 +10,8 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
         public override void EnterState()
         {
             base.EnterState();
-            _enemyStateMachine.Agent.isStopped = false;
+            _enemyStateMachine.AggrevateNearbyEnemies();
+			_enemyStateMachine.Agent.isStopped = false;
             _enemyStateMachine.Animator.CrossFadeInFixedTime(_enemyStateMachine.AttackAnimationName[0], .1f);
             RotateToPlayer();
             

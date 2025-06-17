@@ -28,6 +28,7 @@ public class MeleeWeapon : MonoBehaviour
 			enemyColliders.Add(other);
 			TryKnockbackEnemy(other);
 			//Debug.Log(enemyColliders.Count + " enemies hit");
+			_playerManager.PlayerStateMachine.ApplyStatusEffect(other, 0);
 			if (_playerManager.PlayerStateMachine.PlayerCurrentState is FighterAbilityOneState)
 				multiplier = _playerManager.PlayerStateMachine.Ability_One_Data[_playerManager.PlayerStateMachine.Ability_One_Rank].damageMultiplier;
 

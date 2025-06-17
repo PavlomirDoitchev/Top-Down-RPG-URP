@@ -35,6 +35,13 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
                 _enemyStateMachine.ChangeState(new EnemyEnragedState(_enemyStateMachine));
                 return true;
             }
+            if (_enemyStateMachine.CurrentHealth < _enemyStateMachine.MaxHealth * _enemyStateMachine.FleeingThreshold
+                && _enemyStateMachine.ShouldFleeWhenLowHealth && !_enemyStateMachine.CanBecomeEnraged)
+            {
+                _enemyStateMachine.ChangeState(new EnemyFleeState(_enemyStateMachine));
+                return true;
+            }
+
             if (_enemyStateMachine.ShouldStartAttacking)
             {
                 switch (_enemyStateMachine.EnemyType)
@@ -61,13 +68,14 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
             }
             return false;
         }
-        /// <summary>
-        /// Checks if the enemy can see the player within a certain distance.
-        /// Use for Idle, Wander , and Patrol states to determine if the enemy has aggro based on line of sight and parameter distance.
-        /// </summary>
-        /// <param name="distance"></param>
-        /// <returns></returns>
-        protected bool CanSeePlayer(float distance)
+       
+		/// <summary>
+		/// Checks if the enemy can see the player within a certain distance.
+		/// Use for Idle, Wander , and Patrol states to determine if the enemy has aggro based on line of sight and parameter distance.
+		/// </summary>
+		/// <param name="distance"></param>
+		/// <returns></returns>
+		protected bool CanSeePlayer(float distance)
         {
             Transform player = playerManager.PlayerStateMachine.transform;
             Vector3 directionToPlayer = (player.position - _enemyStateMachine.transform.position).normalized;

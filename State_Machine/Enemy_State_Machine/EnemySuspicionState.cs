@@ -27,9 +27,10 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
         {
             if (CheckForGlobalTransitions()) return;
             
-            if (Vector3.Distance(PlayerManager.Instance.PlayerStateMachine.transform.position, _enemyStateMachine.transform.position)
+            if ((Vector3.Distance(PlayerManager.Instance.PlayerStateMachine.transform.position, _enemyStateMachine.transform.position)
                 < _enemyStateMachine.ChaseDistance
                 && HasLineOfSight())
+                || _enemyStateMachine.CheckForFriendlyInCombat)
             {
                 _enemyStateMachine.ChangeState(new EnemyChaseState(_enemyStateMachine));
                 return;

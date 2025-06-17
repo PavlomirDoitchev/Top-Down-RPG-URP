@@ -1,6 +1,7 @@
 ﻿using Assets.Scripts.Combat_Logic;
 using Assets.Scripts.Enemies;
 using Assets.Scripts.Player;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 namespace Assets.Scripts.State_Machine.Enemy_State_Machine
@@ -15,6 +16,7 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
 		[field: SerializeField] public ForceReceiver ForceReceiver { get; private set; }
 		[field: SerializeField] public Animator Animator { get; private set; }
 		[field: SerializeField] public NavMeshAgent Agent { get; private set; }
+		[field: SerializeField] public ParticleSystem CastingVFX { get; private set; } 
 
 		#region Patrol Logic
 		[field: SerializeField] public PatrolPath PatrolPath { get; private set; }
@@ -44,6 +46,9 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
 		[field: SerializeField] public float RangedAttackRange { get; private set; }
 		[field: SerializeField] public float FleeingRange { get; private set; } //should be less than RangedAttackDistance
 		[field: SerializeField] public float FleeingDistanceAmount { get; private set; } = 5f;
+		[field: SerializeField] public float FleeingThreshold { get; private set; } = .1f; //sample new position every 0.4 seconds
+		[field: SerializeField] public bool ShouldFleeWhenLowHealth { get; set; } = false;
+		[field: SerializeField] public bool ShouldFleeFromDamage { get; set; } = false; 
 		[field: SerializeField] public float RangedAttackCooldownDuration { get; private set; } = 2f;
 		[field: SerializeField] public int AttackIndex { get; private set; } = 0; //used to determine which attack animation to play
 		[field: SerializeField]
@@ -75,6 +80,7 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
 		[field: SerializeField] public float KnockBackForce { get; private set; } = 15f;
 		[field: SerializeField] public bool ShouldKnockBackPlayer { get; set; }
 
+
 		#endregion
 
 		#region Animation Variables
@@ -102,8 +108,11 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
 		public bool IsKnockedUp { get; set; } = false;
 		public bool IsEnraged { get; set; } = false;
 		public bool ShouldStartAttacking { get; set; } = false;
-		public bool HasTakenDamage { get; set; } = false;
+		public bool IsTakingDamage { get; set; } = false;
 		public bool ShouldShadowStep { get; set; } = false;
+		public bool CheckForFriendlyInCombat { get; set; } = false;
+		
+
 		#endregion
 		private void Start()
 		{
@@ -112,21 +121,19 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
 			CurrentHealth = MaxHealth;
 			ChangeState(new EnemyIdleState(this));
 		}
-		//private void Update()
-		//{
-		//    GlobalTimer -= Time.deltaTime;
-		//}
+		
 		public void TakeDamage(int damage, bool applyImpulse)
 		{
 			if (CurrentHealth == MaxHealth)
 				ShouldStartAttacking = true;
+				
 		
 			applyImpulse = false;
 			CurrentHealth -= damage;
-
+			//IsTakingDamage = true;
+			AggrevateNearbyEnemies();
 			if (CurrentHealth <= Mathf.RoundToInt(MaxHealth * EnrageThreshold) && CanBecomeEnraged)
 				IsEnraged = true;
-
 			//if (CurrentHealth <= MaxHealth * 0.8f && CanShadowStep)
 			//    ShouldShadowStep = true;
 
@@ -136,14 +143,31 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
 				player.PlayerStateMachine.PlayerStats.GainXP(XpReward);
 			}
 		}
+		public void AggrevateNearbyEnemies()
+		{
+			RaycastHit[] hits = Physics.SphereCastAll(transform.position, AggroRange, Vector3.up, 0f, 1 << LayerMask.NameToLayer("Enemy"));
+			foreach (var hit in hits)
+			{
+				if (hit.collider.TryGetComponent<EnemyStateMachine>(out EnemyStateMachine enemy))
+				{
+					if (enemy != this)
+					{
+						enemy.CheckForFriendlyInCombat = true;
+						//Debug.Log($"Aggrevating nearby enemy: {enemy.enemyName}");
+						//enemy.ChangeState(new EnemyChaseState(enemy));
+					}
+				}
+			}
+		}
 		public void TwoHitCombo()
 		{
 			if (this.CurrentState is EnemyMeleeAttackState)
 			{
-				Animator.CrossFadeInFixedTime(AttackAnimationName[AttackIndex], .1f);
 				AttackIndex = 1 - AttackIndex;
+				Animator.CrossFadeInFixedTime(AttackAnimationName[AttackIndex], .1f);
 			}
 		}
+		
 		public void OnDrawGizmosSelected()
 		{
 			//Gizmos.color = Color.red;

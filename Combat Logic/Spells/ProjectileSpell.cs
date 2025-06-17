@@ -18,9 +18,12 @@ namespace Assets.Scripts.Combat_Logic
 		[SerializeField] private float timer;
 		Vector3 direction;
 		Vector3 aimModifier;
-		void Start()
+		private void Awake()
 		{
 			rb = GetComponent<Rigidbody>();
+		}
+		void OnEnable()
+		{
 			timer = projectileData.lifeTime;
 		}
 		private void OnDisable()
@@ -36,13 +39,10 @@ namespace Assets.Scripts.Combat_Logic
 			{
 				gameObject.SetActive(false);
 			}
+			transform.position += direction * projectileData.speed * Time.deltaTime;
 
 		}
-		private void FixedUpdate()
-		{
-
-			rb.MovePosition(transform.position + direction * projectileData.speed * Time.fixedDeltaTime);
-		}
+		
 
 		void OnTriggerEnter(Collider other)
 		{
@@ -72,6 +72,11 @@ namespace Assets.Scripts.Combat_Logic
 		public void Initialize(Transform newTarget)
 		{
 			target = newTarget;
+			if(rb == null)
+			{
+				rb = GetComponent<Rigidbody>();
+			}
+			
 			if (target == null)
 			{
 				Debug.Log($"{target} is null!");
@@ -95,15 +100,7 @@ namespace Assets.Scripts.Combat_Logic
 
 			transform.rotation = Quaternion.LookRotation(direction);
 		}
-		public void Initialize(Transform newTarget, Vector3 spreadDirection)
-		{
-			target = newTarget;
-			Vector3 aimPoint = AimLocation(target);
-
-			direction = (aimPoint - transform.position + spreadDirection).normalized;
-
-			transform.rotation = Quaternion.LookRotation(direction);
-		}
+	
 		public Vector3 AimLocation(Transform target)
 		{
 			if (target.TryGetComponent<CharacterController>(out var controller))

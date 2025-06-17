@@ -13,7 +13,10 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
         {
             base.EnterState();
             _enemyStateMachine.Agent.isStopped = false;
-            if (_enemyStateMachine.IsEnraged)
+            _enemyStateMachine.CheckForFriendlyInCombat = false;
+            RotateToPlayer();
+            //_enemyStateMachine.AggrevateNearbyEnemies();
+			if (_enemyStateMachine.IsEnraged)
             {
                 _enemyStateMachine.Agent.speed = _enemyStateMachine.EnragedSpeed;
             }
@@ -27,7 +30,7 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
         public override void UpdateState(float deltaTime)
         {
             if (CheckForGlobalTransitions()) return;
-            _enemyStateMachine.Agent.SetDestination(PlayerManager.Instance.PlayerStateMachine.transform.position);
+			_enemyStateMachine.Agent.SetDestination(PlayerManager.Instance.PlayerStateMachine.transform.position);
 
             if (Vector3.Distance(_enemyStateMachine.OriginalPosition, _enemyStateMachine.transform.position) > _enemyStateMachine.MaxDistanceFromOrigin
                 && !_enemyStateMachine.IsEnraged)

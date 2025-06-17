@@ -25,7 +25,7 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
         {
             if(CheckForGlobalTransitions()) return;
 
-            if (CanSeePlayer(_enemyStateMachine.AggroRange))
+            if (CanSeePlayer(_enemyStateMachine.AggroRange) || _enemyStateMachine.CheckForFriendlyInCombat)
                 _enemyStateMachine.ChangeState(new EnemyChaseState(_enemyStateMachine));
             
             _enemyStateMachine.OriginalPosition = _enemyStateMachine.transform.position;

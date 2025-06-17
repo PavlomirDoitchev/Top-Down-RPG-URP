@@ -28,7 +28,7 @@
                     break;
             }
 
-            if (CanSeePlayer(_enemyStateMachine.AggroRange))
+            if (CanSeePlayer(_enemyStateMachine.AggroRange) || _enemyStateMachine.CheckForFriendlyInCombat)
             {
                 _enemyStateMachine.ChangeState(new EnemyChaseState(_enemyStateMachine));
             }

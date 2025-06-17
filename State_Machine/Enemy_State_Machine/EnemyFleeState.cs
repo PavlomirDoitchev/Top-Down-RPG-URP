@@ -19,6 +19,7 @@ public class EnemyFleeState : EnemyBaseState
 		_enemyStateMachine.Animator.Play(_enemyStateMachine.RunAnimationName);
 		fleeRange = _enemyStateMachine.FleeingRange;
 		repathTimer = 0f;
+		_enemyStateMachine.AggrevateNearbyEnemies();
 	}
 
 	public override void UpdateState(float deltaTime)
@@ -29,6 +30,7 @@ public class EnemyFleeState : EnemyBaseState
 
 		if (fleeTimer <= 0f)
 		{
+			_enemyStateMachine.AggrevateNearbyEnemies();
 			_enemyStateMachine.ChangeState(_enemyStateMachine.PreviousState);
 			return;
 		}
@@ -36,13 +38,16 @@ public class EnemyFleeState : EnemyBaseState
 		var playerPos = PlayerManager.Instance.PlayerStateMachine.transform.position;
 		var enemyPos = _enemyStateMachine.transform.position;
 
-		if (Vector3.Distance(enemyPos, playerPos) > _enemyStateMachine.FleeingRange * 2)
+		if (Vector3.Distance(enemyPos, playerPos) > _enemyStateMachine.FleeingRange * 2 && _enemyStateMachine.EnemyType != EnemyType.Melee)
 		{
 			_enemyStateMachine.ChangeState(new EnemyRangedAttackState(_enemyStateMachine));
 			return;
 		}
+		//else 
+		//{ 
+		//	_enemyStateMachine.ChangeState(new EnemyChaseState(_enemyStateMachine));	
+		//}
 
-		// Only re-calculate flee path if repathTimer has expired
 		if (repathTimer <= 0f)
 		{
 			repathTimer = fleeRepathInterval;
@@ -86,6 +91,7 @@ public class EnemyFleeState : EnemyBaseState
 
 	public override void ExitState()
 	{
+		_enemyStateMachine.ShouldFleeFromDamage = false;
 		fleeRange = _enemyStateMachine.FleeingRange;
 	}
 }

@@ -17,8 +17,9 @@ public class WeaponDataSO : ScriptableObject, IPlayerItems
 	[field: SerializeField] public Sprite ItemIcon { get; set; }
     [field: SerializeField] public string ItemName { get; set; }
     [field: SerializeField] public int ItemPrice { get; set; }
+    [field: SerializeField] public StatusEffectData[] StatusEffects { get; set; }
 
-    public IPlayerItems.ItemType itemType;
+	public IPlayerItems.ItemType itemType;
     public WeaponType weaponType;
     public IPlayerItems.ItemRarity rarity;
 
