@@ -50,8 +50,9 @@ public class InputManager : MonoBehaviour
 	public bool BasicAttackInput() => Input.GetKey(keyBindings["Attack"]); 
 	public bool AbilityOneInput() => Input.GetKeyDown(keyBindings["AbilityOne"]); 
 	public bool AbilityTwoInput() => Input.GetKeyDown(keyBindings["AbilityTwo"]);
-	public bool AbilityThreeInput() => Input.GetKeyUp(keyBindings["AbilityThree"]);
-	public Vector2 MovementInput()
+	public bool AbilityThreeInput() => Input.GetKeyDown(keyBindings["AbilityThree"]);
+	public bool AbilityFourInput() => Input.GetKeyDown(keyBindings["AbilityFour"]);
+    public Vector2 MovementInput()
 	{
 		float horizontal = GetAxis("Horizontal");
 		float vertical = GetAxis("Vertical");
