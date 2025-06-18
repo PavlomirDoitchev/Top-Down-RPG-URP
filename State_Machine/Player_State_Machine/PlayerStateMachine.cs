@@ -127,10 +127,19 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
 			Freeze,
 			Stun
 		}
-		public void ApplyStatusEffect(Collider other, int index)
+		/// <summary>
+		/// Applies a status effect to the target if it is effectable and the ability data indicates that a status effect should be applied.
+		/// Index is used to determine which effect to apply from the EffectData array.
+		/// </summary>
+		/// <param name="other"></param>
+		/// <param name="abilityData"></param>
+		/// <param name="spellRank"></param>
+		/// <param name="index"></param>
+		public void ApplyStatusEffect(Collider other, Fighter_Ability_SO[] abilityData, int spellRank, int index)
 		{
 			if (other.TryGetComponent<IEffectable>(out var effectable)
-				&& EffectData[index] != null)
+				&& EffectData[index] != null
+				&& abilityData[spellRank].shouldApplyStatusEffect)
 			{
 				effectable.ApplyEffect(EffectData[index]);
 			}

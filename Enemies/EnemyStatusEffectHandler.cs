@@ -20,10 +20,18 @@ public class EnemyStatusEffectHandler : MonoBehaviour, IEffectable
 	private Dictionary<StatusEffectData.StatusEffectType, ActiveEffect> activeEffects = new();
 	[SerializeField] EnemyStateMachine _enemyStateMachine;
 
-    void Update()
-    {
+	void Update()
+	{
 		if (activeEffects != null && activeEffects.Count > 0)
+		{
 			HandleEffect();
+			float spedModifier = _enemyStateMachine.RunningSpeed * (1 - CalculateTotalSlow());
+			_enemyStateMachine.RunningSpeed = Mathf.Max(spedModifier, 0f); // Ensure speed doesn't go below a minimum threshold
+		}
+		else
+		{
+			_enemyStateMachine.RunningSpeed = _enemyStateMachine.DefaultRunningSpeed; // Reset to default speed if no effects are active
+		}
 	}
 	public void ApplyEffect(StatusEffectData data)
 	{

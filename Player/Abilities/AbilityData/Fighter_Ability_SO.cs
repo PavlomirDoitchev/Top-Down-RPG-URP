@@ -8,5 +8,5 @@ public class Fighter_Ability_SO : ScriptableObject
     public float force;
     public float knockbackForce;
     public bool canKnockback;
-    //public ParticleSystem VFX;
+    public bool shouldApplyStatusEffect;    
 }

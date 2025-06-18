@@ -28,16 +28,22 @@ public class MeleeWeapon : MonoBehaviour
 			enemyColliders.Add(other);
 			TryKnockbackEnemy(other);
 			//Debug.Log(enemyColliders.Count + " enemies hit");
-			_playerManager.PlayerStateMachine.ApplyStatusEffect(other, 0);
-			if (_playerManager.PlayerStateMachine.PlayerCurrentState is FighterAbilityOneState)
+
+			if (_playerManager.PlayerStateMachine.PlayerCurrentState is FighterAbilityOneState) 
+			{
 				multiplier = _playerManager.PlayerStateMachine.Ability_One_Data[_playerManager.PlayerStateMachine.Ability_One_Rank].damageMultiplier;
+				_playerManager.PlayerStateMachine.ApplyStatusEffect(other, _playerManager.PlayerStateMachine.Ability_One_Data, _playerManager.PlayerStateMachine.Ability_One_Rank, 0);
+			
+			}
 
 			else if (_playerManager.PlayerStateMachine.PlayerCurrentState is FighterAbilityTwoState)
 			{
 				Debug.Log("No melee damage here!");
 			}
-			else
+			else { 
+			
 				multiplier = _playerManager.PlayerStateMachine.BasicAttackData[_playerManager.PlayerStateMachine.BasicAttackRank].damageMultiplier;
+			}
 
 			if (_playerManager.PlayerStateMachine.CriticalStrikeSuccess())
 			{

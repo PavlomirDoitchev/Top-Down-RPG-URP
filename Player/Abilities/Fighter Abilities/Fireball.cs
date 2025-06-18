@@ -47,6 +47,9 @@ namespace Assets.Scripts.Player.Abilities.Fighter_Abilities
 		{
 			if (other.gameObject.TryGetComponent<IDamagable>(out var damagable))
 			{
+				PlayerManager.Instance.PlayerStateMachine.ApplyStatusEffect(other, PlayerManager.Instance.PlayerStateMachine.Ability_Three_Data,
+					PlayerManager.Instance.PlayerStateMachine.Ability_Three_Rank, 1);
+
 				multiplier = PlayerManager.Instance.PlayerStateMachine.Ability_Three_Data[PlayerManager.Instance.PlayerStateMachine.Ability_Three_Rank].damageMultiplier;
 
 				if (PlayerManager.Instance.PlayerStateMachine.CriticalStrikeSuccess())

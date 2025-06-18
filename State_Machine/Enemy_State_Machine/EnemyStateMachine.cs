@@ -33,7 +33,8 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
 		[field: SerializeField] public float ViewAngle { get; private set; } = 120f; //degrees
 		[field: SerializeField] public LayerMask ObstacleMask { get; private set; }
 		[field: SerializeField] public LayerMask TargetMask { get; private set; }
-		[field: SerializeField] public float RunningSpeed { get; private set; }
+		[field: SerializeField] public float RunningSpeed { get; set; }
+		[field: SerializeField] public float DefaultRunningSpeed { get; private set; } //used to reset speed after status effects
 		[field: SerializeField] public float WalkingSpeed { get; private set; }
 		[field: SerializeField] public float EnragedSpeed { get; private set; }
 		[field: SerializeField] public float RotationSpeed { get; private set; }
