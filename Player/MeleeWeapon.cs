@@ -22,7 +22,7 @@ public class MeleeWeapon : MonoBehaviour
 
 		if (enemyColliders.Contains(other)) return;
 		if (other.gameObject.layer == 7
-			&& this.gameObject.layer == 13
+			//&& this.gameObject.layer == 13
 			&& other.gameObject.TryGetComponent<IDamagable>(out var damagable))
 		{
 			enemyColliders.Add(other);

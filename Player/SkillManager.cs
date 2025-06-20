@@ -44,6 +44,10 @@ namespace Assets.Scripts.Player
             
             }
         }
+        /// <summary>
+        /// Aims the spell based on the mouse position in the world.
+        /// </summary>
+        /// <returns></returns>
 		public virtual Vector3 AimSpell()
 		{
 			Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);

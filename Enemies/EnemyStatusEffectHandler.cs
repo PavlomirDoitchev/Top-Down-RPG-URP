@@ -25,7 +25,7 @@ public class EnemyStatusEffectHandler : MonoBehaviour, IEffectable
 		if (activeEffects != null && activeEffects.Count > 0)
 		{
 			HandleEffect();
-			float spedModifier = _enemyStateMachine.RunningSpeed * (1 - CalculateTotalSlow());
+			float spedModifier = _enemyStateMachine.RunningSpeed * CalculateTotalSlow();
 			_enemyStateMachine.RunningSpeed = Mathf.Max(spedModifier, 0f); // Ensure speed doesn't go below a minimum threshold
 		}
 		else

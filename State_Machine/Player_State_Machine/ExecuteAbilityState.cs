@@ -3,80 +3,83 @@ using Assets.Scripts.Player;
 
 namespace Assets.Scripts.State_Machine.Player_State_Machine
 {
-	public class ExecuteAbilityState : PlayerBaseState
-	{
-		private readonly Skills _skill;
-		float timer;
-		float checkInterval;
-		public ExecuteAbilityState(PlayerStateMachine stateMachine, Skills skill) : base(stateMachine)
-		{
-			_skill = skill;
-		}
+    public class ExecuteAbilityState : PlayerBaseState
+    {
+        private readonly Skills _skill;
+        float timer;
+        float checkInterval;
+        public ExecuteAbilityState(PlayerStateMachine stateMachine, Skills skill) : base(stateMachine)
+        {
+            _skill = skill;
+        }
 
-		public override void EnterState()
-		{
-			base.EnterState();
-			ResetAnimationSpeed();
-			if (_skill.IsChanneled)
-			{
-				timer = _skill.CastTime;
-				_playerStateMachine.Animator.Play(_skill.castingAnimationName);
-				checkInterval = _skill.CostCheckInterval;
-			}
-			else
-				_playerStateMachine.Animator.Play(_skill.animationName);
-		}
+        public override void EnterState()
+        {
+            base.EnterState();
+            ResetAnimationSpeed();
+            if (_skill.IsChanneled)
+            {
+                timer = _skill.CastTime;
+                _playerStateMachine.Animator.Play(_skill.castingAnimationName);
+                checkInterval = _skill.CostCheckInterval;
+            }
+            else
+                _playerStateMachine.Animator.Play(_skill.animationName);
+        }
 
-		public override void UpdateState(float deltaTime)
-		{
+        public override void UpdateState(float deltaTime)
+        {
 
-			if (_skill.IsChanneled)
-			{
-				if(_skill.AllowRotationWhileCasting)
-					RotateToMouse();
-				
-				PlayerMove(deltaTime);
-				
-				_skill.CastingVFX.gameObject.SetActive(true);
-				if (!_skill.AllowMovementWhileCasting
-					&& _playerStateMachine.CharacterController.velocity != Vector3.zero)
-				{
-					//Debug.Log("Cannot move while channeling!");
-					_skill.CastingVFX.gameObject.SetActive(false);
-					_skill.ResetCooldown();
-					_playerStateMachine.ChangeState(new FighterLocomotionState(_playerStateMachine));
-					return;
-				}
-				checkInterval -= deltaTime;
-				if (checkInterval <= 0f)
-				{
-					_skill.UseSkill();
-					//Debug.Log($"Using skill: {_skill.animationName}");
-					checkInterval = _skill.CostCheckInterval;
-					if(_playerStateMachine.PlayerStats.GetCurrentResource() < _skill.GetSkillCost())
-					{
-						_skill.CastingVFX.gameObject.SetActive(false);
-						_skill.ResetCooldown();
-						_playerStateMachine.ChangeState(new FighterLocomotionState(_playerStateMachine));
-						return;
-					}
-				}
-				timer -= deltaTime;
+            if (_skill.IsChanneled)
+            {
+                Channel(deltaTime);
+            }
+        }
+        public override void ExitState()
+        {
+            ResetAnimationSpeed();
+        }
+        private void Channel(float deltaTime)
+        {
+            timer -= deltaTime;
+            if (_skill.AllowRotationWhileCasting)
+                RotateToMouse();
 
-				//Debug.Log($"Channeled...: {timer}");
-				if (timer <= 0)
-				{
-					_skill.ResetCooldown();
-					_skill.CastingVFX.gameObject.SetActive(false);
-					_playerStateMachine.ChangeState(new FighterLocomotionState(_playerStateMachine));
-					return;
-				}
-			}
-		}
+            PlayerMove(deltaTime);
 
-		public override void ExitState()
-		{
-			ResetAnimationSpeed();
-		}
-	}
+            _skill.CastingVFX.gameObject.SetActive(true);
+            if (!_skill.AllowMovementWhileCasting
+                && _playerStateMachine.CharacterController.velocity != Vector3.zero)
+            {
+                //Debug.Log("Cannot move while channeling!");
+                _skill.CastingVFX.gameObject.SetActive(false);
+                _skill.ResetCooldown();
+                _playerStateMachine.ChangeState(new FighterLocomotionState(_playerStateMachine));
+                return;
+            }
+            checkInterval -= deltaTime;
+            if (checkInterval <= 0f)
+            {
+                _skill.UseSkill();
+                //Debug.Log($"Using skill: {_skill.animationName}");
+                checkInterval = _skill.CostCheckInterval;
+                if (_playerStateMachine.PlayerStats.GetCurrentResource() < _skill.GetSkillCost())
+                {
+                    _skill.CastingVFX.gameObject.SetActive(false);
+                    _skill.ResetCooldown();
+                    _playerStateMachine.ChangeState(new FighterLocomotionState(_playerStateMachine));
+                    return;
+                }
+            }
+
+            //Debug.Log($"Channeled...: {timer}");
+            if (timer <= 0)
+            {
+                _skill.ResetCooldown();
+                _skill.CastingVFX.gameObject.SetActive(false);
+                _playerStateMachine.ChangeState(new FighterLocomotionState(_playerStateMachine));
+                return;
+            }
+        }
+    }
 }

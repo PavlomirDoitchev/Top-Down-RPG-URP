@@ -113,8 +113,8 @@ namespace Assets.Scripts.Player
 		public void TakeDamage(int damage, bool applyImpulse = true)
 		{
 			currentHealth -= damage;
-			//TODO: Add bool to TakeDamage - ShouldPlayHitAnimation
-			if (playerManager.PlayerStateMachine.PlayerCurrentState is FighterLocomotionState)
+			if (damage >= Mathf.RoundToInt(maxHealth * .10f) 
+				&& playerManager.PlayerStateMachine.PlayerCurrentState is FighterLocomotionState)
 			{
 				playerManager.PlayerStateMachine.Animator.Play("Fighter_Hit");
 			}

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 namespace Assets.Scripts.Player.Abilities.Fighter_Abilities
 {
-    public class Fireball : MonoBehaviour
+    public class RainOfFire : MonoBehaviour
     {
 
         [SerializeField] float radius = 2f;
