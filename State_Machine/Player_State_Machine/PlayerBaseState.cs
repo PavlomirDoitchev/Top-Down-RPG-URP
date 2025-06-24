@@ -62,7 +62,7 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
 		protected void RotateToMouse(float deltaTime)
 		{
 			Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-			int layerMask = LayerMask.GetMask("Ground", "Enemy", "Default");
+			int layerMask = LayerMask.GetMask("Ground", "Enemy");
 
 			if (Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity, layerMask))
 			{
