@@ -26,7 +26,8 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
                 _enemyStateMachine.ChangeState(new EnemyDeathState(_enemyStateMachine));
                 return true;
             }
-            if (PlayerManager.Instance.PlayerStateMachine.PlayerStats.GetCurrentHealth() <= 0)
+            if (PlayerManager.Instance.PlayerStateMachine.PlayerStats.GetCurrentHealth() <= 0
+                && PlayerManager.Instance != null)
             {
                 _enemyStateMachine.ChangeState(new EnemyPlayerIsDeadState(_enemyStateMachine));
             }
