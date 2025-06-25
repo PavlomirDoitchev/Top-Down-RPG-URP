@@ -1,15 +1,14 @@
-﻿using UnityEngine;
+﻿
+using UnityEngine;
 using System.Collections.Generic;
 
-namespace Assets.Scripts.Utility.Animation
+public class AnimationEventReceiver : MonoBehaviour
 {
-    public class AnimationEventReceiver : MonoBehaviour
+    [SerializeField] List<AnimationEvent> animationEvents = new();
+
+    public void OnAnimationEventTriggered(string eventName)
     {
-        [SerializeField] List<AnimationEvent> animationEvents = new();
-        public void OnAnimationEventTriggered(string eventName) 
-        {
-            AnimationEvent matchingEvent = animationEvents.Find(se => se.eventName == eventName);
-            matchingEvent?.OnAnimationEvent?.Invoke();
-        }
+        AnimationEvent matchingEvent = animationEvents.Find(se => se.eventName == eventName);
+        matchingEvent?.OnAnimationEvent?.Invoke();
     }
 }

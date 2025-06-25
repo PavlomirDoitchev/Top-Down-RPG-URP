@@ -1,36 +1,36 @@
 using UnityEngine;
 using UnityEngine.Events;
-namespace Assets.Scripts.Utility.Animation
+
+public class AnimationEventStateBehaviour : StateMachineBehaviour
 {
-    public class AnimationEventStateBehaviour : StateMachineBehaviour
+    public string eventName;
+    [Range(0f, 1f)] public float triggerTime;
+
+    bool hasTriggered;
+    AnimationEventReceiver receiver;
+
+    public override void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        public string eventName;
-        [Range(0f, 1f)] public float triggerTime;
+        hasTriggered = false;
+        receiver = animator.GetComponent<AnimationEventReceiver>();
+    }
 
-        bool hasTriggered;
+    public override void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
+    {
+        float currentTime = stateInfo.normalizedTime % 1f;
 
-        public override void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
+        if (!hasTriggered && currentTime >= triggerTime)
         {
-            hasTriggered = false;
+            NotifyReceiver(animator);
+            hasTriggered = true;
         }
-        public override void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
-        {
-            float currentTime = stateInfo.normalizedTime % 1f; //Disregard looped time
+    }
 
-            if (!hasTriggered && currentTime >= triggerTime)
-            {
-                NotifyReceiver(animator);
-                hasTriggered = true;
-            }
-        }
-
-        private void NotifyReceiver(Animator animator)
+    void NotifyReceiver(Animator animator)
+    {
+        if (receiver != null)
         {
-            AnimationEventReceiver receiver = animator.GetComponent<AnimationEventReceiver>();
-            if (receiver != null)
-            {
-                receiver.OnAnimationEventTriggered(eventName);
-            }
+            receiver.OnAnimationEventTriggered(eventName);
         }
     }
 }
