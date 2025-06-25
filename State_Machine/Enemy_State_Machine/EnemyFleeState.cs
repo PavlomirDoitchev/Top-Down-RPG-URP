@@ -6,7 +6,7 @@ public class EnemyFleeState : EnemyBaseState
 {
 	float fleeRange;
 	float fleeTimer = 5f;
-	float fleeRepathInterval = .4f; // sample new position every 1 second
+	float fleeRepathInterval = .4f;
 	float repathTimer;
 
 	public EnemyFleeState(EnemyStateMachine stateMachine) : base(stateMachine) { }
@@ -38,7 +38,8 @@ public class EnemyFleeState : EnemyBaseState
 		var playerPos = PlayerManager.Instance.PlayerStateMachine.transform.position;
 		var enemyPos = _enemyStateMachine.transform.position;
 
-		if (Vector3.Distance(enemyPos, playerPos) > _enemyStateMachine.FleeingRange * 2 && _enemyStateMachine.EnemyType != EnemyType.Melee)
+		if (Vector3.Distance(enemyPos, playerPos) > _enemyStateMachine.FleeingRange * 2 
+			&& _enemyStateMachine.EnemyType != EnemyType.Melee)
 		{
 			_enemyStateMachine.ChangeState(new EnemyRangedAttackState(_enemyStateMachine));
 			return;

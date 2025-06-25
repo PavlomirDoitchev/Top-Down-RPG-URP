@@ -15,6 +15,7 @@ public class EnemyKnockbackState : EnemyBaseState
 		base.EnterState();
 		_enemyStateMachine.Agent.enabled = false;
 		_enemyStateMachine.Animator.CrossFadeInFixedTime(_enemyStateMachine.HitAnimationName, 0.1f);
+		_enemyStateMachine.IsKnockedBack = true;
 	}
 
 	public override void UpdateState(float deltaTime)
@@ -22,10 +23,11 @@ public class EnemyKnockbackState : EnemyBaseState
 		// CheckForGlobalTransitions();
 		elapsedTime += deltaTime;
 		Move(deltaTime);
-
+		
 		if (elapsedTime >= knockbackDuration)
 		{
-			_enemyStateMachine.Agent.Warp(_enemyStateMachine.transform.position);
+			_enemyStateMachine.IsKnockedBack = false;
+            _enemyStateMachine.Agent.Warp(_enemyStateMachine.transform.position);
 			_enemyStateMachine.Agent.enabled = true;
 
 
@@ -48,6 +50,8 @@ public class EnemyKnockbackState : EnemyBaseState
 
 	public override void ExitState()
 	{
+		_enemyStateMachine.IsKnockedBack = false;
 		MovementSpeedRunning();
 	}
+	
 }

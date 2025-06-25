@@ -62,11 +62,7 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
                         break;
                 }
             }
-            if (_enemyStateMachine.IsStunned)
-            {
-                _enemyStateMachine.ChangeState(new EnemyStunnedState(_enemyStateMachine));
-                return true;
-            }
+           
             return false;
         }
        

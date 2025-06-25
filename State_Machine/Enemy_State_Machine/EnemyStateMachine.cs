@@ -2,6 +2,7 @@
 using Assets.Scripts.Enemies;
 using Assets.Scripts.Player;
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.AI;
 namespace Assets.Scripts.State_Machine.Enemy_State_Machine
@@ -80,12 +81,12 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
 		[field: Range(1, 5)] public float EnragedDamageMultiplier { get; private set; }
 		[field: SerializeField] public float KnockBackForce { get; private set; } = 15f;
 		[field: SerializeField] public bool ShouldKnockBackPlayer { get; set; }
+        public Vector3? TemporaryAvoidanceDestination { get; set; }
 
+        #endregion
 
-		#endregion
-
-		#region Animation Variables
-		[Header("Animation Names")]
+        #region Animation Variables
+        [Header("Animation Names")]
 		[field: SerializeField] public string IdleAnimationName { get; private set; } = "idle";
 		[field: SerializeField] public string SuspicionAnimationName { get; private set; } = "idle01";
 		[field: SerializeField] public string WalkAnimationName { get; private set; } = "walk";
@@ -112,6 +113,7 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
 		public bool IsTakingDamage { get; set; } = false;
 		public bool ShouldShadowStep { get; set; } = false;
 		public bool CheckForFriendlyInCombat { get; set; } = false;
+		public bool IsKnockedBack { get; set; } = false;
 		
 
 		#endregion
@@ -122,8 +124,14 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
 			CurrentHealth = MaxHealth;
 			ChangeState(new EnemyIdleState(this));
 		}
-		
-		public void TakeDamage(int damage, bool applyImpulse)
+        public void OnControllerColliderHit(ControllerColliderHit hit)
+        {
+			if (IsKnockedBack && hit.gameObject.layer == LayerMask.NameToLayer("Default"))
+			{
+				ChangeState(new EnemyStunnedState(this, 1f));
+			}
+        }
+        public void TakeDamage(int damage, bool applyImpulse)
 		{
 			if (CurrentHealth == MaxHealth)
 				ShouldStartAttacking = true;
@@ -168,17 +176,35 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
 				Animator.CrossFadeInFixedTime(AttackAnimationName[AttackIndex], .1f);
 			}
 		}
-		
-		public void OnDrawGizmosSelected()
+        public Vector3 GetCirclePositionAroundPlayer(float radius)
+        {
+            Vector3 toEnemy = (transform.position - PlayerManager.Instance.PlayerStateMachine.transform.position).normalized;
+            float angle = Mathf.Atan2(toEnemy.z, toEnemy.x) * Mathf.Rad2Deg;
+            angle += Random.Range(-45f, 45f); // Adds variety to avoid stacking
+            float rad = angle * Mathf.Deg2Rad;
+
+            Vector3 offset = new Vector3(Mathf.Cos(rad), 0, Mathf.Sin(rad)) * radius;
+            return PlayerManager.Instance.PlayerStateMachine.transform.position + offset;
+        }
+        public Vector3 GetOffsetDestinationAroundPlayer(float radius)
+        {
+            // Offset based on this enemy's position
+            Vector3 toEnemy = (transform.position - PlayerManager.Instance.PlayerStateMachine.transform.position).normalized;
+            float randomAngle = Random.Range(-45f, 45f); // Angle spread
+            Vector3 offset = Quaternion.Euler(0, randomAngle, 0) * toEnemy * radius;
+
+            return PlayerManager.Instance.PlayerStateMachine.transform.position + offset;
+        }
+        public void OnDrawGizmosSelected()
 		{
 			//Gizmos.color = Color.red;
 			//Gizmos.DrawWireSphere(transform.position, AggroRange);
-			Gizmos.color = Color.white;
-			Gizmos.DrawWireSphere(transform.position, FleeingRange);
-			Gizmos.color = Color.yellow;
-			Gizmos.DrawWireSphere(transform.position, ChaseDistance);
-			Gizmos.color = Color.green;
-			Gizmos.DrawWireSphere(transform.position, AttackRange);
+			//Gizmos.color = Color.white;
+			//Gizmos.DrawWireSphere(transform.position, FleeingRange);
+			//Gizmos.color = Color.yellow;
+			//Gizmos.DrawWireSphere(transform.position, ChaseDistance);
+			//Gizmos.color = Color.green;
+			//Gizmos.DrawWireSphere(transform.position, AttackRange);
 			//Gizmos.color = Color.magenta;
 			//Gizmos.DrawWireSphere(transform.position, AttackRangeToleranceBeforeChasing);
 			//Gizmos.color = Color.cyan;

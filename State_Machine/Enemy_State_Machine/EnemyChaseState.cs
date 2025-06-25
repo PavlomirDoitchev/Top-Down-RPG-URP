@@ -1,78 +1,79 @@
 ﻿using Assets.Scripts.Player;
 using UnityEngine;
+using UnityEngine.AI;
+
 namespace Assets.Scripts.State_Machine.Enemy_State_Machine
 {
     public class EnemyChaseState : EnemyBaseState
     {
 
-        public EnemyChaseState(EnemyStateMachine stateMachine) : base(stateMachine)
-        {
-        }
+        public EnemyChaseState(EnemyStateMachine stateMachine) : base(stateMachine) { }
 
         public override void EnterState()
         {
             base.EnterState();
             _enemyStateMachine.Agent.isStopped = false;
             _enemyStateMachine.CheckForFriendlyInCombat = false;
+            
             RotateToPlayer();
-            //_enemyStateMachine.AggrevateNearbyEnemies();
-			if (_enemyStateMachine.IsEnraged)
-            {
-                _enemyStateMachine.Agent.speed = _enemyStateMachine.EnragedSpeed;
-            }
-            else
-            {
-                _enemyStateMachine.Agent.speed = _enemyStateMachine.RunningSpeed;
-            }
-            _enemyStateMachine.Animator.CrossFadeInFixedTime(_enemyStateMachine.RunAnimationName, .1f);
+
+            _enemyStateMachine.Agent.speed = _enemyStateMachine.IsEnraged
+                ? _enemyStateMachine.EnragedSpeed
+                : _enemyStateMachine.RunningSpeed;
+
+            _enemyStateMachine.Animator.CrossFadeInFixedTime(_enemyStateMachine.RunAnimationName, 0.1f);
+            
         }
 
         public override void UpdateState(float deltaTime)
         {
             if (CheckForGlobalTransitions()) return;
-			_enemyStateMachine.Agent.SetDestination(PlayerManager.Instance.PlayerStateMachine.transform.position);
+            Vector3 playerPos = PlayerManager.Instance.PlayerStateMachine.transform.position;
+            _enemyStateMachine.Agent.SetDestination(playerPos);
 
-            if (Vector3.Distance(_enemyStateMachine.OriginalPosition, _enemyStateMachine.transform.position) > _enemyStateMachine.MaxDistanceFromOrigin
-                && !_enemyStateMachine.IsEnraged)
+            // --- Transitions ---
+            float distToOrigin = Vector3.Distance(_enemyStateMachine.OriginalPosition, _enemyStateMachine.transform.position);
+            if (distToOrigin > _enemyStateMachine.MaxDistanceFromOrigin && !_enemyStateMachine.IsEnraged)
             {
                 _enemyStateMachine.ChangeState(new ReturnToOriginState(_enemyStateMachine));
                 return;
             }
-            if(_enemyStateMachine.CanShadowStep
-                && Vector3.Distance(
-                PlayerManager.Instance.PlayerStateMachine.transform.position, _enemyStateMachine.transform.position) 
-                > _enemyStateMachine.ChaseDistance * _enemyStateMachine.ShadowStepThresholdDistance
-                && _enemyStateMachine.PreviousState is EnemyMeleeAttackState)               
+
+            if (_enemyStateMachine.CanShadowStep &&
+                Vector3.Distance(PlayerManager.Instance.PlayerStateMachine.transform.position, _enemyStateMachine.transform.position)
+                > _enemyStateMachine.ChaseDistance * _enemyStateMachine.ShadowStepThresholdDistance &&
+                _enemyStateMachine.PreviousState is EnemyMeleeAttackState)
             {
                 SnapToPlayer();
                 return;
             }
-            if (!_enemyStateMachine.IsEnraged
-                && (Vector3.Distance(
-                PlayerManager.Instance.PlayerStateMachine.transform.position, _enemyStateMachine.transform.position) > _enemyStateMachine.ChaseDistance
+
+            if (!_enemyStateMachine.IsEnraged &&
+                (Vector3.Distance(PlayerManager.Instance.PlayerStateMachine.transform.position, _enemyStateMachine.transform.position) > _enemyStateMachine.ChaseDistance
                 || !HasLineOfSight()))
             {
                 _enemyStateMachine.ChangeState(new EnemySuspicionState(_enemyStateMachine));
+                return;
             }
 
-            // Check if the enemy can see the player and is a melee enemy and switch to the appropriate attack state
-            if (Vector3.Distance(PlayerManager.Instance.PlayerStateMachine.transform.position, _enemyStateMachine.transform.position)
-                < _enemyStateMachine.AttackRangeToleranceBeforeChasing
-                && HasLineOfSight() 
-                && MeleeEnemy())
+            float distanceToPlayer = Vector3.Distance(PlayerManager.Instance.PlayerStateMachine.transform.position, _enemyStateMachine.transform.position);
+            if (distanceToPlayer < _enemyStateMachine.AttackRangeToleranceBeforeChasing && HasLineOfSight() && MeleeEnemy())
             {
                 _enemyStateMachine.ChangeState(new EnemyMeleeAttackState(_enemyStateMachine));
+                return;
             }
-            else if (Vector3.Distance(PlayerManager.Instance.PlayerStateMachine.transform.position, _enemyStateMachine.transform.position)
-                < _enemyStateMachine.RangedAttackRange
-                && HasLineOfSight()
-                && !MeleeEnemy())
+            else if (distanceToPlayer < _enemyStateMachine.RangedAttackRange && HasLineOfSight() && !MeleeEnemy())
+            {
                 _enemyStateMachine.ChangeState(new EnemyRangedAttackState(_enemyStateMachine));
+                return;
+            }
         }
 
         public override void ExitState()
         {
             MovementSpeedRunning();
         }
+
+
     }
 }
