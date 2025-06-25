@@ -1,19 +1,14 @@
-﻿using System;
+﻿#if UNITY_EDITOR
+using System;
+using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
+using UnityEditor;
+using UnityEditor.Animations;
 using UnityEngine;
 using UnityEngine.Animations;
 using UnityEngine.Playables;
 
-#if UNITY_EDITOR
-using UnityEditor;
-using UnityEditor.Animations;
-/// <summary>
-/// Custom editor for the AnimationEventStateBehaviour class, providing a GUI for previewing animation states
-/// and handling animation events within the Unity editor. Enables users to preview animations and manage
-/// animation events directly in the editor.
-/// </summary>
-[UnityEditor.CustomEditor(typeof(AnimationEventStateBehaviour))]
+[CustomEditor(typeof(AnimationEventStateBehaviour))]
 public class AnimationEventStateBehaviourEditor : Editor
 {
     Motion previewClip;
@@ -27,7 +22,7 @@ public class AnimationEventStateBehaviourEditor : Editor
     {
         DrawDefaultInspector();
 
-        AnimationEventStateBehaviour stateBehaviour = (AnimationEventStateBehaviour)target;
+        var stateBehaviour = (AnimationEventStateBehaviour)target;
 
         if (Validate(stateBehaviour, out string errorMessage))
         {
@@ -37,7 +32,7 @@ public class AnimationEventStateBehaviourEditor : Editor
             {
                 if (GUILayout.Button("Stop Preview"))
                 {
-                    EnforceTPose();
+                    ResetTransformPose();
                     isPreviewing = false;
                     AnimationMode.StopAnimationMode();
                     playableGraph.Destroy();
@@ -46,14 +41,14 @@ public class AnimationEventStateBehaviourEditor : Editor
                 {
                     PreviewAnimationClip(stateBehaviour);
                 }
+
+                GUILayout.Label($"Previewing at {previewTime:F2}s", EditorStyles.helpBox);
             }
             else if (GUILayout.Button("Preview"))
             {
                 isPreviewing = true;
                 AnimationMode.StartAnimationMode();
             }
-
-            GUILayout.Label($"Previewing at {previewTime:F2}s", EditorStyles.helpBox);
         }
         else
         {
@@ -63,25 +58,23 @@ public class AnimationEventStateBehaviourEditor : Editor
 
     void PreviewAnimationClip(AnimationEventStateBehaviour stateBehaviour)
     {
-        AnimatorController animatorController = GetValidAnimatorController(out string errorMessage);
-        if (animatorController == null) return;
+        var controller = GetValidAnimatorController(out _);
+        if (controller == null) return;
 
-        ChildAnimatorState matchingState = animatorController.layers
+        var matchingState = controller.layers
             .Select(layer => FindMatchingState(layer.stateMachine, stateBehaviour))
             .FirstOrDefault(state => state.state != null);
 
         if (matchingState.state == null) return;
 
-        Motion motion = matchingState.state.motion;
+        var motion = matchingState.state.motion;
 
-        // Handle BlendTree logic
         if (motion is BlendTree blendTree)
         {
             SampleBlendTreeAnimation(stateBehaviour, stateBehaviour.triggerTime);
             return;
         }
 
-        // If it's a simple AnimationClip, sample it directly
         if (motion is AnimationClip clip)
         {
             previewTime = stateBehaviour.triggerTime * clip.length;
@@ -91,55 +84,40 @@ public class AnimationEventStateBehaviourEditor : Editor
 
     void SampleBlendTreeAnimation(AnimationEventStateBehaviour stateBehaviour, float normalizedTime)
     {
-        Animator animator = Selection.activeGameObject.GetComponent<Animator>();
-
-        if (playableGraph.IsValid())
-        {
-            playableGraph.Destroy();
-        }
+        var animator = Selection.activeGameObject.GetComponent<Animator>();
+        if (playableGraph.IsValid()) playableGraph.Destroy();
 
         playableGraph = PlayableGraph.Create("BlendTreePreviewGraph");
-        mixer = AnimationMixerPlayable.Create(playableGraph, 1, true);
-
+        mixer = AnimationMixerPlayable.Create(playableGraph, 1);
         var output = AnimationPlayableOutput.Create(playableGraph, "Animation", animator);
         output.SetSourcePlayable(mixer);
 
-        AnimatorController animatorController = GetValidAnimatorController(out string errorMessage);
-        if (animatorController == null) return;
-
-        ChildAnimatorState matchingState = animatorController.layers
+        var controller = GetValidAnimatorController(out _);
+        var matchingState = controller.layers
             .Select(layer => FindMatchingState(layer.stateMachine, stateBehaviour))
             .FirstOrDefault(state => state.state != null);
 
-        // If the matching state is not a BlendTree, bail out
         if (matchingState.state.motion is not BlendTree blendTree) return;
 
-        // Determine the maximum threshold value in the blend tree
         float maxThreshold = blendTree.children.Max(child => child.threshold);
+        float targetWeight = Mathf.Clamp(normalizedTime * maxThreshold, blendTree.minThreshold, maxThreshold);
 
-        AnimationClipPlayable[] clipPlayables = new AnimationClipPlayable[blendTree.children.Length];
+        var clipPlayables = new AnimationClipPlayable[blendTree.children.Length];
         float[] weights = new float[blendTree.children.Length];
         float totalWeight = 0f;
 
-        // Scale target weight according to max threshold
-        float targetWeight = Mathf.Clamp(normalizedTime * maxThreshold, blendTree.minThreshold, maxThreshold);
-
         for (int i = 0; i < blendTree.children.Length; i++)
         {
-            ChildMotion child = blendTree.children[i];
-            float weight = CalculateWeightForChild(blendTree, child, targetWeight);
+            var child = blendTree.children[i];
+            var weight = CalculateWeightForChild(blendTree, child, targetWeight);
             weights[i] = weight;
             totalWeight += weight;
 
-            AnimationClip clip = GetAnimationClipFromMotion(child.motion);
+            var clip = GetAnimationClipFromMotion(child.motion);
             clipPlayables[i] = AnimationClipPlayable.Create(playableGraph, clip);
         }
 
-        // Normalize weights so they sum to 1
-        for (int i = 0; i < weights.Length; i++)
-        {
-            weights[i] /= totalWeight;
-        }
+        for (int i = 0; i < weights.Length; i++) weights[i] /= totalWeight;
 
         mixer.SetInputCount(clipPlayables.Length);
         for (int i = 0; i < clipPlayables.Length; i++)
@@ -151,108 +129,81 @@ public class AnimationEventStateBehaviourEditor : Editor
         AnimationMode.SamplePlayableGraph(playableGraph, 0, normalizedTime);
     }
 
-
     float CalculateWeightForChild(BlendTree blendTree, ChildMotion child, float targetWeight)
     {
-        float weight = 0f;
-
         if (blendTree.blendType == BlendTreeType.Simple1D)
         {
-            // Find the neighbors around the target weight
-            ChildMotion? lowerNeighbor = null;
-            ChildMotion? upperNeighbor = null;
+            ChildMotion? lower = null, upper = null;
 
             foreach (var motion in blendTree.children)
             {
-                if (motion.threshold <= targetWeight && (lowerNeighbor == null || motion.threshold > lowerNeighbor.Value.threshold))
-                {
-                    lowerNeighbor = motion;
-                }
-
-                if (motion.threshold >= targetWeight && (upperNeighbor == null || motion.threshold < upperNeighbor.Value.threshold))
-                {
-                    upperNeighbor = motion;
-                }
+                if (motion.threshold <= targetWeight && (lower == null || motion.threshold > lower.Value.threshold))
+                    lower = motion;
+                if (motion.threshold >= targetWeight && (upper == null || motion.threshold < upper.Value.threshold))
+                    upper = motion;
             }
 
-            if (lowerNeighbor.HasValue && upperNeighbor.HasValue)
+            if (lower.HasValue && upper.HasValue)
             {
-                if (Mathf.Approximately(child.threshold, lowerNeighbor.Value.threshold))
-                {
-                    weight = 1.0f - Mathf.InverseLerp(lowerNeighbor.Value.threshold, upperNeighbor.Value.threshold, targetWeight);
-                }
-                else if (Mathf.Approximately(child.threshold, upperNeighbor.Value.threshold))
-                {
-                    weight = Mathf.InverseLerp(lowerNeighbor.Value.threshold, upperNeighbor.Value.threshold, targetWeight);
-                }
+                if (Mathf.Approximately(child.threshold, lower.Value.threshold))
+                    return 1.0f - Mathf.InverseLerp(lower.Value.threshold, upper.Value.threshold, targetWeight);
+                else if (Mathf.Approximately(child.threshold, upper.Value.threshold))
+                    return Mathf.InverseLerp(lower.Value.threshold, upper.Value.threshold, targetWeight);
             }
-            else
-            {
-                // Handle edge cases where there is no valid interpolation range
-                weight = Mathf.Approximately(targetWeight, child.threshold) ? 1f : 0f;
-            }
+
+            return Mathf.Approximately(targetWeight, child.threshold) ? 1f : 0f;
         }
-        else if (blendTree.blendType == BlendTreeType.FreeformCartesian2D || blendTree.blendType == BlendTreeType.FreeformDirectional2D)
+
+        if (blendTree.blendType is BlendTreeType.FreeformCartesian2D or BlendTreeType.FreeformDirectional2D)
         {
-            Vector2 targetPos = new(
+            var targetPos = new Vector2(
                 GetBlendParameterValue(blendTree, blendTree.blendParameter),
-                GetBlendParameterValue(blendTree, blendTree.blendParameterY)
-            );
-            float distance = Vector2.Distance(targetPos, child.position);
-            weight = Mathf.Clamp01(1.0f / (distance + 0.001f));
+                GetBlendParameterValue(blendTree, blendTree.blendParameterY));
+            float dist = Vector2.Distance(targetPos, child.position);
+            return Mathf.Clamp01(1.0f / (dist + 0.001f));
         }
 
-        return weight;
+        return 0f;
     }
 
-
-    float GetBlendParameterValue(BlendTree blendTree, string parameterName)
+    float GetBlendParameterValue(BlendTree blendTree, string param)
     {
-        var methodInfo = typeof(BlendTree).GetMethod("GetInputBlendValue", BindingFlags.NonPublic | BindingFlags.Instance);
-        if (methodInfo == null)
+        var method = typeof(BlendTree).GetMethod("GetInputBlendValue", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+        if (method == null)
         {
-            Debug.LogError("Failed to find GetInputBlendValue method via reflection.");
+            Debug.LogError("GetInputBlendValue method not found.");
             return 0f;
         }
-
-        return (float)methodInfo.Invoke(blendTree, new object[] { parameterName });
+        return (float)method.Invoke(blendTree, new object[] { param });
     }
 
-    ChildAnimatorState FindMatchingState(AnimatorStateMachine stateMachine, AnimationEventStateBehaviour stateBehaviour)
+    ChildAnimatorState FindMatchingState(AnimatorStateMachine machine, AnimationEventStateBehaviour behaviour)
     {
-        foreach (var state in stateMachine.states)
-        {
-            if (state.state.behaviours.Contains(stateBehaviour))
-            {
-                return state;
-            }
-        }
+        foreach (var state in machine.states)
+            if (state.state.behaviours.Contains(behaviour)) return state;
 
-        foreach (var subStateMachine in stateMachine.stateMachines)
+        foreach (var subMachine in machine.stateMachines)
         {
-            var matchingState = FindMatchingState(subStateMachine.stateMachine, stateBehaviour);
-            if (matchingState.state != null)
-            {
-                return matchingState;
-            }
+            var result = FindMatchingState(subMachine.stateMachine, behaviour);
+            if (result.state != null) return result;
         }
 
         return default;
     }
 
-    bool Validate(AnimationEventStateBehaviour stateBehaviour, out string errorMessage)
+    bool Validate(AnimationEventStateBehaviour behaviour, out string errorMessage)
     {
-        AnimatorController animatorController = GetValidAnimatorController(out errorMessage);
-        if (animatorController == null) return false;
+        var controller = GetValidAnimatorController(out errorMessage);
+        if (controller == null) return false;
 
-        ChildAnimatorState matchingState = animatorController.layers
-            .Select(layer => FindMatchingState(layer.stateMachine, stateBehaviour))
+        var matchingState = controller.layers
+            .Select(layer => FindMatchingState(layer.stateMachine, behaviour))
             .FirstOrDefault(state => state.state != null);
 
         previewClip = GetAnimationClipFromMotion(matchingState.state?.motion);
         if (previewClip == null)
         {
-            errorMessage = "No valid AnimationClip found for the current state.";
+            errorMessage = "No valid AnimationClip found.";
             return false;
         }
 
@@ -261,71 +212,121 @@ public class AnimationEventStateBehaviourEditor : Editor
 
     AnimationClip GetAnimationClipFromMotion(Motion motion)
     {
-        if (motion is AnimationClip clip)
+        return motion switch
         {
-            return clip;
-        }
-
-        if (motion is BlendTree blendTree)
-        {
-            return blendTree.children
+            AnimationClip clip => clip,
+            BlendTree tree => tree.children
                 .Select(child => GetAnimationClipFromMotion(child.motion))
-                .FirstOrDefault(childClip => childClip != null);
-        }
-
-        return null;
+                .FirstOrDefault(c => c != null),
+            _ => null
+        };
     }
 
     AnimatorController GetValidAnimatorController(out string errorMessage)
     {
-        errorMessage = string.Empty;
-
-        GameObject targetGameObject = Selection.activeGameObject;
-        if (targetGameObject == null)
+        errorMessage = "";
+        var go = Selection.activeGameObject;
+        if (!go)
         {
-            errorMessage = "Please select a GameObject with an Animator to preview.";
+            errorMessage = "Select a GameObject with an Animator.";
             return null;
         }
 
-        Animator animator = targetGameObject.GetComponent<Animator>();
-        if (animator == null)
+        var animator = go.GetComponent<Animator>();
+        if (!animator)
         {
-            errorMessage = "The selected GameObject does not have an Animator component.";
+            errorMessage = "GameObject lacks an Animator.";
             return null;
         }
 
-        AnimatorController animatorController = animator.runtimeAnimatorController as AnimatorController;
-        if (animatorController == null)
+        if (animator.runtimeAnimatorController is not AnimatorController controller)
         {
-            errorMessage = "The selected Animator does not have a valid AnimatorController.";
+            errorMessage = "Animator does not use an AnimatorController.";
             return null;
         }
 
-        return animatorController;
+        return controller;
     }
-
-    [MenuItem("GameObject/Enforce T-Pose", false, 0)]
-    static void EnforceTPose()
+    [Serializable]
+    public class TransformPose
     {
-        GameObject selected = Selection.activeGameObject;
-        if (!selected || !selected.TryGetComponent(out Animator animator) || !animator.avatar) return;
+        public Vector3 localPosition;
+        public Quaternion localRotation;
+        public Vector3 localScale;
+    }
 
-        SkeletonBone[] skeletonBones = animator.avatar.humanDescription.skeleton;
-
-        foreach (HumanBodyBones hbb in Enum.GetValues(typeof(HumanBodyBones)))
+    static string GetTransformPath(Transform root, Transform target)
+    {
+        if (target == root) return "";
+        return AnimationUtility.CalculateTransformPath(target, root);
+    }
+    static void CacheBindPose(Transform root)
+    {
+        bindPoseCache.Clear();
+        foreach (var t in root.GetComponentsInChildren<Transform>(true))
         {
-            if (hbb == HumanBodyBones.LastBone) continue;
+            string path = GetTransformPath(root, t);
+            bindPoseCache[path] = new TransformPose
+            {
+                localPosition = t.localPosition,
+                localRotation = t.localRotation,
+                localScale = t.localScale
+            };
+        }
 
-            Transform boneTransform = animator.GetBoneTransform(hbb);
-            if (!boneTransform) continue;
+        Debug.Log("Bind pose cached for generic rig.");
+    }
+    static Dictionary<string, TransformPose> bindPoseCache = new();
 
-            SkeletonBone skeletonBone = skeletonBones.FirstOrDefault(sb => sb.name == boneTransform.name);
-            if (skeletonBone.name == null) continue;
+    static void ResetTransformPose()
+    {
+        var selected = Selection.activeGameObject;
+        if (!selected) return;
 
-            if (hbb == HumanBodyBones.Hips) boneTransform.localPosition = skeletonBone.position;
-            boneTransform.localRotation = skeletonBone.rotation;
+        var animator = selected.GetComponent<Animator>();
+        if (animator == null || animator.avatar == null) return;
+
+        if (animator.avatar.isHuman)
+        {
+            try
+            {
+                var handler = new HumanPoseHandler(animator.avatar, animator.transform);
+                var pose = new HumanPose();
+                handler.GetHumanPose(ref pose);
+
+                pose.bodyPosition = Vector3.zero;
+                pose.bodyRotation = Quaternion.identity;
+                pose.muscles = new float[HumanTrait.MuscleCount];
+
+                handler.SetHumanPose(ref pose);
+            }
+            catch (Exception ex)
+            {
+                Debug.LogWarning("Failed to reset humanoid pose: " + ex.Message);
+            }
+        }
+        else
+        {
+            // Handle Generic rig by resetting to cached bind pose
+            if (bindPoseCache.Count == 0)
+            {
+                CacheBindPose(selected.transform);
+            }
+
+            foreach (var pair in bindPoseCache)
+            {
+                var t = selected.transform.Find(pair.Key);
+                if (t != null)
+                {
+                    t.localPosition = pair.Value.localPosition;
+                    t.localRotation = pair.Value.localRotation;
+                    t.localScale = pair.Value.localScale;
+                }
+            }
+
+            Debug.Log("Generic rig pose reset to cached bind pose.");
         }
     }
-}
 
+}
 #endif
