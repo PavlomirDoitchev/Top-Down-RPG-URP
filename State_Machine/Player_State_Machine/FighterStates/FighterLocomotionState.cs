@@ -28,6 +28,7 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
 			DoAbilityOne();
 			DoAbilityTwo();
 			CastRainOfFire();
+			CastProjectile();
 		}
 		public override void ExitState()
 		{
@@ -59,6 +60,14 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
 			if (_playerStateMachine.InputManager.PlayerJumpInput() && _playerStateMachine.CharacterController.isGrounded)
 			{
 				_playerStateMachine.ChangeState(new PlayerJumpState(_playerStateMachine));
+			}
+		}
+		private void CastProjectile() 
+		{
+			if (_playerStateMachine.InputManager.AbilityFourInput()
+				&& SkillManager.Instance.ProjectileAbility.CanUseSkill()) 
+			{
+				_playerStateMachine.ChangeState(new CastingAbilityState(_playerStateMachine, SkillManager.Instance.ProjectileAbility));
 			}
 		}
 		private void CastRainOfFire()

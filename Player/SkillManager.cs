@@ -1,5 +1,6 @@
 ﻿using Assets.Scripts.Player.Abilities;
 using Assets.Scripts.Player.Abilities.Fighter_Abilities;
+using Assets.Scripts.Player.Weapons;
 using Assets.Scripts.State_Machine.Player_State_Machine;
 using System.Collections.Generic;
 using UnityEngine;
@@ -14,8 +15,8 @@ namespace Assets.Scripts.Player
         public FighterAbilityOne FighterAbilityOne { get; private set; }
         public ShockwaveAbility ShockwaveAbility { get; private set; }
         public FireballAbility FireballAbility { get; private set; }
-
-		private void Awake()
+        public PlayerProjectileAbility ProjectileAbility { get; private set; }
+        private void Awake()
         {
             if (Instance != null)            
                 Destroy(Instance.gameObject);
@@ -26,7 +27,8 @@ namespace Assets.Scripts.Player
         private void Start()
         {
 			Dodge = GetComponent<Dodge>();
-			if (PlayerManager.Instance.PlayerStateMachine.CharacterLevelDataSO[0].characterClass == CharacterLevelSO.CharacterClass.Fighter)
+            ProjectileAbility = GetComponent<PlayerProjectileAbility>();
+            if (PlayerManager.Instance.PlayerStateMachine.CharacterLevelDataSO[0].characterClass == CharacterLevelSO.CharacterClass.Fighter)
             {
 				ShockwaveAbility = GetComponent<ShockwaveAbility>();
 				FighterAbilityOne = GetComponent<FighterAbilityOne>();

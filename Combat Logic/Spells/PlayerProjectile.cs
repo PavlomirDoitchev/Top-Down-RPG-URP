@@ -48,13 +48,24 @@ namespace Assets.Scripts.Combat_Logic
             {
                 if (spellHitPrefab != null)
                     Instantiate(spellHitPrefab, this.transform.position, Quaternion.identity);
+                Debug.Log($"Projectile hit {other.gameObject.name}");
                 gameObject.SetActive(false);
             }
-
-            if (effectData != null && other.TryGetComponent<IEffectable>(out var effectable)
-                && other.gameObject.layer == LayerMask.NameToLayer("Enemy"))
+           
+            else if (other.gameObject.layer == LayerMask.NameToLayer("Enemy"))
             {
-                effectable.ApplyEffect(effectData);
+                if (effectData != null && other.TryGetComponent<IEffectable>(out var effectable)) 
+                {
+                    effectable.ApplyEffect(effectData);
+                }
+                if (projectileData != null && other.TryGetComponent<IDamagable>(out var damagable)) 
+                {
+                    if (spellHitPrefab != null)
+                        Instantiate(spellHitPrefab, this.transform.position, Quaternion.identity); //Remove later, add to a pool
+                    damagable.TakeDamage(projectileData.damage, false);
+                    projectileData.damageNumberPrefab.Spawn(other.transform.position, projectileData.damage);
+                }
+                Debug.Log($"Projectile hit {other.gameObject.name}");
                 gameObject.SetActive(false);
             }
 

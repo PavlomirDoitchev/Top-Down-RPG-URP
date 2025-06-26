@@ -17,6 +17,7 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
         {
             base.EnterState();
             ResetAnimationSpeed();
+            _playerStateMachine.Animator.speed = 2f;
             if (_skill.IsChanneled)
             {
                 timer = _skill.CastTime;

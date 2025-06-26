@@ -1,12 +1,17 @@
 ﻿using Assets.Scripts.Combat_Logic;
 using UnityEngine;
-
+using System;
 namespace Assets.Scripts.Player.Weapons
 {
-    public class PlayerProjectileAbility : MonoBehaviour
+    [Serializable]
+    public class PlayerProjectileAbility : Skills
     {
         [SerializeField] private string projectileTag;
         [SerializeField] private Transform spawnPoint;
+        public override void UseSkill()
+        {
+            base.UseSkill();
+        }
 
         public void Cast()
         {
@@ -17,7 +22,6 @@ namespace Assets.Scripts.Player.Weapons
             if (projectile.TryGetComponent<PlayerProjectile>(out var proj))
             {
                 proj.Init();
-
             }
            
             projectile.SetActive(true);

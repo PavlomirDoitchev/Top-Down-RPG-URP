@@ -1,4 +1,5 @@
-﻿using Assets.Scripts.State_Machine.Player_State_Machine;
+﻿using Assets.Scripts.Player;
+using Assets.Scripts.State_Machine.Player_State_Machine;
 using Assets.Scripts.State_Machine.Player_State_Machine.FighterStates;
 using UnityEngine;
 
@@ -20,6 +21,7 @@ public class PlayerAnimationEvents : MonoBehaviour
 	}
 	
 	public void BackToLocomotion() => _stateMachine.ChangeState(new FighterLocomotionState(_stateMachine));
+    public void CastProjectile() => SkillManager.Instance.ProjectileAbility.Cast();
     public void EnableFrontMeleeCollider() => _playerMelee.SetWeaponActive(true, 0);
 	public void DisableFrontMeleeCollider() => _playerMelee.SetWeaponActive(false, 0);
     public void EnableAoEMeleeCollider() => _playerMelee.SetWeaponActive(true, 1);
