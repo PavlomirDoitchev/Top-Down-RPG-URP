@@ -12,7 +12,8 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
         public override void EnterState()
         {
             base.EnterState();
-			_playerStateMachine.Animator.Play("ARPG_Dual_Wield_Attack_Heavy1");
+            SkillManager.Instance.FighterAbilityOne.UseSkill();
+            _playerStateMachine.Animator.Play("ARPG_Dual_Wield_Attack_Heavy1");
             
         }
         
