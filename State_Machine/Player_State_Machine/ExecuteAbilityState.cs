@@ -17,7 +17,7 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
         {
             base.EnterState();
             ResetAnimationSpeed();
-
+            RotateToMouse();
 
             if (_skill.IsChanneled)
             {

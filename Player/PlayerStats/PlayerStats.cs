@@ -5,11 +5,12 @@ using UnityEngine;
 using System.Collections;
 using Assets.Scripts.Save_Manager;
 using Assets.Scripts.Combat_Logic;
+using Assets.Scripts.Utility.UI;
 
 namespace Assets.Scripts.Player
 {
 
-	public class PlayerStats : MonoBehaviour, IDamagable, IEffectable, ISaveManager
+	public class PlayerStats : Subject, IDamagable, IEffectable, ISaveManager
 	{
 		public void LoadData(GameData _data)
 		{
@@ -100,7 +101,8 @@ namespace Assets.Scripts.Player
 			maxHealth *= (Stamina / 10);
 			currentHealth = maxHealth;
 			SetMaxLevel();
-		}
+			NotifyObservers();
+        }
 		private void Update()
 		{
 			if (activeEffects != null && activeEffects.Count > 0)
@@ -113,7 +115,8 @@ namespace Assets.Scripts.Player
 		public void TakeDamage(int damage, bool applyImpulse = true)
 		{
 			currentHealth -= damage;
-			if (damage >= Mathf.RoundToInt(maxHealth * .10f) 
+			NotifyObservers();
+            if (damage >= Mathf.RoundToInt(maxHealth * .10f) 
 				&& playerManager.PlayerStateMachine.PlayerCurrentState is FighterLocomotionState)
 			{
 				playerManager.PlayerStateMachine.Animator.Play("Fighter_Hit");

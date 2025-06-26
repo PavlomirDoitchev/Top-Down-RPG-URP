@@ -1,8 +1,9 @@
-﻿using UnityEngine;
+﻿using Assets.Scripts.Utility.UI;
+using UnityEngine;
 
 namespace Assets.Scripts.Player
 {
-	public class Skills : MonoBehaviour
+	public class Skills : Subject
 	{
 		public string animationName;
 		public string castingAnimationName;
@@ -22,10 +23,11 @@ namespace Assets.Scripts.Player
 		public int GetSkillCost() => this.cost;
 		public bool CanChannel() => IsChanneled && PlayerManager.Instance.PlayerStateMachine.PlayerStats.GetCurrentResource() >= cost;
 		public void ResetCooldown() => cooldownTimer = coolDown;
-		public virtual void UseSkill()
+        public float GetCooldownTimer() => cooldownTimer;
+        public virtual void UseSkill()
 		{
 			cooldownTimer = coolDown;
-			PlayerManager.Instance.PlayerStateMachine.PlayerStats.UseResource(cost);
+            PlayerManager.Instance.PlayerStateMachine.PlayerStats.UseResource(cost);
 		}
 		public virtual bool CanUseSkill()
 		{
