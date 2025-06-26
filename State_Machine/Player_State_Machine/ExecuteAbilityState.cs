@@ -17,20 +17,27 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
         {
             base.EnterState();
             ResetAnimationSpeed();
-            _playerStateMachine.Animator.speed = 2f;
+
+
             if (_skill.IsChanneled)
             {
                 timer = _skill.CastTime;
                 _playerStateMachine.Animator.Play(_skill.castingAnimationName);
                 checkInterval = _skill.CostCheckInterval;
             }
-            else
+            else 
+            {
+                _playerStateMachine.Animator.speed = 2f;
                 _playerStateMachine.Animator.Play(_skill.animationName);
+            }
         }
 
         public override void UpdateState(float deltaTime)
         {
-
+            Move(deltaTime);
+            if (_skill.AllowRotationWhileCasting)
+                RotateToMouse();
+            
             if (_skill.IsChanneled)
             {
                 Channel(deltaTime);
@@ -43,12 +50,8 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
         private void Channel(float deltaTime)
         {
             timer -= deltaTime;
-            if (_skill.AllowRotationWhileCasting)
-                RotateToMouse();
 
             PlayerMove(deltaTime);
-
-            _skill.CastingVFX.gameObject.SetActive(true);
             if (!_skill.AllowMovementWhileCasting
                 && _playerStateMachine.CharacterController.velocity != Vector3.zero)
             {
@@ -58,6 +61,9 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
                 _playerStateMachine.ChangeState(new FighterLocomotionState(_playerStateMachine));
                 return;
             }
+
+            _skill.CastingVFX.gameObject.SetActive(true);
+            
             checkInterval -= deltaTime;
             if (checkInterval <= 0f)
             {

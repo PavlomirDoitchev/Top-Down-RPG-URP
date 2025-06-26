@@ -65,9 +65,9 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
 		private void CastProjectile() 
 		{
 			if (_playerStateMachine.InputManager.AbilityFourInput()
-				&& SkillManager.Instance.ProjectileAbility.CanUseSkill()) 
+				&& SkillManager.Instance.ProjectileAbility[0].CanUseSkill()) 
 			{
-				_playerStateMachine.ChangeState(new CastingAbilityState(_playerStateMachine, SkillManager.Instance.ProjectileAbility));
+				_playerStateMachine.ChangeState(new CastingAbilityState(_playerStateMachine, SkillManager.Instance.ProjectileAbility[0]));
 			}
 		}
 		private void CastRainOfFire()

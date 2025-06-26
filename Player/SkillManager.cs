@@ -15,7 +15,7 @@ namespace Assets.Scripts.Player
         public FighterAbilityOne FighterAbilityOne { get; private set; }
         public ShockwaveAbility ShockwaveAbility { get; private set; }
         public FireballAbility FireballAbility { get; private set; }
-        public PlayerProjectileAbility ProjectileAbility { get; private set; }
+        public PlayerProjectileAbility[] ProjectileAbility { get; private set; }
         private void Awake()
         {
             if (Instance != null)            
@@ -27,7 +27,7 @@ namespace Assets.Scripts.Player
         private void Start()
         {
 			Dodge = GetComponent<Dodge>();
-            ProjectileAbility = GetComponent<PlayerProjectileAbility>();
+            ProjectileAbility = GetComponents<PlayerProjectileAbility>();
             if (PlayerManager.Instance.PlayerStateMachine.CharacterLevelDataSO[0].characterClass == CharacterLevelSO.CharacterClass.Fighter)
             {
 				ShockwaveAbility = GetComponent<ShockwaveAbility>();
@@ -53,13 +53,19 @@ namespace Assets.Scripts.Player
 		public virtual Vector3 AimSpell()
 		{
 			Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-			int layerMask = LayerMask.GetMask("Ground", "Enemy", "Default");
-			if (Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity, layerMask))
-			{
-				Vector3 aimPoint = hit.point;
-				return aimPoint;
-			}
-			else return Vector3.zero;
+			int groundMask = LayerMask.GetMask("Ground");
+            if (Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity, groundMask))
+            {
+                Vector3 aimPoint = hit.point + Vector3.up;
+                return aimPoint;
+            }
+            else if (Physics.Raycast(ray, out RaycastHit enemyHit, Mathf.Infinity, LayerMask.GetMask("Enemy"))) 
+            {
+                Vector3 aimPoint = enemyHit.point;
+                return aimPoint;
+            }
+
+            else return Vector3.zero;
 		}
 	}
 }
