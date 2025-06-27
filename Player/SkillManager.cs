@@ -14,7 +14,7 @@ namespace Assets.Scripts.Player
 		public FighterBasicAttack FighterBasicAttack { get; private set; }
         public FighterAbilityOne FighterAbilityOne { get; private set; }
         public ShockwaveAbility ShockwaveAbility { get; private set; }
-        public RainOfFireAbility FireballAbility { get; private set; }
+        public RainOfFireAbility RainOfFireAbility { get; private set; }
         public PlayerProjectileAbility[] ProjectileAbility { get; private set; }
         private void Awake()
         {
@@ -33,8 +33,8 @@ namespace Assets.Scripts.Player
 				ShockwaveAbility = GetComponent<ShockwaveAbility>();
 				FighterAbilityOne = GetComponent<FighterAbilityOne>();
                 FighterBasicAttack = GetComponent<FighterBasicAttack>();
-				FireballAbility = GetComponent<RainOfFireAbility>();
-			}
+				RainOfFireAbility = GetComponent<RainOfFireAbility>();
+            }
             else if (PlayerManager.Instance.PlayerStateMachine.CharacterLevelDataSO[0].characterClass == CharacterLevelSO.CharacterClass.Mage)
             {
                 //TODO:Add Mage skills

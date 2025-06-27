@@ -43,7 +43,8 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
 			if (_playerStateMachine.InputManager.BasicAttackInput()
 							&& SkillManager.Instance.FighterBasicAttack.CanUseSkill())
 			{
-				_playerStateMachine.ChangeState(new FighterBasicAttackChainOne(_playerStateMachine));
+                //_playerStateMachine.PlayerStats.UseResource(SkillManager.Instance.FighterBasicAttack.GetSkillCost());
+                _playerStateMachine.ChangeState(new FighterBasicAttackChainOne(_playerStateMachine));
 			}
 		}
 		private void Fall()
@@ -73,10 +74,10 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
 		private void CastRainOfFire()
 		{
 			if (_playerStateMachine.InputManager.AbilityThreeInput()
-				&& SkillManager.Instance.FireballAbility.CanUseChanneledSkill()
+				&& SkillManager.Instance.RainOfFireAbility.CanUseChanneledSkill()
 				&& _playerStateMachine.Ability_Three_Data.Rank > 0) 
 			{
-				_playerStateMachine.ChangeState(new CastingAbilityState(_playerStateMachine, SkillManager.Instance.FireballAbility));
+                _playerStateMachine.ChangeState(new CastingAbilityState(_playerStateMachine, SkillManager.Instance.RainOfFireAbility));
 			}
 		}
 		private void DoAbilityTwo()

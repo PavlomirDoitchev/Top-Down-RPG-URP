@@ -23,7 +23,7 @@ public class StatusEffectData : ScriptableObject
 	}
 	public StatusEffectType statusEffectType;
 	public string Name;
-
+	public Sprite effectIcon;
 	[Header("DOT Properties")]
 	public int DOTDamage;
 	public float DOTDuration;

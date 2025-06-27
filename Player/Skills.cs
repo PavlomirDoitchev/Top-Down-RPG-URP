@@ -12,7 +12,7 @@ namespace Assets.Scripts.Player
 		[field: SerializeField] public ParticleSystem ImpactVFX { get; private set; }
 		[SerializeField] protected int cost;
 		[SerializeField] protected float coolDown;
-		[field: SerializeField] public float CostCheckInterval { get; private set; } = 0.3f;
+		[field: SerializeField] public float CostCheckInterval { get; private set; } = 1f;
 		public bool AllowMovementWhileCasting;
 		public bool AllowRotationWhileCasting;	
 		public bool IsChanneled;
@@ -26,8 +26,8 @@ namespace Assets.Scripts.Player
         public float GetCooldownTimer() => cooldownTimer;
         public virtual void UseSkill()
 		{
-			cooldownTimer = coolDown;
-            PlayerManager.Instance.PlayerStateMachine.PlayerStats.UseResource(cost);
+            cooldownTimer = coolDown;
+			NotifyObservers();
 		}
 		public virtual bool CanUseSkill()
 		{

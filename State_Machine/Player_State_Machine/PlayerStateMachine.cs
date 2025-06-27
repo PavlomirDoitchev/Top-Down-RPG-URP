@@ -19,7 +19,7 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
 		public CharacterLevelSO[] CharacterLevelDataSO;
 
 		[Header("-----Ability Data-----")]
-		[field: SerializeField] public Fighter_Ability_SO[] BasicAttackData { get; private set; }
+        [field: SerializeField] public Fighter_Ability_SO[] BasicAttackData { get; private set; }
 		[field: SerializeField] public int BasicAttackRank { get; set; }
 		[field: SerializeField] public Fighter_Ability_SO[] Ability_One_Data { get; private set; }
 		[field: SerializeField] public int Ability_One_Rank { get; set; }
@@ -144,6 +144,21 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
 				effectable.ApplyEffect(EffectData[index]);
 			}
 		}
+		/// <summary>
+		/// If ability has no data!
+		/// </summary>
+		/// <param name="other"></param>
+		/// <param name="abilityData"></param>
+		/// <param name="indexStatusEffect"></param>
+        public void ApplyStatusEffect(Collider other, Fighter_Ability_SO abilityData, int indexStatusEffect)
+        {
+            if (other.TryGetComponent<IEffectable>(out var effectable)
+                && EffectData[indexStatusEffect] != null
+                && abilityData.shouldApplyStatusEffect)
+            {
+                effectable.ApplyEffect(EffectData[indexStatusEffect]);
+            }
+        }
 
-	}
+    }
 }

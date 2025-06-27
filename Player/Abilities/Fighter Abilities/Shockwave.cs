@@ -23,7 +23,6 @@ public class Shockwave : MonoBehaviour
 	[SerializeField] float impactRadius = 2f;
 
 	[Header("Spell Settings")]
-	//[SerializeField] Collider spellCollider;  // You might still want this for visuals or triggers?
 	[SerializeField] float maxDuration = 1f;
 	float timer;
 
