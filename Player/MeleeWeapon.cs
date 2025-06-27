@@ -62,7 +62,8 @@ public class MeleeWeapon : MonoBehaviour
 
 		}
 	}
-	private void OnTriggerExit(Collider other)
+   
+    private void OnTriggerExit(Collider other)
 	{
 		ClearHitEnemies(other);
 	}

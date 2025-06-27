@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace Assets.Scripts.Utility.UI
 {
@@ -9,6 +10,7 @@ namespace Assets.Scripts.Utility.UI
     {
         [SerializeField] private List<Skills> trackedSkills;
         [SerializeField] private TextMeshProUGUI[] cooldownTexts;
+        [SerializeField] private Image[] skillIcons;
 
         private void Start()
         {
@@ -41,6 +43,7 @@ namespace Assets.Scripts.Utility.UI
             for (int i = 0; i < trackedSkills.Count && i < cooldownTexts.Length; i++)
             {
                 float timeLeft = Mathf.Max(0, trackedSkills[i].GetCooldownTimer());
+                skillIcons[i].color = timeLeft > 0 ? Color.grey : Color.white;
                 cooldownTexts[i].text = timeLeft > 0 ? $"{timeLeft:F1}s" : "";
             }
         }
