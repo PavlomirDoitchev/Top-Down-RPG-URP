@@ -13,7 +13,7 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
 		public State PlayerCurrentState => (State)CurrentState;
 		//[Header("-----Equipped Items-----")]
 		//[SerializeField] public WeaponDataSO EquippedWeaponDataSO;
-		//public GameObject EquippedWeapon;
+		public GameObject EquippedWeapon; //remove later. Also remove from anim events!
 
 		[Header("-----Character Levels-----")]
 		public CharacterLevelSO[] CharacterLevelDataSO;

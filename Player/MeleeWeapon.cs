@@ -12,12 +12,12 @@ public class MeleeWeapon : MonoBehaviour
 	int damage;
 	float multiplier;
 	float knockBackForce;
-	private void Start()
+    private void Start()
 	{
 		_playerManager = PlayerManager.Instance;
 	}
-
-	private void OnTriggerEnter(Collider other)
+ 
+    private void OnTriggerEnter(Collider other)
 	{
 
 		if (enemyColliders.Contains(other)) return;
@@ -35,12 +35,8 @@ public class MeleeWeapon : MonoBehaviour
 				_playerManager.PlayerStateMachine.ApplyStatusEffect(other, _playerManager.PlayerStateMachine.Ability_One_Data, _playerManager.PlayerStateMachine.Ability_One_Rank, 0);
 			
 			}
-
-			else if (_playerManager.PlayerStateMachine.PlayerCurrentState is FighterAbilityTwoState)
-			{
-				Debug.Log("No melee damage here!");
-			}
-			else { 
+			else
+			{ 
 			
 				multiplier = _playerManager.PlayerStateMachine.BasicAttackData[_playerManager.PlayerStateMachine.BasicAttackRank].damageMultiplier;
 			}

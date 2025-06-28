@@ -26,6 +26,7 @@ namespace Assets.Scripts.Player
         public float GetCooldownTimer() => cooldownTimer;
         public virtual void UseSkill()
 		{
+			PlayerManager.Instance.PlayerStateMachine.PlayerStats.UseResource(cost);
             cooldownTimer = coolDown;
 			NotifyObservers();
 		}

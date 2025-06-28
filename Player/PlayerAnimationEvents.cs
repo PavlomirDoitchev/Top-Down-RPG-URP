@@ -22,6 +22,8 @@ public class PlayerAnimationEvents : MonoBehaviour
 	
 	public void BackToLocomotion() => _stateMachine.ChangeState(new FighterLocomotionState(_stateMachine));
     public void CastProjectile() => SkillManager.Instance.ProjectileAbility[0].Cast();
+    public void HideWeapon() => _stateMachine.EquippedWeapon.gameObject.SetActive(false);
+    public void ShowWeapon() => _stateMachine.EquippedWeapon.gameObject.SetActive(true);
     public void EnableFrontMeleeCollider() => _playerMelee.SetWeaponActive(true, 0);
 	public void DisableFrontMeleeCollider() => _playerMelee.SetWeaponActive(false, 0);
     public void EnableAoEMeleeCollider() => _playerMelee.SetWeaponActive(true, 1);

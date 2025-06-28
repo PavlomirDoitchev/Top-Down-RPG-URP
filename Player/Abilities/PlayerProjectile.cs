@@ -11,10 +11,13 @@ public abstract class PlayerProjectile : MonoBehaviour
     public Transform target;
     public Rigidbody rb;
 
+
     [Header("Spell Stats")]
     public float offSet;
     public float timer;
     Vector3 direction;
+    protected bool isChaining = false;
+
     private void Awake()
     {
         rb = GetComponent<Rigidbody>();
@@ -32,15 +35,22 @@ public abstract class PlayerProjectile : MonoBehaviour
     }
     private void Update()
     {
+        if (isChaining) return; 
+
         timer -= Time.deltaTime;
         if (timer <= 0f)
         {
             gameObject.SetActive(false);
         }
+
         transform.position += direction * projectileData.speed * Time.deltaTime;
 
     }
-    
+    public void SetDirection(Vector3 newDirection)
+    {
+        direction = newDirection.normalized;
+        transform.rotation = Quaternion.LookRotation(direction);
+    }
     public void Init()
     {
         Vector3 aimPoint = SkillManager.Instance.AimSpell();

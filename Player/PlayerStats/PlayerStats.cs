@@ -80,8 +80,8 @@ namespace Assets.Scripts.Player
         [SerializeField] ParticleSystem levelUpEffect;
 
         PlayerManager playerManager;
-                float timer = 0;
-
+        float timer = 0;
+        float timeSinceTakenDamage = 0;
         public class ActiveEffect
         {
             public StatusEffectData Data;
@@ -108,50 +108,61 @@ namespace Assets.Scripts.Player
         private void Update()
         {
             if (activeEffects != null && activeEffects.Count > 0)
-            {
                 HandleEffect();
 
-            }
-            if (playerManager.PlayerStateMachine.CharacterLevelDataSO[0].characterClass == CharacterLevelSO.CharacterClass.Fighter
-                && currentResource == maxResource)
+            timeSinceTakenDamage += Time.deltaTime;
+            timer += Time.deltaTime;
+            if (timer >= 1f && timeSinceTakenDamage <= 10)
             {
-
-                timer += Time.deltaTime;
-                if (timer >= 1f) // Regain health every second
-                {
-                    Heal(Mathf.RoundToInt(maxHealth * 0.1f * CurrentLevel()));
-                    currentHealth = Mathf.Min(currentHealth, maxHealth);
-                    currentResource -= maxResource;
-
-                    timer = 0;
-                }
-                //NotifyObservers();
-
-
+                RegainResource(1);
+                timer = 0f;
             }
-            else if (playerManager.PlayerStateMachine.CharacterLevelDataSO[0].characterClass == CharacterLevelSO.CharacterClass.Fighter
-                && currentResource == 0)
+            else if (timeSinceTakenDamage > 10 && timer >= 1f)
             {
-
+                Heal(Mathf.RoundToInt(maxHealth * 0.01f));
+                UseResource(1);
+                timer = 0f;
             }
+            //if (playerManager.PlayerStateMachine.CharacterLevelDataSO[0].characterClass == CharacterLevelSO.CharacterClass.Fighter
+            //    && currentResource == maxResource)
+            //{
+
+            //    timer += Time.deltaTime;
+            //    if (timer >= 1f) // Regain health every second
+            //    {
+            //        Heal(Mathf.RoundToInt(maxHealth * 0.1f * CurrentLevel()));
+            //        currentHealth = Mathf.Min(currentHealth, maxHealth);
+            //        currentResource -= maxResource;
+
+            //        timer = 0;
+            //    }
+            //    //NotifyObservers();
+
+
+            //}
+            //else if (playerManager.PlayerStateMachine.CharacterLevelDataSO[0].characterClass == CharacterLevelSO.CharacterClass.Fighter
+            //    && currentResource == 0)
+            //{
+
+            //}
         }
 
 
         public void TakeDamage(int damage, bool applyImpulse = true)
         {
             currentHealth -= damage;
-            NotifyObservers();
-
+            timeSinceTakenDamage = 0f;
             if (damage >= Mathf.RoundToInt(maxHealth * .10f)
                 && playerManager.PlayerStateMachine.PlayerCurrentState is FighterLocomotionState)
                 playerManager.PlayerStateMachine.Animator.Play("Fighter_Hit");
-            
+
 
             RegainResource(Mathf.RoundToInt((damage * 0.1f) / (CurrentLevel() + 1)));
 
             if (applyImpulse)
                 playerManager.PlayerStateMachine.CinemachineImpulseSource.GenerateImpulse(Vector3.up * 0.1f);
-            
+
+            NotifyObservers();
 
             if (currentHealth <= 0)
                 playerManager.PlayerStateMachine.ChangeState(new PlayerDeathState(playerManager.PlayerStateMachine));
@@ -159,6 +170,8 @@ namespace Assets.Scripts.Player
         public void Heal(int amount)
         {
             currentHealth = Mathf.Min(currentHealth + amount, maxHealth);
+            if (currentHealth != maxHealth)
+                playerManager.PlayerStateMachine.DamageText[5].Spawn(transform.position + Vector3.up * 2f, $"+{amount}+");
             NotifyObservers();
         }
         public Dictionary<StatusEffectData.StatusEffectType, ActiveEffect> GetActiveEffects()
@@ -207,6 +220,7 @@ namespace Assets.Scripts.Player
         public void RegainResource(int amount)
         {
             currentResource = Mathf.Min(currentResource + amount, maxResource);
+            NotifyObservers();
             //Debug.Log($"Regained {amount} {resourceType}. Current: {currentResource}");
         }
         public CharacterLevelSO.CharacterClass GetClassType()

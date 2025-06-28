@@ -13,9 +13,10 @@ public class Shockwave : MonoBehaviour
 
 	float knockBackForce;
 	int damage;
-	float multiplier;
-
-	[Header("Cone Settings")]
+	[SerializeField] StatusEffectData statusEffectData;
+    float multiplier;
+	bool isEmpowered = false;
+    [Header("Cone Settings")]
 	[SerializeField] float maxRadius = 5f;
 	[SerializeField] float coneAngle = 60f;
 	[SerializeField] LayerMask enemyLayer;
@@ -31,7 +32,14 @@ public class Shockwave : MonoBehaviour
 		timer = maxDuration;
 		enemyList.Clear();
 
-		if (shouldShakeCamera)
+        if (PlayerManager.Instance.PlayerStateMachine.PlayerStats != null
+               && PlayerManager.Instance.PlayerStateMachine.PlayerStats.GetCurrentResource() >= 50)
+        {
+            PlayerManager.Instance.PlayerStateMachine.PlayerStats.UseResource(50);
+            isEmpowered = true;
+        }
+
+        if (shouldShakeCamera)
 			PlayerManager.Instance.PlayerStateMachine.CinemachineImpulseSource.GenerateImpulse();
 	}
 
@@ -94,6 +102,7 @@ public class Shockwave : MonoBehaviour
 						enemyList.Add(enemy);
 						KnockUp(enemy);
 						ApplyDamageTo(enemy);
+						
 					}
 				}
 			}
@@ -105,7 +114,16 @@ public class Shockwave : MonoBehaviour
 		if (other.gameObject.TryGetComponent<IDamagable>(out var damagable))
 		{
 			multiplier = PlayerManager.Instance.PlayerStateMachine.Ability_Two_Data[PlayerManager.Instance.PlayerStateMachine.Ability_Two_Rank].damageMultiplier;
-
+            
+            if (isEmpowered && other.TryGetComponent<IEffectable>(out var effectable)) 
+			{
+				effectable.ApplyEffect(statusEffectData);
+                int healAmount = Mathf.RoundToInt(PlayerManager.Instance.PlayerStateMachine.PlayerStats.GetMaxHealth() * 0.05f);
+                PlayerManager.Instance.PlayerStateMachine.PlayerStats.Heal(healAmount);
+                // Spawn heal text
+                //PlayerManager.Instance.PlayerStateMachine.DamageText[5].Spawn(
+                //    PlayerManager.Instance.PlayerStateMachine.transform.position + Vector3.up * 2f, healAmount);
+            }
 			if (PlayerManager.Instance.PlayerStateMachine.CriticalStrikeSuccess())
 			{
 				damage = Mathf.RoundToInt(PlayerManager.Instance.PlayerStateMachine.WeaponDamage(damage, multiplier)
