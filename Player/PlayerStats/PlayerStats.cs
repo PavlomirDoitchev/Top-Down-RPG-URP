@@ -119,13 +119,13 @@ namespace Assets.Scripts.Player
                 timer += Time.deltaTime;
                 if (timer >= 1f) // Regain health every second
                 {
-                    currentHealth += Mathf.RoundToInt(maxHealth * 0.1f * CurrentLevel());
+                    Heal(Mathf.RoundToInt(maxHealth * 0.1f * CurrentLevel()));
                     currentHealth = Mathf.Min(currentHealth, maxHealth);
                     currentResource -= maxResource;
 
                     timer = 0;
                 }
-                NotifyObservers();
+                //NotifyObservers();
 
 
             }
@@ -141,18 +141,25 @@ namespace Assets.Scripts.Player
         {
             currentHealth -= damage;
             NotifyObservers();
+
             if (damage >= Mathf.RoundToInt(maxHealth * .10f)
                 && playerManager.PlayerStateMachine.PlayerCurrentState is FighterLocomotionState)
-            {
                 playerManager.PlayerStateMachine.Animator.Play("Fighter_Hit");
-            }
-            RegainResource(Mathf.RoundToInt((damage * 0.1f) / CurrentLevel()));
+            
+
+            RegainResource(Mathf.RoundToInt((damage * 0.1f) / (CurrentLevel() + 1)));
+
             if (applyImpulse)
-            {
                 playerManager.PlayerStateMachine.CinemachineImpulseSource.GenerateImpulse(Vector3.up * 0.1f);
-            }
+            
+
             if (currentHealth <= 0)
                 playerManager.PlayerStateMachine.ChangeState(new PlayerDeathState(playerManager.PlayerStateMachine));
+        }
+        public void Heal(int amount)
+        {
+            currentHealth = Mathf.Min(currentHealth + amount, maxHealth);
+            NotifyObservers();
         }
         public Dictionary<StatusEffectData.StatusEffectType, ActiveEffect> GetActiveEffects()
         {
@@ -192,11 +199,10 @@ namespace Assets.Scripts.Player
             //Debug.Log($"Player resource type set to: {resourceType}");
         }
 
-        public int UseResource(int amount)
+        public void UseResource(int amount)
         {
             currentResource = Mathf.Max(currentResource - amount, 0);
             NotifyObservers();
-            return currentResource -= amount;
         }
         public void RegainResource(int amount)
         {

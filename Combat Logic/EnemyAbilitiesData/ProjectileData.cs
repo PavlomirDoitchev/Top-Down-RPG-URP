@@ -13,4 +13,6 @@ public class ProjectileData : ScriptableObject
     public LayerMask targetLayer;
     public LayerMask selfDestroyLayer;
     public DamageNumber damageNumberPrefab;
+    public DamageNumber critNumberPrefab;
+    public DamageNumber healNumberPrefab;
 }

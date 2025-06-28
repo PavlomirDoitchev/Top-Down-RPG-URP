@@ -8,6 +8,7 @@ namespace Assets.Scripts.Player.Weapons
     {
         [SerializeField] private string projectileTag;
         [SerializeField] private Transform spawnPoint;
+
         public override void UseSkill()
         {
             base.UseSkill();
@@ -18,7 +19,6 @@ namespace Assets.Scripts.Player.Weapons
             GameObject projectile = ProjectilePoolManager.Instance.GetProjectile(projectileTag);
             projectile.transform.position = spawnPoint.position;
             projectile.transform.rotation = Quaternion.identity;
-            //PlayerManager.Instance.PlayerStateMachine.PlayerStats.UseResource(cost);
 
             if (projectile.TryGetComponent<PlayerProjectile>(out var proj))
             {
