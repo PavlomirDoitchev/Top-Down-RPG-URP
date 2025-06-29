@@ -64,11 +64,19 @@ namespace Assets.Scripts.Utility.UI
             for (int i = 0; i < trackedSkills.Count && i < cooldownTexts.Length; i++)
             {
                 float timeLeft = Mathf.Max(0, trackedSkills[i].GetCooldownTimer());
-                if (trackedSkills[i] is ICharges chargesSkill && chargesSkill.GetChargeCount() > 0)
+                if (trackedSkills[i] is ICharges chargesSkill 
+                    && chargesSkill.GetChargeCount() > 0)
                 {
                     float remainingDuration = Mathf.Max(0, chargesSkill.GetRemainingTime());
+                    cooldownTexts[i].color = remainingDuration > 0 && chargesSkill.GetChargeCount() > 0 ? Color.green : Color.white;
                     cooldownTexts[i].text = remainingDuration > 0 ? $"{chargesSkill.GetRemainingTime():F0}" : "";
+                    if (chargesSkill.GetRemainingTime() <= 0f) 
+                    {
+                        skillIcons[i].color = timeLeft > 0 ? Color.grey : Color.white;
+                        cooldownTexts[i].text = timeLeft > 0 ? $"{timeLeft:F0}" : "";
+                    }
                 }
+               
                 else
                 {
                     skillIcons[i].color = timeLeft > 0 ? Color.grey : Color.white;
