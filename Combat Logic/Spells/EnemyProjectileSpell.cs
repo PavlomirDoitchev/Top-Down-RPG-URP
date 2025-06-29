@@ -1,7 +1,8 @@
-﻿using UnityEngine;
+﻿using Unity.VisualScripting;
+using UnityEngine;
 namespace Assets.Scripts.Combat_Logic
 {
-	public class ProjectileSpell : MonoBehaviour, IProjectile
+	public class EnemyProjectileSpell : MonoBehaviour, IProjectile
 	{
 		[SerializeField] private ProjectileData projectileData;
 		[SerializeField] private StatusEffectData effectData;
@@ -25,10 +26,13 @@ namespace Assets.Scripts.Combat_Logic
 		void OnEnable()
 		{
 			timer = projectileData.lifeTime;
-		}
+			this.gameObject.layer = LayerMask.NameToLayer("EnemyDamage");
+        }
 		private void OnDisable()
 		{
-			this.transform.position = Vector3.zero;
+            if (spellHitPrefab != null)
+                Instantiate(spellHitPrefab, this.transform.position, Quaternion.identity);
+            this.transform.position = Vector3.zero;
 			timer = projectileData.lifeTime;
 		}
 
@@ -47,20 +51,21 @@ namespace Assets.Scripts.Combat_Logic
 		void OnTriggerEnter(Collider other)
 		{
 			if (other.gameObject.layer == LayerMask.NameToLayer("Ground")
-				|| other.gameObject.layer == LayerMask.NameToLayer("Default"))
+				|| other.gameObject.layer == LayerMask.NameToLayer("Default")
+				|| other.gameObject.layer == LayerMask.NameToLayer("Shield"))
 			{
-				if(spellHitPrefab != null)
-					Instantiate(spellHitPrefab, this.transform.position, Quaternion.identity);
+				
 				gameObject.SetActive(false);
 			}
 
 			if (effectData != null && other.TryGetComponent<IEffectable>(out var effectable)
-				&& other.gameObject.layer == LayerMask.NameToLayer("MyOutlines"))
+				&& (other.gameObject.layer == LayerMask.NameToLayer("MyOutlines") || this.gameObject.layer == LayerMask.NameToLayer("DamageEnemy")))
 			{
 				effectable.ApplyEffect(effectData);
 			}
 
-			if (other.TryGetComponent<IDamagable>(out var damagable) && other.gameObject.layer == LayerMask.NameToLayer("MyOutlines"))
+			if (other.TryGetComponent<IDamagable>(out var damagable) && (other.gameObject.layer == LayerMask.NameToLayer("MyOutlines")
+				|| this.gameObject.layer == LayerMask.NameToLayer("DamageEnemy")))
 			{
 				if(spellHitPrefab != null)
 					Instantiate(spellHitPrefab, this.transform.position, Quaternion.identity); //Remove later, add to a pool
@@ -110,6 +115,15 @@ namespace Assets.Scripts.Combat_Logic
 			}
 			return target.transform.position + Vector3.up * 1f;
 		}
-
-	}
+		public void Disable() 
+		{
+			this.gameObject.SetActive(false);
+        }
+        public void ReflectBack()
+        {
+			gameObject.layer = LayerMask.NameToLayer("DamageEnemy");
+            direction = -direction; // Reverse direction
+            transform.rotation = Quaternion.LookRotation(direction);
+        }
+    }
 }

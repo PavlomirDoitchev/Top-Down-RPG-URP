@@ -6,7 +6,8 @@ namespace Assets.Scripts.Player
     {
         public override void UseSkill()
         {
-            base.UseSkill();   
+            base.UseSkill();  
+            NotifyObservers(); 
         }
     }
 }

@@ -61,15 +61,16 @@ namespace Assets.Scripts.Player.Abilities.Fighter_Abilities
                 {
                     if (spellHitPrefab != null)
                         Instantiate(spellHitPrefab, transform.position, Quaternion.identity);
-
+                    if (other.TryGetComponent<EnemyStateMachine>(out var enemy))
+                        enemy.ChangeState(new EnemyStunnedState(enemy, stunDuration));
                     damagable.TakeDamage(damage, false);
 
                     if (isEmpowered)
                     {
                         PlayerManager.Instance.PlayerStateMachine.PlayerStats.Heal(damage);
 
-                        if (other.TryGetComponent<EnemyStateMachine>(out var enemy))
-                            enemy.ChangeState(new EnemyStunnedState(enemy, stunDuration));
+                        //if (other.TryGetComponent<EnemyStateMachine>(out var enemy))
+                        //    enemy.ChangeState(new EnemyStunnedState(enemy, stunDuration));
 
                         projectileData.healNumberPrefab.Spawn(PlayerManager.Instance.PlayerStateMachine.transform.position, damage);
                     }

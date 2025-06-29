@@ -18,7 +18,7 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
             base.EnterState();
             ResetAnimationSpeed();
             RotateToMouse();
-
+            //Debug.Log($"Entering ExecuteAbilityState with skill: {_skill.animationName}");
             if (_skill.IsChanneled)
             {
                 timer = _skill.CastTime;

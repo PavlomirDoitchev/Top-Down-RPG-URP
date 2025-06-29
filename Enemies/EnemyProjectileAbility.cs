@@ -14,7 +14,7 @@ namespace Assets.Scripts.Enemies
 			GameObject projectile = ProjectilePoolManager.Instance.GetProjectile(projectileTag);
 			projectile.transform.position = spawnPosition.position;
 			projectile.transform.rotation = Quaternion.identity;
-			if (projectile.TryGetComponent<ProjectileSpell>(out var projectileComponent))
+			if (projectile.TryGetComponent<EnemyProjectileSpell>(out var projectileComponent))
 			{
 				projectileComponent.Initialize(target);
 			}

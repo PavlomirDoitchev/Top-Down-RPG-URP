@@ -32,7 +32,7 @@ public class MeleeWeapon : MonoBehaviour
 			if (_playerManager.PlayerStateMachine.PlayerCurrentState is FighterAbilityOneState) 
 			{
 				multiplier = _playerManager.PlayerStateMachine.Ability_One_Data[_playerManager.PlayerStateMachine.Ability_One_Rank].damageMultiplier;
-				_playerManager.PlayerStateMachine.ApplyStatusEffect(other, _playerManager.PlayerStateMachine.Ability_One_Data, _playerManager.PlayerStateMachine.Ability_One_Rank, 0);
+				//_playerManager.PlayerStateMachine.ApplyStatusEffect(other, _playerManager.PlayerStateMachine.Ability_One_Data, _playerManager.PlayerStateMachine.Ability_One_Rank, 0);
 			
 			}
 			else

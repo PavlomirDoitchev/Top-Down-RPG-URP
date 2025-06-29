@@ -8,7 +8,7 @@ public class StatusEffectUIManager : MonoBehaviour, IObserver
 {
     [SerializeField] private Subject playerStatsSubject; // This should be PlayerStats
     [SerializeField] private List<StatusEffectSlot> slots; // Pre-allocated slots in UI (e.g. size 6)
-
+    
     private PlayerStats playerStats;
 
     private void Awake()

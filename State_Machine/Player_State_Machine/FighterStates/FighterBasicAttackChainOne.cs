@@ -14,6 +14,7 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
         {
             base.EnterState();
             _playerStateMachine.Animator.speed = _playerStateMachine.PlayerStats.TotalAttackSpeed;
+            SkillManager.Instance.FighterBasicAttack.UseSkill();
             //_playerStateMachine.Animator.Play("2H-Attack-1");
             _playerStateMachine.Animator.Play("2Hand-Sword-Attack1");
             SetAttackSpeed();

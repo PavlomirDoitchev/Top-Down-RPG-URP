@@ -27,8 +27,9 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
 			DoBasicAttack();
 			DoAbilityOne();
 			DoAbilityTwo();
-			CastRainOfFire();
-			CastProjectile();
+			CastLightningShield();
+            //CastRainOfFire();
+            CastProjectile();
 		}
 		public override void ExitState()
 		{
@@ -71,7 +72,15 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
 				_playerStateMachine.ChangeState(new CastingAbilityState(_playerStateMachine, SkillManager.Instance.ProjectileAbility[0]));
 			}
 		}
-		private void CastRainOfFire()
+		private void CastLightningShield()
+        {
+            if (_playerStateMachine.InputManager.AbilityThreeInput()
+                && SkillManager.Instance.LightningShieldAbility.CanUseSkill())
+            {
+                _playerStateMachine.ChangeState(new CastingAbilityState(_playerStateMachine, SkillManager.Instance.LightningShieldAbility));
+            }
+        }
+        private void CastRainOfFire()
 		{
 			if (_playerStateMachine.InputManager.AbilityThreeInput()
 				&& SkillManager.Instance.RainOfFireAbility.CanUseChanneledSkill()

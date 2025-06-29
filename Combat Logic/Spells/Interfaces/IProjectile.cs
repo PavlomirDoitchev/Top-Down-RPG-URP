@@ -5,5 +5,6 @@ namespace Assets.Scripts.Combat_Logic
     {
         Vector3 AimLocation(Transform target);
         void Initialize(Transform target);
+        void Disable();
     }
 }

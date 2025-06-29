@@ -8,6 +8,7 @@ namespace Assets.Scripts.Player.Weapons
     {
         [SerializeField] private string projectileTag;
         [SerializeField] private Transform spawnPoint;
+        
 
         public override void UseSkill()
         {

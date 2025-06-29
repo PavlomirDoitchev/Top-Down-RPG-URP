@@ -81,7 +81,7 @@ namespace Assets.Scripts.Player
 
         PlayerManager playerManager;
         float timer = 0;
-        float timeSinceTakenDamage = 0;
+        float timeSinceTakenDamage = 11;
         public class ActiveEffect
         {
             public StatusEffectData Data;
