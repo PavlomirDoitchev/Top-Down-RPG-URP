@@ -297,7 +297,7 @@ namespace Assets.Scripts.Player
                     effect.NextTickTime += effect.Data.DOTInterval;
                     int totalDamage = effect.Data.DOTDamage * effect.StackCount;
                     TakeDOTDamage(totalDamage);
-                    effect.Data.DamageNumberPrefab.Spawn(transform.position, totalDamage);
+                    effect.Data.DamageNumberPrefab.Spawn(transform.position, totalDamage - resistance);
 
                 }
                 NotifyObservers();
