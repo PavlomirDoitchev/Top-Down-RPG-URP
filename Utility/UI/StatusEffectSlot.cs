@@ -2,14 +2,16 @@
 using UnityEngine.UI;
 using TMPro;
 using static Assets.Scripts.Player.PlayerStats;
+using Assets.Scripts.Utility.UI;
+using Assets.Scripts.Player;
 
-public class StatusEffectSlot : MonoBehaviour
+public class StatusEffectSlot : MonoBehaviour, IObserver
 {
     [SerializeField] private Image iconImage;
     [SerializeField] private TextMeshProUGUI stackText;
     [SerializeField] private TextMeshProUGUI durationText;
     private ActiveEffect _activeEffect;
-
+   
     public void SetSlot(Sprite icon, int stackCount, ActiveEffect effect)
     {
         _activeEffect = effect;
@@ -34,7 +36,11 @@ public class StatusEffectSlot : MonoBehaviour
         durationText.text = "";
     }
 
-    private void Update()
+    //private void Update()
+    //{
+    //}
+
+    public void OnNotify()
     {
         if (_activeEffect != null && _activeEffect.Data.DOTDuration > 0)
         {
@@ -45,5 +51,6 @@ public class StatusEffectSlot : MonoBehaviour
         {
             durationText.text = "";
         }
+        //throw new System.NotImplementedException();
     }
 }

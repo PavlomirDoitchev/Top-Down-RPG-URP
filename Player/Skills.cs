@@ -24,7 +24,12 @@ namespace Assets.Scripts.Player
         
         protected float cooldownTimer;
 
-		public virtual void Update() => cooldownTimer -= Time.deltaTime;
+		public virtual void Update()
+		{
+			cooldownTimer -= Time.deltaTime;
+			NotifyObservers();
+        }
+		
 		public int GetSkillCost() => this.cost;
 		public bool CanChannel() => IsChanneled && PlayerManager.Instance.PlayerStateMachine.PlayerStats.GetCurrentResource() >= cost;
 		public void ResetCooldown()

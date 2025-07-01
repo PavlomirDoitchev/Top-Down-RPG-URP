@@ -21,7 +21,7 @@ namespace Assets.Scripts.Player.Weapons
             projectile.transform.position = spawnPoint.position;
             projectile.transform.rotation = Quaternion.identity;
 
-            if (projectile.TryGetComponent<PlayerProjectile>(out var proj))
+            if (projectile.TryGetComponent<global::PlayerProjectile>(out var proj))
             {
                 proj.Init();
             }

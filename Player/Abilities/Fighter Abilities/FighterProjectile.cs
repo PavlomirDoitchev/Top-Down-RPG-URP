@@ -52,7 +52,7 @@ namespace Assets.Scripts.Player.Abilities.Fighter_Abilities
             {
                 hitEnemies.Add(other.gameObject);
 
-                damage = (projectileData.damage * (isEmpowered ? 2 : 1)) + PlayerManager.Instance.PlayerStateMachine.WeaponDamage(damage, 1);
+                damage = projectileData.damage + PlayerManager.Instance.PlayerStateMachine.WeaponDamage(damage, 1);
 
                 if (effectData != null && other.TryGetComponent<IEffectable>(out var effectable))
                     effectable.ApplyEffect(effectData);

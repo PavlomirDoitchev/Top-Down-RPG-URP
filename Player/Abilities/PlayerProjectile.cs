@@ -43,7 +43,7 @@ public abstract class PlayerProjectile : MonoBehaviour
             gameObject.SetActive(false);
         }
 
-        transform.position += direction * projectileData.speed * Time.deltaTime;
+        transform.position += (direction * projectileData.speed) * Time.deltaTime;
 
     }
     public void SetDirection(Vector3 newDirection)

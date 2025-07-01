@@ -6,8 +6,8 @@ using Unity.VisualScripting;
 
 public class StatusEffectUIManager : MonoBehaviour, IObserver
 {
-    [SerializeField] private Subject playerStatsSubject; // This should be PlayerStats
-    [SerializeField] private List<StatusEffectSlot> slots; // Pre-allocated slots in UI (e.g. size 6)
+    [SerializeField] private Subject playerStatsSubject;
+    [SerializeField] private List<StatusEffectSlot> slots;
     
     private PlayerStats playerStats;
 
@@ -50,8 +50,10 @@ public class StatusEffectUIManager : MonoBehaviour, IObserver
             int stacks = effect.StackCount;
 
             if (icon != null)
+            {
                 slots[index].SetSlot(icon, stacks, effect);
-
+                slots[index].OnNotify();
+            }
             index++;
         }
     }

@@ -123,6 +123,7 @@ namespace Assets.Scripts.Player
                 UseResource(1);
                 timer = 0f;
             }
+            
             //if (playerManager.PlayerStateMachine.CharacterLevelDataSO[0].characterClass == CharacterLevelSO.CharacterClass.Fighter
             //    && currentResource == maxResource)
             //{
@@ -311,6 +312,7 @@ namespace Assets.Scripts.Player
                     effect.Data.DamageNumberPrefab.Spawn(transform.position, totalDamage);
 
                 }
+                NotifyObservers();
             }
 
             foreach (var key in toRemove)
