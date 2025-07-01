@@ -124,12 +124,12 @@ namespace Assets.Scripts.Player
                 UseResource(1);
                 timer = 0f;
             }
-            
+
         }
 
-        public void TakeDOTDamage(int damage) 
+        public void TakeDOTDamage(int damage)
         {
-            damage -= resistance;
+            //damage -= resistance;
             if (damage <= 0) return;
             currentHealth -= damage;
             if (currentHealth <= 0)
@@ -139,7 +139,7 @@ namespace Assets.Scripts.Player
         public void TakeDamage(int damage, bool applyImpulse = true)
         {
             damage -= defense;
-            if(damage <= 0) return; 
+            if (damage <= 0) return;
             currentHealth -= damage;
             timeSinceTakenDamage = 0f;
             //if (damage >= Mathf.RoundToInt(maxHealth * .10f))
@@ -295,9 +295,10 @@ namespace Assets.Scripts.Player
                 {
 
                     effect.NextTickTime += effect.Data.DOTInterval;
-                    int totalDamage = effect.Data.DOTDamage * effect.StackCount;
+                    int totalDamage = (effect.Data.DOTDamage * effect.StackCount) - resistance;
                     TakeDOTDamage(totalDamage);
-                    effect.Data.DamageNumberPrefab.Spawn(transform.position, totalDamage - resistance);
+                    if (totalDamage > 0)
+                        effect.Data.DamageNumberPrefab.Spawn(transform.position, totalDamage);
 
                 }
                 NotifyObservers();
