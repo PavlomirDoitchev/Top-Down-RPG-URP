@@ -54,7 +54,8 @@ namespace Assets.Scripts.Player
         [Header("Secondary Stats")]
         [SerializeField] int maxHealth = 100;
         [SerializeField] int currentHealth;
-        [SerializeField] int armor;
+        [SerializeField] int defense;
+        [SerializeField] int resistance;
         [field: SerializeField] public float AttackSpeed { get; private set; }
         [field: SerializeField]
         [field: Range(0, 1)] public float CriticalChance { get; private set; }
@@ -124,38 +125,25 @@ namespace Assets.Scripts.Player
                 timer = 0f;
             }
             
-            //if (playerManager.PlayerStateMachine.CharacterLevelDataSO[0].characterClass == CharacterLevelSO.CharacterClass.Fighter
-            //    && currentResource == maxResource)
-            //{
-
-            //    timer += Time.deltaTime;
-            //    if (timer >= 1f) // Regain health every second
-            //    {
-            //        Heal(Mathf.RoundToInt(maxHealth * 0.1f * CurrentLevel()));
-            //        currentHealth = Mathf.Min(currentHealth, maxHealth);
-            //        currentResource -= maxResource;
-
-            //        timer = 0;
-            //    }
-            //    //NotifyObservers();
-
-
-            //}
-            //else if (playerManager.PlayerStateMachine.CharacterLevelDataSO[0].characterClass == CharacterLevelSO.CharacterClass.Fighter
-            //    && currentResource == 0)
-            //{
-
-            //}
         }
 
-
+        public void TakeDOTDamage(int damage) 
+        {
+            damage -= resistance;
+            if (damage <= 0) return;
+            currentHealth -= damage;
+            if (currentHealth <= 0)
+                playerManager.PlayerStateMachine.ChangeState(new PlayerDeathState(playerManager.PlayerStateMachine));
+            NotifyObservers();
+        }
         public void TakeDamage(int damage, bool applyImpulse = true)
         {
+            damage -= defense;
+            if(damage <= 0) return; 
             currentHealth -= damage;
             timeSinceTakenDamage = 0f;
-            if (damage >= Mathf.RoundToInt(maxHealth * .10f)
-                && playerManager.PlayerStateMachine.PlayerCurrentState is FighterLocomotionState)
-                playerManager.PlayerStateMachine.Animator.Play("Fighter_Hit");
+            //if (damage >= Mathf.RoundToInt(maxHealth * .10f))
+            //    playerManager.PlayerStateMachine.Animator.Play("Fighter_Hit");
 
 
             RegainResource(Mathf.RoundToInt((damage * 0.1f) / (CurrentLevel() + 1)));
@@ -163,10 +151,10 @@ namespace Assets.Scripts.Player
             if (applyImpulse)
                 playerManager.PlayerStateMachine.CinemachineImpulseSource.GenerateImpulse(Vector3.up * 0.1f);
 
-            NotifyObservers();
 
             if (currentHealth <= 0)
                 playerManager.PlayerStateMachine.ChangeState(new PlayerDeathState(playerManager.PlayerStateMachine));
+            NotifyObservers();
         }
         public void Heal(int amount)
         {
@@ -308,7 +296,7 @@ namespace Assets.Scripts.Player
 
                     effect.NextTickTime += effect.Data.DOTInterval;
                     int totalDamage = effect.Data.DOTDamage * effect.StackCount;
-                    TakeDamage(totalDamage, false);
+                    TakeDOTDamage(totalDamage);
                     effect.Data.DamageNumberPrefab.Spawn(transform.position, totalDamage);
 
                 }
