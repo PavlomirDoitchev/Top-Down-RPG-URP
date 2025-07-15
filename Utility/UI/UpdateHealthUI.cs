@@ -41,10 +41,7 @@ public class UpdateHealthUI : MonoBehaviour, IObserver
         {
             percantageOfMaxHealth = 100f;
         }
-        if (PlayerManager.Instance.PlayerStateMachine.CharacterLevelDataSO[0].characterClass == CharacterLevelSO.CharacterClass.Fighter) 
-        {
-            resourceBarFillImage.color = Color.red; 
-        }
+       
         resourceText.text = $"{currentResource}/{percantageOfMaxResource:F0}%";
         healthText.text = $"{currentHealth}/{percantageOfMaxHealth:F0}%";
         healthBarFillImage.fillAmount = percantageOfMaxHealth / 100f;

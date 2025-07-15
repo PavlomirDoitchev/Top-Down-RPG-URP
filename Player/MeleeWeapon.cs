@@ -8,6 +8,7 @@ using Assets.Scripts.State_Machine.Player_State_Machine.FighterStates;
 public class MeleeWeapon : MonoBehaviour
 {
 	public readonly List<Collider> enemyColliders = new List<Collider>();
+	[SerializeField] int resourceGain;
 	private PlayerManager _playerManager;
 	int damage;
 	float multiplier;
@@ -39,7 +40,8 @@ public class MeleeWeapon : MonoBehaviour
 			{ 
 			
 				multiplier = _playerManager.PlayerStateMachine.BasicAttackData[_playerManager.PlayerStateMachine.BasicAttackRank].damageMultiplier;
-			}
+				_playerManager.PlayerStateMachine.PlayerStats.RegainResource(resourceGain);
+            }
 
 			if (_playerManager.PlayerStateMachine.CriticalStrikeSuccess())
 			{
