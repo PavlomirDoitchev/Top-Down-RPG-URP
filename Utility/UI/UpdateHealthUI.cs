@@ -27,7 +27,7 @@ public class UpdateHealthUI : MonoBehaviour, IObserver
         float percantageOfMaxResource = ((float)currentResource / (float)maxResource) * 100;
         if (percantageOfMaxResource < 0)
         {
-            percantageOfMaxResource = 0; // Prevent negative percentage
+            percantageOfMaxResource = 0; 
         }
         if (float.IsNaN(percantageOfMaxResource))
         {
@@ -35,7 +35,7 @@ public class UpdateHealthUI : MonoBehaviour, IObserver
         }
         if (percantageOfMaxHealth < 0)
         {
-            percantageOfMaxHealth = 0; // Prevent negative percentage
+            percantageOfMaxHealth = 0; 
         }
         if (float.IsNaN(percantageOfMaxHealth))
         {

@@ -33,11 +33,9 @@ public class StatusEffectUIManager : MonoBehaviour, IObserver
 
     private void UpdateEffectSlots()
     {
-        // Clear all slots
         foreach (var slot in slots)
             slot.ClearSlot();
 
-        // Get active effects
         Dictionary<StatusEffectData.StatusEffectType, PlayerStats.ActiveEffect> activeEffects = playerStats.GetActiveEffects();
 
         int index = 0;

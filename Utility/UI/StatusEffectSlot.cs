@@ -36,10 +36,6 @@ public class StatusEffectSlot : MonoBehaviour, IObserver
         durationText.text = "";
     }
 
-    //private void Update()
-    //{
-    //}
-
     public void OnNotify()
     {
         if (_activeEffect != null && _activeEffect.Data.DOTDuration > 0)
@@ -51,6 +47,5 @@ public class StatusEffectSlot : MonoBehaviour, IObserver
         {
             durationText.text = "";
         }
-        //throw new System.NotImplementedException();
     }
 }
