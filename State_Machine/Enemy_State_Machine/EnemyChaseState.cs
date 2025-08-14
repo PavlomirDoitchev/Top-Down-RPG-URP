@@ -6,7 +6,8 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
 {
     public class EnemyChaseState : EnemyBaseState
     {
-
+        float timer = 0f;
+        float resetTimer = 0.5f; // Reset timer to avoid immediate state changes
         public EnemyChaseState(EnemyStateMachine stateMachine) : base(stateMachine) { }
 
         public override void EnterState()
@@ -27,7 +28,9 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
 
         public override void UpdateState(float deltaTime)
         {
+            timer += deltaTime;
             if (CheckForGlobalTransitions()) return;
+            if(timer < resetTimer) return; // Wait for the reset timer before processing further
             Vector3 playerPos = PlayerManager.Instance.PlayerStateMachine.transform.position;
             _enemyStateMachine.Agent.SetDestination(playerPos);
 
