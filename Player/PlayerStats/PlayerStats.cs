@@ -175,12 +175,18 @@ namespace Assets.Scripts.Player
         {
             return this.currentXP;
         }   
+        public int GetXPToNextLevel()
+        {
+            if (level >= maxLevel)
+                return 0;
+            return playerManager.PlayerStateMachine.CharacterLevelDataSO[GetCurrentLevel()].XpRequired;
+        }
         public void GainXP(int amount)
         {
             if (level >= maxLevel)
                 return;
             currentXP += amount;
-            if (currentXP >= playerManager.PlayerStateMachine.CharacterLevelDataSO[GetCurrentLevel()].XpRequired)
+            if (currentXP >= GetXPToNextLevel())
                 LevelUp();
         }
         private void LevelUp()
