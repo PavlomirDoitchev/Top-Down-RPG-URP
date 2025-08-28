@@ -98,7 +98,7 @@ namespace Assets.Scripts.Player
         private void Start()
         {
             playerManager = PlayerManager.Instance;
-            playerManager.PlayerStateMachine.CharacterLevelDataSO[CurrentLevel()].ApplyClassResourceType();
+            playerManager.PlayerStateMachine.CharacterLevelDataSO[GetCurrentLevel()].ApplyClassResourceType();
             ApplyCharacterData();
             //Debug.Log($"Loaded Class: {playerManager.PlayerStateMachine.CharacterLevelDataSO[CurrentLevel()].GetCharacterClass()}");
             maxHealth *= (Stamina / 10);
@@ -146,7 +146,7 @@ namespace Assets.Scripts.Player
             //    playerManager.PlayerStateMachine.Animator.Play("Fighter_Hit");
 
 
-            RegainResource(Mathf.RoundToInt((damage * 0.1f) / (CurrentLevel() + 1)));
+            RegainResource(Mathf.RoundToInt((damage * 0.1f) / (GetCurrentLevel() + 1)));
 
             if (applyImpulse)
                 playerManager.PlayerStateMachine.CinemachineImpulseSource.GenerateImpulse(Vector3.up * 0.1f);
@@ -167,16 +167,20 @@ namespace Assets.Scripts.Player
         {
             return new Dictionary<StatusEffectData.StatusEffectType, ActiveEffect>(activeEffects);
         }
-        public int CurrentLevel()
+        public int GetCurrentLevel()
         {
             return this.level;
         }
+        public int GetCurrentXP()
+        {
+            return this.currentXP;
+        }   
         public void GainXP(int amount)
         {
             if (level >= maxLevel)
                 return;
             currentXP += amount;
-            if (currentXP >= playerManager.PlayerStateMachine.CharacterLevelDataSO[CurrentLevel()].XpRequired)
+            if (currentXP >= playerManager.PlayerStateMachine.CharacterLevelDataSO[GetCurrentLevel()].XpRequired)
                 LevelUp();
         }
         private void LevelUp()
@@ -196,7 +200,7 @@ namespace Assets.Scripts.Player
         }
         private void ApplyCharacterData()
         {
-            resourceType = playerManager.PlayerStateMachine.CharacterLevelDataSO[CurrentLevel()].GetResourceType();
+            resourceType = playerManager.PlayerStateMachine.CharacterLevelDataSO[GetCurrentLevel()].GetResourceType();
             currentResource = 0;
             //Debug.Log($"Player resource type set to: {resourceType}");
         }
