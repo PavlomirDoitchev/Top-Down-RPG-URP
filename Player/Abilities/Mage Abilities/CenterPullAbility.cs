@@ -2,5 +2,10 @@
 {
     public class CenterPullAbility : Skills
     {
+        public override void UseSkill()
+        {
+            base.UseSkill();
+            NotifyObservers();
+        }
     }
 }
