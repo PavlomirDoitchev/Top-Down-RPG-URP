@@ -13,8 +13,7 @@ namespace Assets.Scripts.Utility.UI
     public class CharacterInformationUI : MonoBehaviour, IObserver
     {
         [SerializeField] Subject _playerStats;
-        [SerializeField] Image characterPortrait;
-        [SerializeField] Image characterPortraitBorder;
+        
         [SerializeField] TextMeshProUGUI levelText;
         [SerializeField] TextMeshProUGUI xpText;
         [SerializeField] Image xpProgressBar;
