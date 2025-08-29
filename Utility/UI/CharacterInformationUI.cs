@@ -15,7 +15,7 @@ namespace Assets.Scripts.Utility.UI
         [SerializeField] Subject _playerStats;
         
         [SerializeField] TextMeshProUGUI levelText;
-        [SerializeField] TextMeshProUGUI xpText;
+        //[SerializeField] TextMeshProUGUI xpText;
         [SerializeField] Image xpProgressBar;
         private int currentLevel;
         private int currentExperience;
@@ -23,9 +23,17 @@ namespace Assets.Scripts.Utility.UI
         {
             currentLevel = _playerStats.GetComponent<PlayerStats>().GetCurrentLevel();
             currentExperience = _playerStats.GetComponent<PlayerStats>().GetCurrentXP();
-            levelText.text = currentLevel.ToString();
-            xpText.text = currentExperience.ToString();
-            xpProgressBar.fillAmount = (float)currentExperience / (float)_playerStats.GetComponent<PlayerStats>().GetXPToNextLevel();
+            levelText.text = $"Level {currentLevel.ToString()}";
+            //xpText.text = currentExperience.ToString();
+            int xpToNext = _playerStats.GetComponent<PlayerStats>().GetXPToNextLevel();
+
+            float progress = 0f;
+            if (xpToNext > 0)
+            {
+                progress = Mathf.Clamp01((float)currentExperience / xpToNext);
+            }
+
+            xpProgressBar.fillAmount = progress;
         }
         private void OnEnable()
         {
