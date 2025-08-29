@@ -8,6 +8,7 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
     {
         private float _timeToWaitAtWaypoint = 0f;
         private bool _isDwelling = false;
+
         public EnemyPatrolState(EnemyStateMachine stateMachine) : base(stateMachine)
         {
         }

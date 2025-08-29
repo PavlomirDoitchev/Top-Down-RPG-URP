@@ -7,7 +7,7 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
     public class EnemyChaseState : EnemyBaseState
     {
         float timer = 0f;
-        float resetTimer = 0.5f; // Reset timer to avoid immediate state changes
+        float resetTimer = 0.1f; // Reset timer to avoid immediate state changes
         public EnemyChaseState(EnemyStateMachine stateMachine) : base(stateMachine) { }
 
         public override void EnterState()

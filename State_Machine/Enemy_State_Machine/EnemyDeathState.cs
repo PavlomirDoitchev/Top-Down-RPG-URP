@@ -1,4 +1,5 @@
 ﻿
+using Assets.Scripts.Player;
 using Assets.Scripts.State_Machine.Player_State_Machine;
 using UnityEngine;
 
@@ -18,7 +19,7 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
             _enemyStateMachine.Animator.CrossFadeInFixedTime(_enemyStateMachine.DeathAnimationName, .1f);
             BecomeUntargtable();
             _enemyStateMachine.CharacterController.enabled = false;
-            
+            PlayerManager.Instance.PlayerStateMachine.PlayerStats.GainXP(_enemyStateMachine.XpReward);
             _enemyStateMachine.Agent.enabled = false;
         }
         public override void UpdateState(float deltaTime)

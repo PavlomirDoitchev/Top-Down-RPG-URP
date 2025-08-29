@@ -18,7 +18,7 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
         public override void UpdateState(float deltaTime)
         {
             //if (CheckForGlobalTransitions()) return;
-
+            // play enraged animation
             if (_enemyStateMachine.Animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= .9f) 
             {
                 BecomeTargetable();

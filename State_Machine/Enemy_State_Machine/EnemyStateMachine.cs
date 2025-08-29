@@ -149,7 +149,6 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
 			if (CurrentHealth <= 0)
 			{
 				ShouldDie = true;
-				player.PlayerStateMachine.PlayerStats.GainXP(XpReward);
 			}
 		}
 		public void AggrevateNearbyEnemies()
