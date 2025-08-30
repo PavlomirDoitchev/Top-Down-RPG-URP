@@ -29,9 +29,12 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
 			DoAbilityOne();
 			DoAbilityTwo();
 			CastLightningShield();
-            //CastRainOfFire();
             CastProjectile();
-		}
+
+			//Test Mage skills
+            //CastRainOfFire();
+            CastCenterPull();
+        }
 		public override void ExitState()
 		{
 			ResetAnimationSpeed();
@@ -92,7 +95,7 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
         }
         private void CastRainOfFire()
 		{
-			if (_playerStateMachine.InputManager.AbilityThreeInput()
+			if (_playerStateMachine.InputManager.AbilityFiveInput()
 				&& SkillManager.Instance.RainOfFireAbility.CanUseChanneledSkill()
 				&& _playerStateMachine.Ability_Three_Data.Rank > 0) 
 			{
