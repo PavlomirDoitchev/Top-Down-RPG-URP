@@ -15,7 +15,8 @@ public class InputManager : MonoBehaviour
 	[SerializeField] private KeyCode _ability_Two_Key = KeyCode.Q;
 	[SerializeField] private KeyCode _ability_Three_Key = KeyCode.E;
 	[SerializeField] private KeyCode _ability_Four_Key = KeyCode.F;
-	[SerializeField] private KeyCode _moveLeftKey = KeyCode.A;
+	[SerializeField] private KeyCode _ability_Five_Key = KeyCode.R;
+    [SerializeField] private KeyCode _moveLeftKey = KeyCode.A;
 	[SerializeField] private KeyCode _moveRightKey = KeyCode.D;
 	[SerializeField] private KeyCode _moveUpKey = KeyCode.W;
 	[SerializeField] private KeyCode _moveDownKey = KeyCode.S;
@@ -34,7 +35,8 @@ public class InputManager : MonoBehaviour
 			{ "AbilityTwo", _ability_Two_Key },
 			{ "AbilityThree", _ability_Three_Key },
 			{ "AbilityFour", _ability_Four_Key },
-			{ "MoveLeft", _moveLeftKey },
+            { "AbilityFive", _ability_Five_Key },
+            { "MoveLeft", _moveLeftKey },
 			{ "MoveRight", _moveRightKey },
 			{ "MoveUp", _moveUpKey },
 			{ "MoveDown", _moveDownKey }
@@ -52,6 +54,7 @@ public class InputManager : MonoBehaviour
 	public bool AbilityTwoInput() => Input.GetKeyDown(keyBindings["AbilityTwo"]);
 	public bool AbilityThreeInput() => Input.GetKeyDown(keyBindings["AbilityThree"]);
 	public bool AbilityFourInput() => Input.GetKeyDown(keyBindings["AbilityFour"]);
+    public bool AbilityFiveInput() => Input.GetKeyDown(keyBindings["AbilityFive"]);
     public Vector2 MovementInput()
 	{
 		float horizontal = GetAxis("Horizontal");

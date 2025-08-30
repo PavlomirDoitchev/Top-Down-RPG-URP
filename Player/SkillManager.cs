@@ -1,5 +1,6 @@
 ﻿using Assets.Scripts.Player.Abilities;
 using Assets.Scripts.Player.Abilities.Fighter_Abilities;
+using Assets.Scripts.Player.Abilities.Mage_Abilities;
 using Assets.Scripts.Player.Weapons;
 using Assets.Scripts.State_Machine.Player_State_Machine;
 using System.Collections.Generic;
@@ -16,6 +17,7 @@ namespace Assets.Scripts.Player
         public ShockwaveAbility ShockwaveAbility { get; private set; }
         public RainOfFireAbility RainOfFireAbility { get; private set; }
         public LightningShieldAbility LightningShieldAbility { get; private set; }
+        public CenterPullAbility CenterPullAbility { get; private set; }
         public PlayerProjectileAbility[] ProjectileAbility { get; private set; }
         private void Awake()
         {
@@ -36,6 +38,7 @@ namespace Assets.Scripts.Player
                 FighterBasicAttack = GetComponent<FighterBasicAttack>();
                 LightningShieldAbility = GetComponent<LightningShieldAbility>();
                 RainOfFireAbility = GetComponent<RainOfFireAbility>();
+                CenterPullAbility = GetComponent<CenterPullAbility>();
             }
             else if (PlayerManager.Instance.PlayerStateMachine.CharacterLevelDataSO[0].characterClass == CharacterLevelSO.CharacterClass.Mage)
             {

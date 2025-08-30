@@ -3,6 +3,7 @@ using Assets.Scripts.State_Machine;
 using System;
 using Assets.Scripts.Player;
 using Assets.Scripts.State_Machine.Player_State_Machine.FighterStates;
+using System.Security.Cryptography;
 namespace Assets.Scripts.State_Machine.Player_State_Machine
 {
 	public class FighterLocomotionState : PlayerBaseState
@@ -78,6 +79,15 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
                 && SkillManager.Instance.LightningShieldAbility.CanUseSkill())
             {
                 _playerStateMachine.ChangeState(new CastingAbilityState(_playerStateMachine, SkillManager.Instance.LightningShieldAbility));
+            }
+        }
+		private void CastCenterPull() 
+		{
+			if(_playerStateMachine.InputManager.AbilityFiveInput()
+                && _playerStateMachine.Ability_Three_Rank > 0
+                && SkillManager.Instance.CenterPullAbility.CanUseSkill())
+            {
+                _playerStateMachine.ChangeState(new CastingAbilityState(_playerStateMachine, SkillManager.Instance.CenterPullAbility));
             }
         }
         private void CastRainOfFire()
