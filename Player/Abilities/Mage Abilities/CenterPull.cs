@@ -12,7 +12,7 @@ namespace Assets.Scripts.Player.Abilities.Mage_Abilities
 
         private readonly List<Collider> enemyList = new();
 
-        float pullForce;
+        float pullForce = 25f;
         int damage;
         float multiplier;
 
@@ -31,14 +31,13 @@ namespace Assets.Scripts.Player.Abilities.Mage_Abilities
             timer = maxDuration;
             intervalTimer = 0f;
             enemyList.Clear();
-            transform.position = SkillManager.Instance.AimSpell();
+            //transform.position = SkillManager.Instance.AimSpell();
 
             if (shouldShakeCamera)
                 PlayerManager.Instance.PlayerStateMachine.CinemachineImpulseSource.GenerateImpulse();
 
-            // Get pull force from ability data
-            pullForce = PlayerManager.Instance.PlayerStateMachine.Ability_Two_Data[
-                PlayerManager.Instance.PlayerStateMachine.Ability_Two_Rank].knockbackForce;
+            //pullForce = PlayerManager.Instance.PlayerStateMachine.Ability_Two_Data[
+            //PlayerManager.Instance.PlayerStateMachine.Ability_Two_Rank].knockbackForce;
         }
 
         private void Update()
@@ -75,10 +74,8 @@ namespace Assets.Scripts.Player.Abilities.Mage_Abilities
 
                 Vector3 pullDir = (transform.position - enemy.transform.position).normalized;
 
-                // Add pulling force towards the center
                 forceReceiver.AddForce(pullDir * pullForce);
 
-                // Optionally apply damage once per enemy
                 if (!enemyList.Contains(enemy))
                 {
                     ApplyDamage(enemy);
