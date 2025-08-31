@@ -18,10 +18,11 @@ namespace Assets.Scripts.Player.Abilities.Mage_Abilities
 
         [Header("Settings")]
         [SerializeField] LayerMask enemyLayer;
-        [SerializeField] float maxRadius = 10f;
-        [SerializeField] float impactRadius = 2f;
+        [SerializeField] float maxRadius = 5f;
+        [SerializeField] float impactRadius = 1f;
         [SerializeField] float damageCheckInterval = 0.1f;
-        [SerializeField] float maxDuration = 1f;
+        [SerializeField] float maxDuration = .3f;
+        [SerializeField] float maxCastRange = 5f;
 
         float timer;
         float intervalTimer;
@@ -31,13 +32,30 @@ namespace Assets.Scripts.Player.Abilities.Mage_Abilities
             timer = maxDuration;
             intervalTimer = 0f;
             enemyList.Clear();
-            //transform.position = SkillManager.Instance.AimSpell();
+
+            Vector3 aimPoint = SkillManager.Instance.AimSpell();
+
+            if (aimPoint == Vector3.zero)
+            {
+                Debug.Log("Invalid aim point.");
+                gameObject.SetActive(false);
+                return;
+            }
+
+            Vector3 playerPos = PlayerManager.Instance.PlayerStateMachine.transform.position;
+
+            float distance = Vector3.Distance(playerPos, aimPoint);
+            if (distance > maxCastRange)
+            {
+                Debug.Log("Target is too far away!");
+                gameObject.SetActive(false);
+                return;
+            }
+
+            transform.position = aimPoint;
 
             if (shouldShakeCamera)
                 PlayerManager.Instance.PlayerStateMachine.CinemachineImpulseSource.GenerateImpulse();
-
-            //pullForce = PlayerManager.Instance.PlayerStateMachine.Ability_Two_Data[
-            //PlayerManager.Instance.PlayerStateMachine.Ability_Two_Rank].knockbackForce;
         }
 
         private void Update()
@@ -72,10 +90,10 @@ namespace Assets.Scripts.Player.Abilities.Mage_Abilities
                 if (enemySM.IsEnraged)
                     continue;
 
-                Vector3 pullDir = (transform.position - enemy.transform.position).normalized;
+                Vector3 pullDir = (this.transform.position - enemy.transform.position).normalized;
 
                 forceReceiver.AddForce(pullDir * pullForce);
-
+                enemySM.ChangeState(new EnemyKnockbackState(enemySM, 0.5f));
                 if (!enemyList.Contains(enemy))
                 {
                     ApplyDamage(enemy);

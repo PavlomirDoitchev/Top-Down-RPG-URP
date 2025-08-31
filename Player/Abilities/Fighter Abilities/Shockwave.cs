@@ -155,7 +155,7 @@ public class Shockwave : MonoBehaviour
 
 			knockBackForce = PlayerManager.Instance.PlayerStateMachine.Ability_Two_Data[PlayerManager.Instance.PlayerStateMachine.Ability_Two_Rank].knockbackForce;
 
-			Vector3 pullDir = (PlayerManager.Instance.PlayerStateMachine.transform.position - other.transform.position).normalized;
+			//Vector3 pullDir = (PlayerManager.Instance.PlayerStateMachine.transform.position - other.transform.position).normalized;
 			Vector3 knockDir = (PlayerManager.Instance.PlayerStateMachine.transform.position - other.transform.position).normalized;
 			if (enemyStateMachine.IsKnockedUp)
 				return;
