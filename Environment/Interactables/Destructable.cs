@@ -26,8 +26,9 @@ public class Destructable : MonoBehaviour, IDamagable
                 r.useGravity = true;
                 r.isKinematic = false;
                 r.gameObject.layer = LayerMask.NameToLayer("IgnoreAllCollisions");
-                if (applyImpulse)
-                    r.AddExplosionForce(Random.Range(1f, 300f), transform.position, 5f);
+                r.AddForce(Vector3.up 
+                    * Random.Range(1f, 100f) + Vector3.forward * Random.Range(-50f, 50f) + Vector3.right * Random.Range(-50f, 50f));
+                //r.AddExplosionForce(Random.Range(1f, 300f), transform.position, 5f);
             }
             this.gameObject.layer = LayerMask.NameToLayer("IgnoreAllCollisions");
         }
