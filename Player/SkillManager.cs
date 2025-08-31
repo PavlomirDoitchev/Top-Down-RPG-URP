@@ -18,7 +18,8 @@ namespace Assets.Scripts.Player
         public RainOfFireAbility RainOfFireAbility { get; private set; }
         public LightningShieldAbility LightningShieldAbility { get; private set; }
         public CenterPullAbility CenterPullAbility { get; private set; }
-        public PlayerProjectileAbility[] ProjectileAbility { get; private set; }
+        public ThunderShockAbility ThunderShockAbility { get; private set; }
+        [field: SerializeField] public PlayerProjectileAbility[] ProjectileAbility { get; private set; }
         private void Awake()
         {
             if (Instance != null)            
@@ -39,6 +40,8 @@ namespace Assets.Scripts.Player
                 LightningShieldAbility = GetComponent<LightningShieldAbility>();
                 RainOfFireAbility = GetComponent<RainOfFireAbility>();
                 CenterPullAbility = GetComponent<CenterPullAbility>();
+                ThunderShockAbility = GetComponent<ThunderShockAbility>();
+
             }
             else if (PlayerManager.Instance.PlayerStateMachine.CharacterLevelDataSO[0].characterClass == CharacterLevelSO.CharacterClass.Mage)
             {

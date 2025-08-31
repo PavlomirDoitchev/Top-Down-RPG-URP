@@ -8,7 +8,7 @@ namespace Assets.Scripts.Player.Abilities.Fighter_Abilities
 
         [SerializeField] float radius = 2f;
         [SerializeField] float damageCheckInterval;
-        [SerializeField] float maxCastRange = 5f;
+        [SerializeField] float maxCastRange = 15f;
         float timer;
         private readonly List<Collider> enemyColliders = new();
         int damage;

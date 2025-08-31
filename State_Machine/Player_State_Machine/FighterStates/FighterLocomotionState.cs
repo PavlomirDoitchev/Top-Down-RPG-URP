@@ -34,6 +34,7 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
 			//Test Mage skills
             //CastRainOfFire();
             CastCenterPull();
+			CastThunderShock();
         }
 		public override void ExitState()
 		{
@@ -91,6 +92,15 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
                 && SkillManager.Instance.CenterPullAbility.CanUseSkill())
             {
                 _playerStateMachine.ChangeState(new CastingAbilityState(_playerStateMachine, SkillManager.Instance.CenterPullAbility));
+            }
+        }
+		private void CastThunderShock() 
+		{
+			if(_playerStateMachine.InputManager.AbilitySixInput()
+                && _playerStateMachine.Ability_Three_Rank > 0
+                && SkillManager.Instance.ThunderShockAbility.CanUseSkill())
+            {
+                _playerStateMachine.ChangeState(new CastingAbilityState(_playerStateMachine, SkillManager.Instance.ThunderShockAbility));
             }
         }
         private void CastRainOfFire()
