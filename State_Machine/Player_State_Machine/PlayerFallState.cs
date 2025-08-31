@@ -25,20 +25,20 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
         public override void UpdateState(float deltaTime)
         {
             PlayerMove(deltaTime);
+
             if (_playerStateMachine.InputManager.AbilitySixInput()
                 && _playerStateMachine.Ability_Three_Rank > 0
-                && SkillManager.Instance.ThunderShockAbility.CanUseSkill())
+                && SkillManager.Instance.ThunderShockAbility.CanUseSkill()
+                && !canCastWhileFalling) 
             {
                 canCastWhileFalling = true;
                 _playerStateMachine.Animator.CrossFadeInFixedTime("ThunderShockAirLoop", 0.1f);
-                Vector3 slamVelocity = _playerStateMachine.CharacterController.velocity;
-                slamVelocity.y = -40f;
-                _playerStateMachine.ForceReceiver.AddForce(slamVelocity);
 
+                _playerStateMachine.ForceReceiver.KnockDown(50f);
             }
+
             if (_playerStateMachine.CharacterController.velocity.y < maxFallSpeed)
                 maxFallSpeed = _playerStateMachine.CharacterController.velocity.y;
-
 
             if (_playerStateMachine.CharacterController.isGrounded)
             {
@@ -46,20 +46,23 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
                 {
                     CastThunderShock();
                     return;
-
                 }
+
                 if (maxFallSpeed < -20f)
                 {
-                    fallDamage = Mathf.RoundToInt(Mathf.Abs((maxFallSpeed * _playerStateMachine.PlayerStats.GetMaxHealth()) * 0.01f));
+                    fallDamage = Mathf.RoundToInt(Mathf.Abs((maxFallSpeed *
+                        _playerStateMachine.PlayerStats.GetMaxHealth()) * 0.01f));
                     _playerStateMachine.PlayerStats.TakeDamage(fallDamage, true);
                 }
+
                 if (fallDamage > 0)
                 {
-                    _playerStateMachine.DamageText[0].Spawn(_playerStateMachine.transform.position, fallDamage);
+                    _playerStateMachine.DamageText[0].Spawn(
+                        _playerStateMachine.transform.position, fallDamage);
                 }
+
                 if (_playerStateMachine.PlayerStats.GetCurrentHealth() > 0)
                 {
-                    //_playerStateMachine.Animator.Play("2Hand-Sword-Land");
                     _playerStateMachine.ChangeState(new FighterLocomotionState(_playerStateMachine));
                 }
             }
