@@ -11,69 +11,90 @@ namespace Assets.Scripts.Player.Abilities.Mage_Abilities
 
         private readonly List<Collider> enemyList = new();
 
-        float pullForce = 25f;
+        float pushForce = 10f;
         int damage;
         float multiplier;
         float timer;
+        float vfxTimer;
         float intervalTimer;
         [Header("Settings")]
         [SerializeField] LayerMask enemyLayer;
         [SerializeField] float spellMaxRadius = 5f;
         [SerializeField] float spellCenterRadius = 1f;
-        [SerializeField] float damageCheckInterval = 0.1f;
-        [SerializeField] float maxDuration = .3f;
-        [SerializeField] float maxCastRange = 5f;
+        //[SerializeField] float damageCheckInterval = 0.1f;
+        //[SerializeField] float maxSpellDuration = .3f;
+        //[SerializeField] float maxCastRange = 5f;
+        [SerializeField] float vfxDuration = 2f;
 
         private void OnEnable()
         {
-            timer = maxDuration;
-            intervalTimer = 0f;
+            //timer = maxSpellDuration;
+            vfxTimer = vfxDuration;
+            //intervalTimer = 0f;
             enemyList.Clear();
-
+            CastAbility();
             if (shouldShakeCamera)
                 PlayerManager.Instance.PlayerStateMachine.CinemachineImpulseSource.GenerateImpulse();
+
         }
         private void Update()
         {
-            timer -= Time.deltaTime;
-            if (timer <= 0f)
+            //timer -= Time.deltaTime;
+            vfxTimer -= Time.deltaTime;
+            if (vfxTimer <= 0f)
             {
                 gameObject.SetActive(false);
                 return;
             }
-
-            intervalTimer -= Time.deltaTime;
-            if (intervalTimer <= 0f)
-            {
-                KnockbackEnemies();
-                intervalTimer = damageCheckInterval;
-            }
         }
-        private void KnockbackEnemies()
+        private void CastAbility()
         {
+            Debug.Log("Casting ThunderShock");
             Collider[] hits = Physics.OverlapSphere(transform.position, spellMaxRadius, enemyLayer);
-
             foreach (Collider enemy in hits)
             {
-                if (!enemy.TryGetComponent<ForceReceiver>(out var forceReceiver))
-                    continue;
-
-                if (!enemy.TryGetComponent<EnemyStateMachine>(out var enemySM))
-                    continue;
-
-                if (enemySM.IsEnraged)
-                    continue;
-
-                Vector3 knockBackDir = (enemy.transform.position - this.transform.position).normalized;
-
-                forceReceiver.AddForce(knockBackDir * pullForce);
-                enemySM.ChangeState(new EnemyKnockbackState(enemySM, 0.5f));
                 if (!enemyList.Contains(enemy))
                 {
+                    KnockbackEnemies(enemy);
                     ApplyDamage(enemy);
                     enemyList.Add(enemy);
                 }
             }
+        }
+        private void KnockbackEnemies(Collider enemy)
+        {
+            //Collider[] hits = Physics.OverlapSphere(transform.position, spellMaxRadius, enemyLayer);
+            if (enemy.gameObject.TryGetComponent<ForceReceiver>(out var forceReceiver)
+                && enemy.gameObject.TryGetComponent<EnemyStateMachine>(out var enemyStateMachine))
+            {
+                if (enemyStateMachine.IsEnraged)
+                    return;
+                Vector3 knockBackDir = (enemy.transform.position - this.transform.position).normalized;
+                forceReceiver.AddForce(knockBackDir * pushForce);
+                enemyStateMachine.ChangeState(new EnemyKnockbackState(enemyStateMachine, 0.5f));
+
+            }
+            //foreach (Collider enemy in hits)
+            //{
+            //    if (!enemy.TryGetComponent<ForceReceiver>(out var forceReceiver))
+            //        continue;
+
+            //    if (!enemy.TryGetComponent<EnemyStateMachine>(out var enemySM))
+            //        continue;
+
+            //    if (enemySM.IsEnraged)
+            //        continue;
+
+            //    Vector3 knockBackDir = (enemy.transform.position - this.transform.position).normalized;
+
+            //    forceReceiver.AddForce(knockBackDir * pushForce);
+            //    enemySM.ChangeState(new EnemyKnockbackState(enemySM, 0.5f));
+            //    if (!enemyList.Contains(enemy))
+            //    {
+            //        ApplyDamage(enemy);
+            //        enemyList.Add(enemy);
+            //    }
+            //}
         }
         private void ApplyDamage(Collider enemy)
         {
