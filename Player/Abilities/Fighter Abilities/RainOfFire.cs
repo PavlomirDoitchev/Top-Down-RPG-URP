@@ -8,6 +8,7 @@ namespace Assets.Scripts.Player.Abilities.Fighter_Abilities
 
         [SerializeField] float radius = 2f;
         [SerializeField] float damageCheckInterval;
+        [SerializeField] float maxCastRange = 5f;
         float timer;
         private readonly List<Collider> enemyColliders = new();
         int damage;
@@ -15,7 +16,26 @@ namespace Assets.Scripts.Player.Abilities.Fighter_Abilities
         int layerMask = 1 << 7;
         private void OnEnable()
         {
-            transform.position = SkillManager.Instance.AimSpell();
+            Vector3 aimPoint = SkillManager.Instance.AimSpell();
+
+            if (aimPoint == Vector3.zero)
+            {
+                Debug.Log("Invalid aim point.");
+                gameObject.SetActive(false);
+                return;
+            }
+
+            Vector3 playerPos = PlayerManager.Instance.PlayerStateMachine.transform.position;
+
+            float distance = Vector3.Distance(playerPos, aimPoint);
+            if (distance > maxCastRange)
+            {
+                Debug.Log("Target is too far away!");
+                gameObject.SetActive(false);
+                return;
+            }
+
+            transform.position = aimPoint;
             enemyColliders.Clear();
             timer = damageCheckInterval;
         }

@@ -18,8 +18,8 @@ namespace Assets.Scripts.Player.Abilities.Mage_Abilities
 
         [Header("Settings")]
         [SerializeField] LayerMask enemyLayer;
-        [SerializeField] float maxRadius = 5f;
-        [SerializeField] float impactRadius = 1f;
+        [SerializeField] float spellMaxRadius = 5f;
+        [SerializeField] float spellCenterRadius = 1f;
         [SerializeField] float damageCheckInterval = 0.1f;
         [SerializeField] float maxDuration = .3f;
         [SerializeField] float maxCastRange = 5f;
@@ -57,7 +57,7 @@ namespace Assets.Scripts.Player.Abilities.Mage_Abilities
             if (shouldShakeCamera)
                 PlayerManager.Instance.PlayerStateMachine.CinemachineImpulseSource.GenerateImpulse();
         }
-
+        
         private void Update()
         {
             timer -= Time.deltaTime;
@@ -77,7 +77,7 @@ namespace Assets.Scripts.Player.Abilities.Mage_Abilities
 
         private void PullEnemies()
         {
-            Collider[] hits = Physics.OverlapSphere(transform.position, maxRadius, enemyLayer);
+            Collider[] hits = Physics.OverlapSphere(transform.position, spellMaxRadius, enemyLayer);
 
             foreach (Collider enemy in hits)
             {
@@ -121,10 +121,10 @@ namespace Assets.Scripts.Player.Abilities.Mage_Abilities
         private void OnDrawGizmos()
         {
             Gizmos.color = Color.red;
-            Gizmos.DrawWireSphere(transform.position, maxRadius);
+            Gizmos.DrawWireSphere(transform.position, spellMaxRadius);
 
             Gizmos.color = Color.yellow;
-            Gizmos.DrawWireSphere(transform.position, impactRadius);
+            Gizmos.DrawWireSphere(transform.position, spellCenterRadius);
         }
 #endif
     }
