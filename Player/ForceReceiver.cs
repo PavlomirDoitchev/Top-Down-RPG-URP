@@ -9,7 +9,7 @@ public class ForceReceiver : MonoBehaviour
     [SerializeField] private float inAirDrag = .05f;
     [SerializeField] private float maxFallSpeed = -50f;
     [SerializeField] private NavMeshAgent agent;
-    private float verticalVelocity;
+    public float verticalVelocity;
     private Vector3 impact;
     private Vector3 dampingVelocity;
     public Vector3 Movement => impact + Vector3.up * verticalVelocity;
