@@ -16,7 +16,7 @@ namespace Assets.Scripts.Utility.EnvironmentFX
         public float swimThreshold = 0.5f;           
         public float floatStrength = 9f;             
         public bool debugLog;
-
+        private float smoothVelocity;
         private PlayerStateMachine _playerStateMachine;
         private bool isSwimming;
 
@@ -31,7 +31,7 @@ namespace Assets.Scripts.Utility.EnvironmentFX
 
             if (water != null)
             {
-                float waterHeight = water.transform.position.y;  // approximate surface height
+                float waterHeight = water.transform.position.y;  
                 float feetY = feetTransform.position.y;
                 float depth = waterHeight - feetY;
 
@@ -52,7 +52,14 @@ namespace Assets.Scripts.Utility.EnvironmentFX
                 if (isSwimming)
                 {
                     float verticalDelta = waterHeight - feetY;
-                    forceReceiver.verticalVelocity += verticalDelta * floatStrength * Time.deltaTime;
+                    float targetVelocity = verticalDelta * floatStrength;
+
+                    forceReceiver.verticalVelocity = Mathf.SmoothDamp(
+                        forceReceiver.verticalVelocity,
+                        targetVelocity,
+                        ref smoothVelocity,
+                        0.1f 
+                    );
                 }
             }
             else
