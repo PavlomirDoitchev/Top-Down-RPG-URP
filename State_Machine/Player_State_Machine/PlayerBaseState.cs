@@ -98,7 +98,7 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
         {
             Vector3 movement = CalculateMovement();
 
-            float speedModifier = (_playerStateMachine.PlayerStats.BaseMovementSpeed / 2) *
+            float speedModifier = (_playerStateMachine.PlayerStats.BaseMovementSpeed * 0.6f) *
                                   (1 - _playerStateMachine.PlayerStats.TotalSlowAmount);
 
             Mathf.Clamp(_playerStateMachine.PlayerStats.TotalSlowAmount, 0f, 0.95f);

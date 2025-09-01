@@ -11,7 +11,8 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
         public override void EnterState()
         {
             base.EnterState();
-            Debug.Log("Entering Swimming State");
+            //Debug.Log("Entering Swimming State");
+            _playerStateMachine.EquippedWeapon.SetActive(false);
             ResetAnimationSpeed();
             _playerStateMachine.Animator.CrossFadeInFixedTime("Swimming", .1f);
         }
@@ -21,6 +22,7 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
         }
         public override void ExitState()
         {
+            _playerStateMachine.EquippedWeapon.SetActive(true);
             ResetAnimationSpeed();
         }
 
