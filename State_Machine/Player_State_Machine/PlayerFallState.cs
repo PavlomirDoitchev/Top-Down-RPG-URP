@@ -1,6 +1,8 @@
 using UnityEngine;
 using DamageNumbersPro;
 using Assets.Scripts.Player;
+using Unity.Cinemachine;
+using Unity.VisualScripting;
 namespace Assets.Scripts.State_Machine.Player_State_Machine
 {
     public class PlayerFallState : PlayerBaseState
@@ -21,7 +23,7 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
             momentum.y = 0;
             maxFallSpeed = 0f;
         }
-
+        
         public override void UpdateState(float deltaTime)
         {
             PlayerMove(deltaTime);
