@@ -14,8 +14,6 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
 		{
 			base.EnterState();
 			//Debug.Log($"Entering state: {this.GetType().Name}");
-
-
 		}
 
 		/// <summary>
@@ -91,6 +89,57 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
 			}
 		}
         /// <summary>
+        /// Rotate mount towards the mouse position with heavier/slow turning.
+        /// </summary>
+        protected void RotateMountToMouse(float deltaTime, float rotationMultiplier = 0.5f)
+        {
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            int layerMask = LayerMask.GetMask("Ground", "Enemy");
+
+            if (Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity, layerMask))
+            {
+                Vector3 targetPoint = hit.point;
+                targetPoint.y = _playerStateMachine.transform.position.y;
+
+                Quaternion targetRotation = Quaternion.LookRotation(
+                    targetPoint - _playerStateMachine.transform.position);
+
+                _playerStateMachine.transform.rotation = Quaternion.Slerp(
+                    _playerStateMachine.transform.rotation,
+                    targetRotation,
+                    _playerStateMachine.PlayerStats.RotationSpeed * rotationMultiplier * deltaTime
+                );
+            }
+        }
+        protected void MountedMove(float deltaTime, ref float currentSpeed, float acceleration, float deceleration, float maxSpeed)
+        {
+            Vector2 moveInput = _playerStateMachine.InputManager.MovementInput();
+
+            // Forward = W (y > 0), Back/Stop = S (y < 0)
+            if (moveInput.y > 0f)
+            {
+                currentSpeed += acceleration * deltaTime;
+            }
+            else if (moveInput.y < 0f)
+            {
+                currentSpeed -= deceleration * deltaTime;
+            }
+            else
+            {
+                // Natural deceleration if no input
+                currentSpeed = Mathf.MoveTowards(currentSpeed, 0f, deceleration * deltaTime);
+            }
+
+            currentSpeed = Mathf.Clamp(currentSpeed, 0f, maxSpeed);
+
+            // Always move forward in the mount’s facing direction
+            Vector3 movement = _playerStateMachine.transform.forward * currentSpeed;
+            Move(movement, deltaTime);
+
+            // Update horse locomotion animation
+            _playerStateMachine.Animator.SetFloat("MountedSpeed", currentSpeed / maxSpeed, 0.1f, deltaTime);
+        }
+        /// <summary>
         /// Same as PlayerMove but for swimming.
         /// </summary>
         /// <param name="deltaTime"></param>
@@ -138,7 +187,11 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
 			}
 			_playerStateMachine.Animator.SetFloat("LocomotionSpeed", 0, .1f, deltaTime);
 		}
-		protected void PlayerAttackMove(float deltaTime)
+        /// <summary>
+        /// Player Movement Logic while attacking
+        /// </summary>
+        /// <param name="deltaTime"></param>
+        protected void PlayerAttackMove(float deltaTime)
 		{
 			Vector3 movement = CalculateMovement();
 			float speedModifier = _playerStateMachine.PlayerStats.BaseMovementSpeed * (1 - _playerStateMachine.PlayerStats.TotalSlowAmount);
@@ -153,7 +206,11 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
 			}
 			_playerStateMachine.Animator.SetFloat("AttackLocomotionSpeed", 0, .1f, deltaTime);
 		}
-		private Vector3 CalculateMovement()
+        /// <summary>
+        /// Basic calculation for movement input. Used in every Movement method.
+        /// </summary>
+        /// <returns></returns>
+        private Vector3 CalculateMovement()
 		{
 
 			//Vector3 forward = _playerStateMachine.MainCameraTransform.forward;
