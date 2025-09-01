@@ -90,27 +90,40 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
 				_playerStateMachine.transform.rotation = targetRotation;
 			}
 		}
-		protected void PlayerSwim(float deltaTime) 
-		{
+        /// <summary>
+        /// Same as PlayerMove but for swimming.
+        /// </summary>
+        /// <param name="deltaTime"></param>
+        protected void PlayerSwim(float deltaTime)
+        {
             Vector3 movement = CalculateMovement();
-            float speedModifier = _playerStateMachine.PlayerStats.BaseMovementSpeed * (1 - _playerStateMachine.PlayerStats.TotalSlowAmount);
+
+            float speedModifier = (_playerStateMachine.PlayerStats.BaseMovementSpeed / 2) *
+                                  (1 - _playerStateMachine.PlayerStats.TotalSlowAmount);
+
             Mathf.Clamp(_playerStateMachine.PlayerStats.TotalSlowAmount, 0f, 0.95f);
             Move(movement * speedModifier, deltaTime);
 
             if (movement != Vector3.zero)
             {
-                _playerStateMachine.transform.rotation = Quaternion.Slerp(_playerStateMachine.transform.rotation,
-                    Quaternion.LookRotation(movement), _playerStateMachine.PlayerStats.RotationSpeed * deltaTime);
-                _playerStateMachine.Animator.SetFloat("SwimSpeed", 1, .01f, deltaTime);
-            }
-            _playerStateMachine.Animator.SetFloat("SwimSpeed", 0, .1f, deltaTime);
+                _playerStateMachine.transform.rotation = Quaternion.Slerp(
+                    _playerStateMachine.transform.rotation,
+                    Quaternion.LookRotation(movement),
+                    _playerStateMachine.PlayerStats.RotationSpeed * deltaTime
+                );
 
+                _playerStateMachine.Animator.SetFloat("SwimSpeed", 1f, 0.1f, deltaTime);
+            }
+            else
+            {
+                _playerStateMachine.Animator.SetFloat("SwimSpeed", 0f, 0.1f, deltaTime);
+            }
         }
-		/// <summary>
-		/// Player Movement Logic
-		/// </summary>
-		/// <param name="deltaTime"></param>
-		protected void PlayerMove(float deltaTime)
+        /// <summary>
+        /// Player Movement Logic
+        /// </summary>
+        /// <param name="deltaTime"></param>
+        protected void PlayerMove(float deltaTime)
 		{
 			Vector3 movement = CalculateMovement();
 			float speedModifier = _playerStateMachine.PlayerStats.BaseMovementSpeed * (1 - _playerStateMachine.PlayerStats.TotalSlowAmount);
