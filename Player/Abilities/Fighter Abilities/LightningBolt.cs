@@ -6,7 +6,7 @@ using System.Collections.Generic;
 
 namespace Assets.Scripts.Player.Abilities.Fighter_Abilities
 {
-    public class FighterProjectile : PlayerProjectile
+    public class LightningBolt : PlayerProjectile
     {
         [SerializeField] float stunDuration = 2f;
         [SerializeField] int maxJumps = 3;

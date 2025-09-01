@@ -34,9 +34,9 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
 			//Test Mage skills
             //CastRainOfFire();
             CastCenterPull();
-			//CastThunderShock();
+            //CastThunderShock(); Moved to jump state
         }
-		public override void ExitState()
+        public override void ExitState()
 		{
 			ResetAnimationSpeed();
 		}

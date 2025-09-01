@@ -6,6 +6,7 @@ namespace Assets.Scripts.Player.Weapons
     [Serializable]
     public class PlayerProjectileAbility : Skills
     {
+        [Tooltip("Must match the tag in the pool")]
         [SerializeField] private string projectileTag;
         [SerializeField] private Transform spawnPoint;
         
