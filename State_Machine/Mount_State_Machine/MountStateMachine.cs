@@ -1,8 +1,8 @@
-﻿using Assets.Scripts.State_Machine.Mount_State_Machine.States;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace Assets.Scripts.State_Machine.Mount_State_Machine
 {
+    [RequireComponent(typeof(ForceReceiver), typeof(MountInputManager), typeof(CharacterController))]
     public class MountStateMachine : StateMachine
     {
         [Header("References")]
@@ -10,35 +10,39 @@ namespace Assets.Scripts.State_Machine.Mount_State_Machine
         public CharacterController CharacterController { get; private set; }
         [field: SerializeField] public MountInputManager InputManager { get; private set; }
         [field: SerializeField] public ForceReceiver ForceReceiver { get; private set; }
+
         [Header("Stats")]
-        public float MaxSpeed = 10f;
-        public float Acceleration = 5f;
-        public float Deceleration = 6f;
+        public float MaxSpeed = 6f;
+        public float Acceleration = 8f;
+        public float Deceleration = 10f;
         public float RotationSpeed = 5f;
 
         public float CurrentSpeed { get; private set; }
 
         private void Awake()
         {
-            Animator = GetComponent<Animator>();
+            Animator = GetComponentInChildren<Animator>();
             CharacterController = GetComponent<CharacterController>();
             ForceReceiver = GetComponent<ForceReceiver>();
             InputManager = GetComponent<MountInputManager>();
-
         }
+
         private void Start()
         {
-            ChangeState(new MountLocomotionState(this));
+            ChangeState(new States.MountLocomotionState(this));
         }
+
         public void SetSpeed(float targetSpeed, float deltaTime)
         {
             CurrentSpeed = Mathf.MoveTowards(
                 CurrentSpeed,
-                targetSpeed,
+                Mathf.Clamp(targetSpeed, 0f, MaxSpeed),
                 (targetSpeed > CurrentSpeed ? Acceleration : Deceleration) * deltaTime
             );
-
-            Animator.SetFloat("MountedSpeed", CurrentSpeed / MaxSpeed, 0.1f, deltaTime);
+            if (Animator != null)
+            {
+                Animator.SetFloat("MountedSpeed", CurrentSpeed / MaxSpeed, 0.1f, deltaTime);
+            }
         }
     }
 }

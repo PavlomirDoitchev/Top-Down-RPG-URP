@@ -1,6 +1,6 @@
 ﻿using Assets.Scripts.State_Machine;
-using Assets.Scripts.State_Machine.Player_State_Machine;
 using UnityEngine;
+
 namespace Assets.Scripts.State_Machine.Mount_State_Machine
 {
     public abstract class MountBaseState : State
@@ -17,42 +17,29 @@ namespace Assets.Scripts.State_Machine.Mount_State_Machine
             base.EnterState();
             Debug.Log($"[MOUNT] Entering state: {GetType().Name}");
         }
-        /// <summary>
-        /// Preserve momentum. Used in MountMove().
-        /// </summary>
-        /// <param name="movement"></param>
-        /// <param name="deltaTime"></param>
-        protected void Move(Vector3 movement, float deltaTime) 
-        {
-            stateMachine.CharacterController.Move(movement * deltaTime);
-        }
-        /// <summary>
-        /// Move horse forward in its local forward direction
-        /// </summary>
-        /// <param name="deltaTime"></param>
-        protected void MountMove(float deltaTime)
-        {
-            Vector3 forward = CalculateMovement();
-            Move(forward, deltaTime);
 
-            if (forward.magnitude > 0f)
+        /// <summary> Move the character controller with forward (local) motion plus vertical forces. </summary>
+        protected void ApplyMovement(Vector3 localForwardDirection, float deltaTime)
+        {
+            // localForwardDirection = transform.forward * forwardInput * CurrentSpeed
+            Vector3 horizontalMove = localForwardDirection * stateMachine.CurrentSpeed;
+            Vector3 verticalMove = Vector3.zero;
+
+            if (stateMachine.ForceReceiver != null)
             {
-                stateMachine.Animator.SetFloat("MountedSpeed", stateMachine.CurrentSpeed, 0.1f, deltaTime);
+                verticalMove = stateMachine.ForceReceiver.Movement; // includes verticalVelocity
             }
             else
             {
-                stateMachine.Animator.SetFloat("MountedSpeed", 0f, 0.1f, deltaTime);
+                // fallback gravity if ForceReceiver missing
+                verticalMove = Physics.gravity * deltaTime;
             }
+
+            // CharacterController.Move expects meters per frame (delta)
+            Vector3 moveThisFrame = (horizontalMove + verticalMove) * deltaTime;
+            stateMachine.CharacterController.Move(moveThisFrame);
         }
-        private Vector3 CalculateMovement() 
-        {
-            Vector2 moveInput = stateMachine.InputManager.MovementInput();
-            Vector3 forward = stateMachine.transform.forward * moveInput.y;
-            return forward.normalized * stateMachine.CurrentSpeed;
-        }
-        /// <summary>
-        /// Rotate mount towards the mouse position with heavier/slow turning.
-        /// </summary>
+
         protected void RotateMountToMouse(float deltaTime, float rotationMultiplier = 0.5f)
         {
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
@@ -62,13 +49,12 @@ namespace Assets.Scripts.State_Machine.Mount_State_Machine
             {
                 Vector3 targetPoint = hit.point;
                 targetPoint.y = stateMachine.transform.position.y;
-                Quaternion targetRotation = Quaternion.LookRotation(
-                    targetPoint - stateMachine.transform.position);
+                Quaternion targetRotation = Quaternion.LookRotation(targetPoint - stateMachine.transform.position);
 
                 stateMachine.transform.rotation = Quaternion.Slerp(
                     stateMachine.transform.rotation,
-                targetRotation,
-                        stateMachine.RotationSpeed * rotationMultiplier * deltaTime
+                    targetRotation,
+                    stateMachine.RotationSpeed * rotationMultiplier * deltaTime
                 );
             }
         }
