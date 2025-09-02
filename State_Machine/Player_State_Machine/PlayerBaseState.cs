@@ -136,8 +136,8 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
             Vector3 movement = _playerStateMachine.transform.forward * currentSpeed;
             Move(movement, deltaTime);
 
-            // Update horse locomotion animation
-            _playerStateMachine.Animator.SetFloat("MountedSpeed", currentSpeed / maxSpeed, 0.1f, deltaTime);
+            // Update horse locomotion animation in mount state machine
+           
         }
         /// <summary>
         /// Same as PlayerMove but for swimming.
