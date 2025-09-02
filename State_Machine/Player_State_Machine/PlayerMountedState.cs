@@ -15,9 +15,9 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
         public override void EnterState()
         {
             base.EnterState();
-            Debug.Log("Entering Player Mounted State");
+            //Debug.Log("Entering Player Mounted State");
             ResetAnimationSpeed();
-            _playerStateMachine.CharacterController.enabled = false;
+            //_playerStateMachine.CharacterController.enabled = false;
             mountInstance = Object.Instantiate(mountPrefab, _playerStateMachine.transform.position, Quaternion.identity);
 
             Transform seat = mountInstance.transform.Find("SeatSocket");
@@ -43,7 +43,7 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
         {
             //TODO: change this to only affect player mesh
             ResetAnimationSpeed();
-            _playerStateMachine.CharacterController.enabled = true;
+            //_playerStateMachine.CharacterController.enabled = true;
             _playerStateMachine.EquippedWeapon.SetActive(true);
             if (mountInstance != null)
             {
