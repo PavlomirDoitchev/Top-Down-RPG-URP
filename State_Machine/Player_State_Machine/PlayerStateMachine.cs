@@ -104,17 +104,13 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
         }
         public float GetStatValue(PlayerStatType statType)
         {
-            switch (statType)
+            return statType switch
             {
-                case PlayerStatType.Strength:
-                    return PlayerStats.Strength + PlayerStats.TotalStatChangeStrength;
-                case PlayerStatType.Dexterity:
-                    return PlayerStats.Dexterity + PlayerStats.TotalStatChangeDexterity;
-                case PlayerStatType.Intellect:
-                    return PlayerStats.Intellect + PlayerStats.TotalStatChangeIntellect;
-                default:
-                    return 0;
-            }
+                PlayerStatType.Strength => PlayerStats.Strength + PlayerStats.TotalStatChangeStrength,
+                PlayerStatType.Dexterity => PlayerStats.Dexterity + PlayerStats.TotalStatChangeDexterity,
+                PlayerStatType.Intellect => PlayerStats.Intellect + PlayerStats.TotalStatChangeIntellect,
+                _ => (float)0,
+            };
         }
         public enum EffectTypes
         {

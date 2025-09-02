@@ -23,7 +23,8 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
 		{
 			Fall();
 			PlayerMove(deltaTime);
-			DoJump();
+			Mount();
+            DoJump();
 			DoDodge();
 			DoBasicAttack();
 			DoAbilityOne();
@@ -43,8 +44,15 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
 
 
 		#region Helper Methods
-		
-		private void DoBasicAttack()
+		private void Mount()
+        {
+            if (_playerStateMachine.InputManager.PlayerMountInput()
+                && _playerStateMachine.CharacterController.isGrounded)
+            {
+                _playerStateMachine.ChangeState(new PlayerMountedState(_playerStateMachine));
+            }
+        }
+        private void DoBasicAttack()
 		{
 			if (_playerStateMachine.InputManager.BasicAttackInput()
 							&& SkillManager.Instance.FighterBasicAttack.CanUseSkill())

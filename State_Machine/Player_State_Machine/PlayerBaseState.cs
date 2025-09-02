@@ -88,29 +88,7 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
 				_playerStateMachine.transform.rotation = targetRotation;
 			}
 		}
-        /// <summary>
-        /// Rotate mount towards the mouse position with heavier/slow turning.
-        /// </summary>
-        protected void RotateMountToMouse(float deltaTime, float rotationMultiplier = 0.5f)
-        {
-            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            int layerMask = LayerMask.GetMask("Ground", "Enemy");
-
-            if (Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity, layerMask))
-            {
-                Vector3 targetPoint = hit.point;
-                targetPoint.y = _playerStateMachine.transform.position.y;
-
-                Quaternion targetRotation = Quaternion.LookRotation(
-                    targetPoint - _playerStateMachine.transform.position);
-
-                _playerStateMachine.transform.rotation = Quaternion.Slerp(
-                    _playerStateMachine.transform.rotation,
-                    targetRotation,
-                    _playerStateMachine.PlayerStats.RotationSpeed * rotationMultiplier * deltaTime
-                );
-            }
-        }
+       
         protected void MountedMove(float deltaTime, ref float currentSpeed, float acceleration, float deceleration, float maxSpeed)
         {
             Vector2 moveInput = _playerStateMachine.InputManager.MovementInput();
@@ -223,7 +201,7 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
 			//right.Normalize();
 
 			Vector2 moveInput = _playerStateMachine.InputManager.MovementInput();
-			Vector3 moveDirection = new Vector3(moveInput.x, 0, moveInput.y);
+            Vector3 moveDirection = new Vector3(moveInput.x, 0, moveInput.y);
 			//Vector3 moveDirection = forward moveInput.y + right moveInput.x;
 			return moveDirection.normalized;
 		}
