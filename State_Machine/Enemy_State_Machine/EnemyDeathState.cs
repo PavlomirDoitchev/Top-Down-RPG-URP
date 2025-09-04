@@ -27,11 +27,12 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
             
             _enemyStateMachine.transform.position = Vector3.Lerp(_enemyStateMachine.transform.position, _enemyStateMachine.transform.position + Vector3.down * 0.1f, deltaTime);
 			timer += deltaTime;
-            if(timer > 10f)
-			{
-				Object.Destroy(_enemyStateMachine.gameObject);
-			}
-		}
+            if (timer > 10f)
+            {
+                _enemyStateMachine.RaiseDeathEvent();
+                Object.Destroy(_enemyStateMachine.gameObject);
+            }
+        }
         public override void ExitState()
         {
         }

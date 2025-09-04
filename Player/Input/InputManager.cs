@@ -138,6 +138,7 @@ public class InputManager : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Tab))WorldMap.SetActive(!WorldMap.activeSelf);
         
+        
     }
 
     // ----- Movement Input -----

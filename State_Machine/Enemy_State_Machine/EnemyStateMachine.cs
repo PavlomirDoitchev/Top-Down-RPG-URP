@@ -114,10 +114,17 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
 		public bool ShouldShadowStep { get; set; } = false;
 		public bool CheckForFriendlyInCombat { get; set; } = false;
 		public bool IsKnockedBack { get; set; } = false;
-		
+		// Just for testing purposes
+        public event System.Action OnDeath;
+        public void RaiseDeathEvent()
+        {
+            OnDeath?.Invoke();
+        }
 
-		#endregion
-		private void Start()
+
+
+        #endregion
+        private void Start()
 		{
 			Agent.speed = RunningSpeed;
 			OriginalPosition = this.transform.position;
