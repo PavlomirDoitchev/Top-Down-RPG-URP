@@ -58,7 +58,8 @@ namespace Assets.Scripts.Player.Abilities.Mage_Abilities
         private void KnockbackEnemies(Collider enemy)
         {
             if (enemy.gameObject.TryGetComponent<ForceReceiver>(out var forceReceiver)
-                && enemy.gameObject.TryGetComponent<EnemyStateMachine>(out var enemyStateMachine))
+                && enemy.gameObject.TryGetComponent<EnemyStateMachine>(out var enemyStateMachine)
+                && enemyStateMachine.CanBeCrowdControlled)
             {
                 if (enemyStateMachine.IsEnraged)
                     return;

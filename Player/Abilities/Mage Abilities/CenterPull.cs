@@ -86,7 +86,7 @@ namespace Assets.Scripts.Player.Abilities.Mage_Abilities
 
                 if (!enemy.TryGetComponent<EnemyStateMachine>(out var enemySM))
                     continue;
-
+                if(!enemySM.CanBeCrowdControlled) continue;
                 if (enemySM.IsEnraged)
                     continue;
 

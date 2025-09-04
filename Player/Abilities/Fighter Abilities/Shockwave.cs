@@ -148,7 +148,8 @@ public class Shockwave : MonoBehaviour
 	{
 		if (other.TryGetComponent<ForceReceiver>(out var forceReceiver)
 			&& other.TryGetComponent<EnemyStateMachine>(out var enemyStateMachine)
-			&& !enemyStateMachine.IsEnraged)
+			&& !enemyStateMachine.IsEnraged
+			&& enemyStateMachine.CanBeCrowdControlled)
 		{
 			if (!PlayerManager.Instance.PlayerStateMachine.Ability_Two_Data[PlayerManager.Instance.PlayerStateMachine.Ability_Two_Rank].canKnockback)
 				return;

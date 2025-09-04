@@ -73,7 +73,8 @@ public class MeleeWeapon : MonoBehaviour
 	{
 		if (other.TryGetComponent<ForceReceiver>(out var forceReceiver)
 							&& other.TryGetComponent<EnemyStateMachine>(out var enemyStateMachine)
-							&& !enemyStateMachine.IsEnraged)
+							&& !enemyStateMachine.IsEnraged
+							&& enemyStateMachine.CanBeCrowdControlled)
 		{
 			switch (_playerManager.PlayerStateMachine.PlayerCurrentState)
 			{

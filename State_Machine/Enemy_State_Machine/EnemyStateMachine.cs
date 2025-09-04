@@ -114,6 +114,7 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
 		public bool ShouldShadowStep { get; set; } = false;
 		public bool CheckForFriendlyInCombat { get; set; } = false;
 		public bool IsKnockedBack { get; set; } = false;
+		[field: SerializeField] public bool CanBeCrowdControlled { get; set; } = true;
 		// Just for testing purposes
         public event System.Action OnDeath;
         public void RaiseDeathEvent()

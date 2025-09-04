@@ -61,7 +61,7 @@ namespace Assets.Scripts.Player.Abilities.Fighter_Abilities
                 {
                     if (spellHitPrefab != null)
                         Instantiate(spellHitPrefab, transform.position, Quaternion.identity);
-                    if (other.TryGetComponent<EnemyStateMachine>(out var enemy))
+                    if (other.TryGetComponent<EnemyStateMachine>(out var enemy) && enemy.CanBeCrowdControlled)
                         enemy.ChangeState(new EnemyStunnedState(enemy, stunDuration));
                     damagable.TakeDamage(damage, false);
 
