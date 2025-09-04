@@ -1,6 +1,7 @@
 using Assets.Scripts.Combat_Logic;
 using Assets.Scripts.Player;
 using DamageNumbersPro;
+using SoftKitty.MasterNavigationMap;
 using Unity.Cinemachine;
 using UnityEngine;
 namespace Assets.Scripts.State_Machine.Player_State_Machine
@@ -50,6 +51,10 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
         public PlayerStats PlayerStats { get; private set; }
         public Transform MainCameraTransform { get; private set; }
         [field: SerializeField] public CinemachineImpulseSource CinemachineImpulseSource { get; private set; }
+        private void Awake()
+        {
+            MapManeger.SetPlayer(this.transform);
+        }
         private void Start()
         {
             MainCameraTransform = Camera.main.transform;

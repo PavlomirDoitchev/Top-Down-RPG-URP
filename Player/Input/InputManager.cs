@@ -112,6 +112,7 @@
 //}
 #endregion
 
+using SoftKitty.MasterNavigationMap;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -121,7 +122,7 @@ public class InputManager : MonoBehaviour
     [SerializeField] private List<KeyBinding> keyBindingsList = new List<KeyBinding>();
 
     private Dictionary<string, KeyCode[]> keyBindingsDict;
-
+    [SerializeField] GameObject WorldMap;
     [field: SerializeField] public bool IsAttacking { get; set; }
     public Vector2 MoveInput { get; private set; }
 
@@ -132,6 +133,11 @@ public class InputManager : MonoBehaviour
             keyBindingsDict[binding.ActionName] = binding.Keys;
 
         LoadKeyBindings();
+    }
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Tab))WorldMap.SetActive(!WorldMap.activeSelf);
+        
     }
 
     // ----- Movement Input -----
