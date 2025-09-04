@@ -16,7 +16,18 @@ namespace Assets.Scripts.Utility.UI
         [SerializeField] private TextMeshProUGUI[] chargeTexts;
         [SerializeField] private Image[] skillIcons;
         [SerializeField] private Image[] empoweredSkillIcons;
-
+        private void Awake()
+        {
+            if (playerStats == null)
+            {
+                playerStats = PlayerManager.Instance.PlayerStateMachine.PlayerStats;
+            }
+            if (trackedSkills == null || trackedSkills.Count == 0)
+            {
+                // Get all Skills from the player or children
+                trackedSkills = new List<Skills>(playerStats.GetComponents<Skills>());
+            }
+        }
         private void Start()
         {
             for (int i = 0; i < trackedSkills.Count; i++)
