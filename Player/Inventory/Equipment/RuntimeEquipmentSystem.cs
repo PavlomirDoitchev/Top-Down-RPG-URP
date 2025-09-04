@@ -25,8 +25,8 @@ public class RuntimeEquipmentSystem : MonoBehaviour
             return;
         }
 
-        // Start naked
-        character.ClearItems();
+   
+        //character.ClearItems();
         character.Compile();
         equippedItems.Clear();
     }
