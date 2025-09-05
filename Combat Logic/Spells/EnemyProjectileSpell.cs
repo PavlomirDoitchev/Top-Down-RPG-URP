@@ -68,7 +68,7 @@ namespace Assets.Scripts.Combat_Logic
 				|| this.gameObject.layer == LayerMask.NameToLayer("DamageEnemy")))
 			{
 				if(spellHitPrefab != null)
-					Instantiate(spellHitPrefab, this.transform.position, Quaternion.identity); //Remove later, add to a pool
+					Instantiate(spellHitPrefab, this.transform.position, Quaternion.identity); //Spell hit effect. Needs to be removed later and added to a pool
 				damagable.TakeDamage(projectileData.damage, false);
 				//projectileData.damageNumberPrefab.Spawn(other.transform.position, projectileData.damage);
 				gameObject.SetActive(false);

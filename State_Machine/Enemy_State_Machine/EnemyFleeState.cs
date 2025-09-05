@@ -8,8 +8,7 @@ public class EnemyFleeState : EnemyBaseState
 	float fleeTimer = 5f;
 	float fleeRepathInterval = .4f;
 	float repathTimer;
-
-	public EnemyFleeState(EnemyStateMachine stateMachine) : base(stateMachine) { }
+    public EnemyFleeState(EnemyStateMachine stateMachine) : base(stateMachine) { }
 
 	public override void EnterState()
 	{

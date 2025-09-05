@@ -7,7 +7,7 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
 		//private float knockUpDuration;
 		//private float elapsedTime;
 		Vector3 momentum;
-		public EnemyKnockedUpState(EnemyStateMachine stateMachine) : base(stateMachine)
+        public EnemyKnockedUpState(EnemyStateMachine stateMachine) : base(stateMachine)
 		{
 			//knockUpDuration = duration;
 		}

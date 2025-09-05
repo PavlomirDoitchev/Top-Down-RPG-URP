@@ -20,7 +20,8 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
 			}
 			
 			_enemyStateMachine.AggrevateNearbyEnemies();
-		}
+            _enemyStateMachine.OnAbilityCheck += HandleAbilityCheck;
+        }
 
 		public override void UpdateState(float deltaTime)
 		{
@@ -60,7 +61,8 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
 			if(_enemyStateMachine.CastingVFX != null && _enemyStateMachine.CastingVFX.gameObject.activeSelf == true)
 				_enemyStateMachine.CastingVFX.gameObject.SetActive(false);
 			ResetAnimationSpeed();
-		}
+            _enemyStateMachine.OnAbilityCheck -= HandleAbilityCheck;
+        }
 		#region Helper Methods
 	
 		private bool ShouldFleePlayerTooClose()

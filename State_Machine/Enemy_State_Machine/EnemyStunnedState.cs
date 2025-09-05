@@ -26,6 +26,11 @@
         public override void UpdateState(float deltaTime)
         {
             //if (CheckForGlobalTransitions()) return;
+            if(_enemyStateMachine.ShouldDie)
+            {
+                _enemyStateMachine.ChangeState(new EnemyDeathState(_enemyStateMachine));
+                return;
+            }
             Move(deltaTime);
             elapsedTime += deltaTime;
             if (elapsedTime >= stunDuration)

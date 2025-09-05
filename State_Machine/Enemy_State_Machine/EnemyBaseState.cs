@@ -9,7 +9,7 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
     public abstract class EnemyBaseState : State
     {
         protected EnemyStateMachine _enemyStateMachine;
-        protected PlayerManager playerManager => PlayerManager.Instance;
+        protected PlayerManager PlayerManager => PlayerManager.Instance;
         public EnemyBaseState(EnemyStateMachine stateMachine)
         {
             this._enemyStateMachine = stateMachine;
@@ -19,6 +19,15 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
             base.EnterState();
             //Debug.Log($"Entering state: {this.GetType().Name}");
 		}
+        protected virtual void HandleAbilityCheck()
+        {
+            if (_enemyStateMachine.SpecialAbilityCooldown.IsReady)
+            {
+                _enemyStateMachine.ChangeState(new EnemySpecialAbilityState(_enemyStateMachine));
+            }
+        }
+
+        
         protected bool CheckForGlobalTransitions()
         {
             if (_enemyStateMachine.ShouldDie)
@@ -74,7 +83,7 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
 		/// <returns></returns>
 		protected bool CanSeePlayer(float distance)
         {
-            Transform player = playerManager.PlayerStateMachine.transform;
+            Transform player = PlayerManager.PlayerStateMachine.transform;
             Vector3 directionToPlayer = (player.position - _enemyStateMachine.transform.position).normalized;
             float distanceToPlayer = Vector3.Distance(_enemyStateMachine.transform.position, player.position);
 
@@ -106,7 +115,7 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
         /// <returns></returns>
         protected bool HasLineOfSight()
         {
-            Transform player = playerManager.PlayerStateMachine.transform;
+            Transform player = PlayerManager.PlayerStateMachine.transform;
             Vector3 directionToPlayer = (player.position - _enemyStateMachine.transform.position).normalized;
             float distanceToPlayer = Vector3.Distance(_enemyStateMachine.transform.position, player.position);
             if (Vector3.Angle(_enemyStateMachine.transform.forward, directionToPlayer) < _enemyStateMachine.ViewAngle / 2f)

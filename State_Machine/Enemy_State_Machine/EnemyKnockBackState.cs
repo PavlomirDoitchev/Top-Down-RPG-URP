@@ -4,8 +4,7 @@ public class EnemyKnockbackState : EnemyBaseState
 {
 	private float knockbackDuration;
 	private float elapsedTime;
-
-	public EnemyKnockbackState(EnemyStateMachine stateMachine, float duration) : base(stateMachine)
+    public EnemyKnockbackState(EnemyStateMachine stateMachine, float duration) : base(stateMachine)
 	{
 		knockbackDuration = duration;
 	}

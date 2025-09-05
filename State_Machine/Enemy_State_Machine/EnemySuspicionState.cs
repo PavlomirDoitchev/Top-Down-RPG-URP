@@ -19,7 +19,7 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
             //_enemyStateMachine.Agent.isStopped = true;
             //_enemyStateMachine.Animator.CrossFadeInFixedTime("idle", .1f);
             _enemyStateMachine.Animator.CrossFadeInFixedTime(_enemyStateMachine.RunAnimationName, .1f);
-            lastSeenPlayerPos = _enemyStateMachine.player.PlayerStateMachine.transform.position;
+            lastSeenPlayerPos = _enemyStateMachine.Player.PlayerStateMachine.transform.position;
             _enemyStateMachine.Agent.SetDestination(lastSeenPlayerPos);
         }
 
