@@ -31,7 +31,9 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
 		[Space(10)]
 		public string enemyAIName = "Enemy AI";
 		public Cooldown RangedAttackCooldown = new(); //create a new instance of this if you want to track a different ability CD
-		[field: SerializeField] public float ViewAngle { get; private set; } = 120f; //degrees
+		public Cooldown SpecialAbilityCooldown = new(); //create a new instance of this if you want to track a different ability CD
+		public Cooldown BossPhaseCooldown = new(); 
+        [field: SerializeField] public float ViewAngle { get; private set; } = 120f; //degrees
 		[field: SerializeField] public LayerMask ObstacleMask { get; private set; }
 		[field: SerializeField] public LayerMask TargetMask { get; private set; }
 		[field: SerializeField] public float RunningSpeed { get; set; }
@@ -52,7 +54,9 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
 		[field: SerializeField] public bool ShouldFleeWhenLowHealth { get; set; } = false;
 		[field: SerializeField] public bool ShouldFleeFromDamage { get; set; } = false; 
 		[field: SerializeField] public float RangedAttackCooldownDuration { get; private set; } = 2f;
-		[field: SerializeField] public int AttackIndex { get; private set; } = 0; //used to determine which attack animation to play
+        [field: SerializeField] public float SpecialAbilityCooldownDuration { get; private set; } = 10f;
+        [field: SerializeField] public float BossPhaseCooldownDuration { get; private set; } = 20f;
+        [field: SerializeField] public int AttackIndex { get; private set; } = 0; //used to determine which attack animation to play
 		[field: SerializeField]
 		[field: Range(0, 1)] public float EnrageThreshold { get; private set; } = 0.5f; //percentage of health at which the enemy becomes enraged
 		[field: SerializeField] public bool CanBecomeEnraged { get; set; } = false;
@@ -104,7 +108,7 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
 		#endregion
 
 		#region Global Flags
-		public bool ShouldDie { get; set; } = false;
+        public bool ShouldDie { get; set; } = false;
 		public bool ShouldReturnToOrigin { get; set; } = false;
 		public bool IsStunned { get; set; } = false;
 		public bool IsKnockedUp { get; set; } = false;
@@ -114,6 +118,7 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
 		public bool ShouldShadowStep { get; set; } = false;
 		public bool CheckForFriendlyInCombat { get; set; } = false;
 		public bool IsKnockedBack { get; set; } = false;
+		public bool IsFlying { get; set; } = false;
 		[field: SerializeField] public bool CanBeCrowdControlled { get; set; } = true;
 		// Just for testing purposes
         public event System.Action OnDeath;
@@ -132,9 +137,15 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
 			CurrentHealth = MaxHealth;
 			ChangeState(new EnemyIdleState(this));
 		}
+        private void Update()
+        {
+            SpecialAbilityCooldown.Tick(Time.deltaTime);
+			if (SpecialAbilityCooldown.IsReady && !IsFlying)
+				ChangeState(new EnemySpecialAbility(this));
+        }
         public void OnControllerColliderHit(ControllerColliderHit hit)
         {
-			if (IsKnockedBack && hit.gameObject.layer == LayerMask.NameToLayer("Default"))
+			if (IsKnockedBack && hit.gameObject.layer == LayerMask.NameToLayer("Wall"))
 			{
 				ChangeState(new EnemyStunnedState(this, 1f));
 			}
