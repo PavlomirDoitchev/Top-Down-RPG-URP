@@ -12,6 +12,7 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
 
         public override void EnterState()
         {
+            base.EnterState();
             _enemyStateMachine.Agent.isStopped = true;
             var abilities = _enemyStateMachine.GetComponentsInChildren<ISpecialAbility>().ToArray();
             var readyAbilities = abilities.Where(a => a.IsReady).ToArray();

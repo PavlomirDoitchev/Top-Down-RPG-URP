@@ -20,14 +20,19 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
 			}
 			
 			_enemyStateMachine.AggrevateNearbyEnemies();
-            _enemyStateMachine.OnAbilityCheck += HandleAbilityCheck;
+           // _enemyStateMachine.OnAbilityCheck += HandleAbilityCheck;
         }
 
 		public override void UpdateState(float deltaTime)
 		{
 			_enemyStateMachine.RangedAttackCooldown.Tick(deltaTime);
-			
-			if (CheckForGlobalTransitions()) return;
+            if (_enemyStateMachine.AbilityClock.TimeElapsed >= _enemyStateMachine.SpecialAbilityThreshold
+				&& _enemyStateMachine.SpecialAbilityCooldown.IsReady)
+            {
+                _enemyStateMachine.ChangeState(new EnemySpecialAbilityState(_enemyStateMachine));
+                return;
+            }
+            if (CheckForGlobalTransitions()) return;
 			RotateToPlayer(deltaTime);
 			if (!HasLineOfSight() || OutOfShootingRange())
 			{
@@ -61,7 +66,7 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
 			if(_enemyStateMachine.CastingVFX != null && _enemyStateMachine.CastingVFX.gameObject.activeSelf == true)
 				_enemyStateMachine.CastingVFX.gameObject.SetActive(false);
 			ResetAnimationSpeed();
-            _enemyStateMachine.OnAbilityCheck -= HandleAbilityCheck;
+            //_enemyStateMachine.OnAbilityCheck -= HandleAbilityCheck;
         }
 		#region Helper Methods
 	
@@ -81,7 +86,13 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
 			return Vector3.Distance(PlayerManager.Instance.PlayerStateMachine.transform.position, _enemyStateMachine.transform.position)
 							> _enemyStateMachine.RangedAttackRange;
 		}
-
-		#endregion
-	}
+        //void HandleAbilityCheck()
+        //{
+        //    if (_enemyStateMachine.SpecialAbilityCooldown.IsReady)
+        //    {
+        //        _enemyStateMachine.ChangeState(new EnemySpecialAbilityState(_enemyStateMachine));
+        //    }
+        //}
+        #endregion
+    }
 }

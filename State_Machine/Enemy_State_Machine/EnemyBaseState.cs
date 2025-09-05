@@ -17,15 +17,15 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
         public override void EnterState()
         {
             base.EnterState();
-            //Debug.Log($"Entering state: {this.GetType().Name}");
+            Debug.Log($"Entering state: {this.GetType().Name}");
 		}
-        protected virtual void HandleAbilityCheck()
-        {
-            if (_enemyStateMachine.SpecialAbilityCooldown.IsReady)
-            {
-                _enemyStateMachine.ChangeState(new EnemySpecialAbilityState(_enemyStateMachine));
-            }
-        }
+        //protected virtual void HandleAbilityCheck()
+        //{
+        //    if (_enemyStateMachine.SpecialAbilityCooldown.IsReady)
+        //    {
+        //        _enemyStateMachine.ChangeState(new EnemySpecialAbilityState(_enemyStateMachine));
+        //    }
+        //}
 
         
         protected bool CheckForGlobalTransitions()

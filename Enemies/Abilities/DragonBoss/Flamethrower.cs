@@ -47,7 +47,7 @@ namespace Assets.Scripts.Enemies.Abilities
         {
             stateMachine = GetComponentInParent<EnemyStateMachine>();
         }
-
+      
         public void StartAbility()
         {
             if (!IsReady) return;
@@ -111,8 +111,8 @@ namespace Assets.Scripts.Enemies.Abilities
                     {
                         int finalDamage = baseDamage;
 
-                        if (stateMachine.IsEnraged)
-                            finalDamage = Mathf.RoundToInt(finalDamage * stateMachine.EnragedDamageMultiplier);
+                      
+                        hitCache.Add(hit);
 
                         damagable.TakeDamage(finalDamage, false);
 
@@ -121,11 +121,11 @@ namespace Assets.Scripts.Enemies.Abilities
 
                         if (burnEffect != null && hit.TryGetComponent<IEffectable>(out var effectable))
                             effectable.ApplyEffect(burnEffect);
-
-                        hitCache.Add(hit);
+                        hitCache.Clear();
                     }
                 }
             }
+            Debug.Log($"Colliders {hitCache.Count}");
         }
     }
 }

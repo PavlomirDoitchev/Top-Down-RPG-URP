@@ -4,6 +4,7 @@ using Assets.Scripts.Enemies.Abilities.Interfaces;
 using Assets.Scripts.Player;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.AI;
@@ -44,8 +45,9 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
         [Space(10)]
         public string enemyAIName = "Enemy AI";
         public Cooldown RangedAttackCooldown = new(); //create a new instance of this if you want to track a different ability CD
-        public Cooldown SpecialAbilityCooldown = new(); //create a new instance of this if you want to track a different ability CD
-        public Cooldown BossPhaseCooldown = new();
+        public Cooldown SpecialAbilityCooldown = new();
+        public float SpecialAbilityThreshold = 5f;
+        public GlobalAbilityClock AbilityClock { get; private set; } = new GlobalAbilityClock();
         [field: SerializeField] public float ViewAngle { get; private set; } = 270f; //degrees
         [field: SerializeField] public LayerMask ObstacleMask { get; private set; }
         [field: SerializeField] public LayerMask TargetMask { get; private set; }
@@ -143,7 +145,6 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
             OnDeath?.Invoke();
         }
 
-        public event Action OnAbilityCheck;
 
         #endregion
 
@@ -167,12 +168,15 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
 
         private void Update()
         {
+            AbilityClock.Tick(Time.deltaTime);
+
+            // Tick special ability cooldowns
             foreach (var ability in specialAbilities)
                 ability.TickCooldown(Time.deltaTime);
 
-            OnAbilityCheck?.Invoke();
+            // Update current state
+            CurrentState?.UpdateState(Time.deltaTime);
         }
-
         public void OnControllerColliderHit(ControllerColliderHit hit)
         {
             if (IsKnockedBack && hit.gameObject.layer == LayerMask.NameToLayer("Wall"))
@@ -224,7 +228,7 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
                 Animator.CrossFadeInFixedTime(AttackAnimationName[AttackIndex], .1f);
             }
         }
-
+      
         public void OnDrawGizmosSelected()
         {
             //Gizmos.color = Color.red;

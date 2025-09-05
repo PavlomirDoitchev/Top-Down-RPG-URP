@@ -26,7 +26,7 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
                 SetAttackSpeed(1f);
                 MovementSpeedWalking();
             }
-            _enemyStateMachine.OnAbilityCheck += HandleAbilityCheck;
+            //_enemyStateMachine.OnAbilityCheck += HandleAbilityCheck;
         }
 
         public override void UpdateState(float deltaTime)
@@ -45,10 +45,17 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
         }
         public override void ExitState()
         {
-            _enemyStateMachine.OnAbilityCheck -= HandleAbilityCheck;
+            //_enemyStateMachine.OnAbilityCheck -= HandleAbilityCheck;
             ResetAnimationSpeed();
             MovementSpeedRunning();
         }
-        
+        //void HandleAbilityCheck()
+        //{
+        //    if (_enemyStateMachine.SpecialAbilityCooldown.IsReady)
+        //    {
+        //        _enemyStateMachine.ChangeState(new EnemySpecialAbilityState(_enemyStateMachine));
+        //    }
+        //}
+
     }
 }
