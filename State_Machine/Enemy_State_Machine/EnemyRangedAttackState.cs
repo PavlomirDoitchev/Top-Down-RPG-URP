@@ -26,14 +26,18 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
 		public override void UpdateState(float deltaTime)
 		{
 			_enemyStateMachine.RangedAttackCooldown.Tick(deltaTime);
+          
+            if (CheckForGlobalTransitions()) return;
+
             if (_enemyStateMachine.AbilityClock.TimeElapsed >= _enemyStateMachine.SpecialAbilityThreshold
 				&& _enemyStateMachine.SpecialAbilityCooldown.IsReady)
             {
+                _enemyStateMachine.PreviousCombatState = this;
                 _enemyStateMachine.ChangeState(new EnemySpecialAbilityState(_enemyStateMachine));
                 return;
             }
-            if (CheckForGlobalTransitions()) return;
-			RotateToPlayer(deltaTime);
+
+            RotateToPlayer(deltaTime);
 			if (!HasLineOfSight() || OutOfShootingRange())
 			{
 				_enemyStateMachine.ChangeState(new EnemyChaseState(_enemyStateMachine));

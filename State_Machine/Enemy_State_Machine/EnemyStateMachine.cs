@@ -15,6 +15,7 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
         public PlayerManager Player => PlayerManager.Instance;
         public EnemyType EnemyType;
         public EnemyStateTypes EnemyStateTypes;
+
         public GameObject EquippedWeapon;
         [field: SerializeField] public CharacterController CharacterController { get; private set; }
         [field: SerializeField] public ForceReceiver ForceReceiver { get; private set; }
@@ -47,6 +48,7 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
         public Cooldown RangedAttackCooldown = new(); //create a new instance of this if you want to track a different ability CD
         public Cooldown SpecialAbilityCooldown = new();
         public float SpecialAbilityThreshold = 5f;
+        public EnemyBaseState PreviousCombatState { get; set; }
         public GlobalAbilityClock AbilityClock { get; private set; } = new GlobalAbilityClock();
         [field: SerializeField] public float ViewAngle { get; private set; } = 270f; //degrees
         [field: SerializeField] public LayerMask ObstacleMask { get; private set; }

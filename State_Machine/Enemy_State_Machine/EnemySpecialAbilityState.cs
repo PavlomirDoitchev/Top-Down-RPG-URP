@@ -21,7 +21,7 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
             {
                 chosenAbility = readyAbilities.OrderByDescending(a => a.Priority).First();
                 chosenAbility.StartAbility();
-                
+                _enemyStateMachine.SpecialAbilityCooldown.Start(_enemyStateMachine.SpecialAbilityCooldownDuration);
             }
             else
             {
@@ -41,7 +41,18 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
             }
             if (chosenAbility == null) return;
             if (!chosenAbility.IsActive)
-                _enemyStateMachine.ChangeState(new EnemyChaseState(_enemyStateMachine));
+            {
+                if (_enemyStateMachine.PreviousCombatState != null)
+                {
+                    _enemyStateMachine.ChangeState(_enemyStateMachine.PreviousCombatState);
+                    _enemyStateMachine.PreviousCombatState = null;
+                }
+                else
+                {
+                    _enemyStateMachine.ChangeState(new EnemyChaseState(_enemyStateMachine));
+                }
+            }
+
 
             if (chosenAbility.ShouldRotateToPlayer())
             {

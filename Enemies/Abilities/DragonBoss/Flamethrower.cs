@@ -72,7 +72,6 @@ namespace Assets.Scripts.Enemies.Abilities
         public void TickCooldown(float deltaTime)
         {
             cooldown.Tick(deltaTime);
-
             if (!isActive) return;
 
             durationTimer -= deltaTime;
@@ -125,7 +124,24 @@ namespace Assets.Scripts.Enemies.Abilities
                     }
                 }
             }
-            Debug.Log($"Colliders {hitCache.Count}");
+            
+        }
+        private void OnDrawGizmos()
+        {
+            if (!isActive) return;
+
+            Vector3 origin = transform.position + Vector3.up * 1.2f;
+            Vector3 forward = transform.forward;
+
+            Gizmos.color = new Color(1f, 0.5f, 0f, 0.25f);
+            Gizmos.DrawWireSphere(origin, maxRange);
+
+            Vector3 rightBoundary = Quaternion.Euler(0, coneAngle * 0.5f, 0) * forward;
+            Vector3 leftBoundary = Quaternion.Euler(0, -coneAngle * 0.5f, 0) * forward;
+
+            Gizmos.color = new Color(1f, 0.5f, 0f, 0.5f);
+            Gizmos.DrawLine(origin, origin + rightBoundary * maxRange);
+            Gizmos.DrawLine(origin, origin + leftBoundary * maxRange);
         }
     }
 }
