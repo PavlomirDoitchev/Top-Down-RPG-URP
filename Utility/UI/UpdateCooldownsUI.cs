@@ -24,7 +24,6 @@ namespace Assets.Scripts.Utility.UI
             }
             if (trackedSkills == null || trackedSkills.Count == 0)
             {
-                // Get all Skills from the player or children
                 trackedSkills = new List<Skills>(playerStats.GetComponents<Skills>());
             }
         }

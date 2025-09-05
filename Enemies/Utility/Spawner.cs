@@ -1,10 +1,11 @@
 ﻿using Assets.Scripts.State_Machine.Enemy_State_Machine;
+using Assets.Scripts.Utility.UI;
 using System.Collections.Generic;
 using UnityEngine;
 
 namespace Assets.Scripts.Enemies.Utility
 {
-    public class Spawner : MonoBehaviour
+    public class Spawner : Subject
     {
         [Header("Enemy Setup")]
         [SerializeField] private GameObject[] enemyPrefabs; 
