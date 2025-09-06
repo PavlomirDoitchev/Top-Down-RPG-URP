@@ -8,10 +8,10 @@ using Assets.Scripts.State_Machine.Enemy_State_Machine;
 
 namespace Assets.Scripts.Enemies.Abilities
 {
-    public class EnemyGroundExplosion : SpecialAbilityBase
+    public class GroundLightningStrike : SpecialAbilityBase
     {
         [Header("Ability Info")]
-        [SerializeField] private string abilityName = "Ground Explosion";
+        [SerializeField] private string abilityName = "Ground Lightning";
         [SerializeField] private float duration = 0.5f; // how long the meteor takes to hit
         [SerializeField] private bool rotateToPlayer = false;
 

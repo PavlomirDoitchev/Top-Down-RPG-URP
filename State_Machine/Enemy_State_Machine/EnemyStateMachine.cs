@@ -3,9 +3,6 @@ using Assets.Scripts.Enemies;
 using Assets.Scripts.Enemies.Abilities.Interfaces;
 using Assets.Scripts.Player;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using UnityEditor;
 using UnityEngine;
 using UnityEngine.AI;
 namespace Assets.Scripts.State_Machine.Enemy_State_Machine
@@ -16,6 +13,8 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
         public EnemyType EnemyType;
         public EnemyStateTypes EnemyStateTypes;
 
+        [field: SerializeField] public GameObject HealthPickup { get; set; }
+        [field: SerializeField] public float HealthPickupChance { get; private set; } = 0.1f;
         public GameObject EquippedWeapon;
         [field: SerializeField] public CharacterController CharacterController { get; private set; }
         [field: SerializeField] public ForceReceiver ForceReceiver { get; private set; }
@@ -236,7 +235,7 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
                 Animator.CrossFadeInFixedTime(AttackAnimationName[AttackIndex], .1f);
             }
         }
-      
+
         public void OnDrawGizmosSelected()
         {
             //Gizmos.color = Color.red;

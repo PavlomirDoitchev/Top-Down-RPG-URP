@@ -1,12 +1,10 @@
-using Assets.Scripts.State_Machine.Player_State_Machine;
-using System.Collections.Generic;
-using System;
-using UnityEngine;
-using System.Collections;
-using Assets.Scripts.Save_Manager;
 using Assets.Scripts.Combat_Logic;
+using Assets.Scripts.Save_Manager;
+using Assets.Scripts.State_Machine.Player_State_Machine;
 using Assets.Scripts.Utility.UI;
-using Assets.Scripts.Player.Abilities.Fighter_Abilities;
+using System;
+using System.Collections.Generic;
+using UnityEngine;
 
 namespace Assets.Scripts.Player
 {
@@ -160,7 +158,7 @@ namespace Assets.Scripts.Player
         {
             currentHealth = Mathf.Min(currentHealth + amount, maxHealth);
             if (currentHealth != maxHealth)
-                playerManager.PlayerStateMachine.DamageText[5].Spawn(transform.position + Vector3.up * 2f, $"+{amount}+");
+                playerManager.PlayerStateMachine.DamageText[5].Spawn(transform.position + Vector3.up * 2f, amount);
             NotifyObservers();
         }
         public Dictionary<StatusEffectData.StatusEffectType, ActiveEffect> GetActiveEffects()
@@ -174,7 +172,7 @@ namespace Assets.Scripts.Player
         public int GetCurrentXP()
         {
             return this.currentXP;
-        }   
+        }
         public int GetXPToNextLevel()
         {
             if (level >= maxLevel)
