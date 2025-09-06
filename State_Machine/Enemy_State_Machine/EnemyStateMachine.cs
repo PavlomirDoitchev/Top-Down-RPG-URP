@@ -15,7 +15,7 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
 
         [field: SerializeField] public GameObject HealthPickup { get; set; }
         [field: SerializeField] public float HealthPickupChance { get; private set; } = 0.1f;
-        public GameObject EquippedWeapon;
+        //public GameObject EquippedWeapon;
         [field: SerializeField] public CharacterController CharacterController { get; private set; }
         [field: SerializeField] public ForceReceiver ForceReceiver { get; private set; }
         [field: SerializeField] public Animator Animator { get; private set; }
@@ -61,6 +61,7 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
         [field: SerializeField] public float ChaseDistance { get; private set; }
         [field: SerializeField] public float MaxDistanceFromOrigin { get; private set; }
         [field: SerializeField] public float SuspicionTime { get; private set; }
+        [field: SerializeField] public bool ShouldRotateInMeleeAttack { get; set; } = true;
         [field: SerializeField] public float AttackRange { get; private set; }
         [field: SerializeField] public float AttackRangeToleranceBeforeChasing { get; private set; }
         [field: SerializeField] public float RangedAttackRange { get; private set; }
@@ -70,8 +71,6 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
         [field: SerializeField] public bool ShouldFleeWhenLowHealth { get; set; } = false;
         [field: SerializeField] public bool ShouldFleeFromDamage { get; set; } = false;
         [field: SerializeField] public float RangedAttackCooldownDuration { get; private set; } = 2f;
-        [field: SerializeField] public float SpecialAbilityCooldownDuration { get; private set; } = 10f;
-        [field: SerializeField] public float BossPhaseCooldownDuration { get; private set; } = 20f;
         [field: SerializeField] public int AttackIndex { get; private set; } = 0; //used to determine which attack animation to play
         [field: SerializeField]
         [field: Range(0, 1)] public float EnrageThreshold { get; private set; } = 0.5f; //percentage of health at which the enemy becomes enraged

@@ -43,7 +43,8 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
                 _enemyStateMachine.AbilityClock.Reset();
                 return;
             }
-            RotateToPlayer(deltaTime);
+            if(_enemyStateMachine.ShouldRotateInMeleeAttack)
+                RotateToPlayer(deltaTime);
             
             if (Vector3.Distance(PlayerManager.Instance.PlayerStateMachine.transform.position, _enemyStateMachine.transform.position)
                 > _enemyStateMachine.AttackRangeToleranceBeforeChasing && _enemyStateMachine.EnemyType == EnemyType.Melee)
