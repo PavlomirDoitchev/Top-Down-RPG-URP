@@ -53,10 +53,10 @@ namespace Assets.Scripts.Enemies.Abilities
             if (groundMarkerPrefab != null)
                 currentMarker = Instantiate(groundMarkerPrefab, targetPosition, Quaternion.identity);
             stateMachine.Animator.CrossFadeInFixedTime(stateMachine.SpecialAbilityAnimationName, 0.1f);
-            stateMachine.StartCoroutine(CastMeteor());
+            stateMachine.StartCoroutine(CastSpell());
         }
 
-        private IEnumerator CastMeteor()
+        private IEnumerator CastSpell()
         {
             isCasting = true;
 
