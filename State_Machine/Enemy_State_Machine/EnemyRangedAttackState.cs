@@ -27,26 +27,22 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
 			_enemyStateMachine.RangedAttackCooldown.Tick(deltaTime);
           
             if (CheckForGlobalTransitions()) return;
-
-            _enemyStateMachine.AbilityClock.Tick(deltaTime);
-
-            if (_enemyStateMachine.AbilityClock.TimeElapsed >= _enemyStateMachine.SpecialAbilityThreshold)
-            {
-                if (_enemyStateMachine.SpecialAbilityCooldown.IsReady)
-                {
-                    _enemyStateMachine.PreviousCombatState = this;
-                    _enemyStateMachine.ChangeState(new EnemySpecialAbilityState(_enemyStateMachine));
-                    _enemyStateMachine.AbilityClock.Reset(); 
-                    return;
-                }
-            }
-
             RotateToPlayer(deltaTime);
+
 			if (!HasLineOfSight() || OutOfShootingRange())
 			{
 				_enemyStateMachine.ChangeState(new EnemyChaseState(_enemyStateMachine));
 				return;
 			}
+            if (_enemyStateMachine.AbilityClock.TimeElapsed >= _enemyStateMachine.SpecialAbilityThreshold &&
+				_enemyStateMachine.SpecialAbilityCooldown.IsReady)
+            {
+                _enemyStateMachine.PreviousCombatState = this;
+                _enemyStateMachine.ChangeState(new EnemySpecialAbilityState(_enemyStateMachine));
+                _enemyStateMachine.AbilityClock.Reset();
+                return;
+            }
+
 			if (_enemyStateMachine.CastingVFX != null && _enemyStateMachine.CastingVFX.gameObject.activeSelf == false && !_enemyStateMachine.RangedAttackCooldown.IsReady)
 				_enemyStateMachine.CastingVFX.gameObject.SetActive(true);
 			else if(_enemyStateMachine.CastingVFX != null && _enemyStateMachine.RangedAttackCooldown.IsReady)

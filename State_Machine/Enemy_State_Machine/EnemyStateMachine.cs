@@ -172,12 +172,17 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
         {
             float deltaTime = Time.deltaTime;
 
+            // Tick global cooldowns
             SpecialAbilityCooldown.Tick(deltaTime);
+            AbilityClock.Tick(deltaTime);
 
+            // Tick individual abilities
             foreach (var ability in GetComponentsInChildren<ISpecialAbility>())
             {
                 ability.TickCooldown(deltaTime);
             }
+
+            // Update current state
             CurrentState.UpdateState(deltaTime);
         }
         public void OnControllerColliderHit(ControllerColliderHit hit)
