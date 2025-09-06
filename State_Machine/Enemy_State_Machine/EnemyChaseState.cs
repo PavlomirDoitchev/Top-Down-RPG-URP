@@ -30,7 +30,7 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
         {
             timer += deltaTime;
             if (CheckForGlobalTransitions()) return;
-            if(timer < resetTimer) return; // Wait for the reset timer before processing further
+            if(timer < resetTimer) return; 
             Vector3 playerPos = PlayerManager.Instance.PlayerStateMachine.transform.position;
             _enemyStateMachine.Agent.SetDestination(playerPos);
 

@@ -8,7 +8,7 @@ using DamageNumbersPro;
 
 namespace Assets.Scripts.Enemies.Abilities
 {
-    public class EnemyFlamethrower : MonoBehaviour, ISpecialAbility
+    public class EnemyFlamethrower : SpecialAbilityBase
     {
         [Header("Ability Info")]
         [SerializeField] private string abilityName = "Flamethrower";
@@ -25,54 +25,46 @@ namespace Assets.Scripts.Enemies.Abilities
         [SerializeField] private DamageNumber damageNumberPrefab;
 
         [Header("Ability Settings")]
-        [SerializeField] private float cooldownDuration = 8f;
         [SerializeField] private int priority = 1;
 
         private EnemyStateMachine stateMachine;
         private float durationTimer;
         private float tickTimer;
-        private bool isActive;
 
-        private readonly Cooldown cooldown = new();
         private readonly List<Collider> hitCache = new();
 
-        // ISpecialAbility Implementation
-        public string AbilityName => abilityName;
-        public float Duration => duration;
-        public bool IsActive => isActive;
-        public bool IsReady => cooldown.IsReady;
-        public int Priority => priority;
+        // Implement abstract members
+        public override string AbilityName => abilityName;
+        public override float Duration => duration;
+        public override int Priority => priority;
+        public override bool IsActive { get; protected set; }
 
         private void Awake()
         {
             stateMachine = GetComponentInParent<EnemyStateMachine>();
         }
-      
-        public void StartAbility()
+
+        public override void StartAbility()
         {
             if (!IsReady) return;
 
-            isActive = true;
-            durationTimer = duration;
+            IsActive = true;
+            durationTimer = Duration;
             tickTimer = 0f;
-            cooldown.Start(cooldownDuration);
 
-            if (flameVFX != null && !flameVFX.isPlaying) flameVFX.Play();
+            ResetCooldown(); 
 
-            // Play cast animation
+            if (flameVFX != null && !flameVFX.isPlaying)
+                flameVFX.Play();
+
             stateMachine.Animator.CrossFadeInFixedTime(stateMachine.SpecialAbilityAnimationName, 0.1f);
         }
 
-        public void StopAbility()
+        public override void TickCooldown(float deltaTime)
         {
-            isActive = false;
-            if (flameVFX != null && flameVFX.isPlaying) flameVFX.Stop();
-        }
+            base.TickCooldown(deltaTime); 
 
-        public void TickCooldown(float deltaTime)
-        {
-            cooldown.Tick(deltaTime);
-            if (!isActive) return;
+            if (!IsActive) return;
 
             durationTimer -= deltaTime;
             tickTimer -= deltaTime;
@@ -89,7 +81,16 @@ namespace Assets.Scripts.Enemies.Abilities
             }
         }
 
-        public bool ShouldRotateToPlayer() => rotateToPlayer;
+        public override void StopAbility()
+        {
+            IsActive = false;
+            if (flameVFX != null && flameVFX.isPlaying)
+                flameVFX.Stop();
+        }
+
+        public override bool ShouldRotateToPlayer() => rotateToPlayer;
+
+       
 
         private void ApplyDamageCone()
         {
@@ -108,27 +109,21 @@ namespace Assets.Scripts.Enemies.Abilities
                 {
                     if (hit.TryGetComponent<IDamagable>(out var damagable))
                     {
-                        int finalDamage = baseDamage;
-
-                      
-                        hitCache.Add(hit);
-
-                        damagable.TakeDamage(finalDamage, false);
+                        damagable.TakeDamage(baseDamage, false);
 
                         if (damageNumberPrefab != null)
-                            damageNumberPrefab.Spawn(hit.transform.position + Vector3.up * 2f, finalDamage);
+                            damageNumberPrefab.Spawn(hit.transform.position + Vector3.up * 2f, baseDamage);
 
                         if (burnEffect != null && hit.TryGetComponent<IEffectable>(out var effectable))
                             effectable.ApplyEffect(burnEffect);
-                        hitCache.Clear();
                     }
                 }
             }
-            
         }
+
         private void OnDrawGizmos()
         {
-            if (!isActive) return;
+            if (!IsActive) return;
 
             Vector3 origin = transform.position + Vector3.up * 1.2f;
             Vector3 forward = transform.forward;

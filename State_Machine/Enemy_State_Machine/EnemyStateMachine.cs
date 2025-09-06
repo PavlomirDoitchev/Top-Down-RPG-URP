@@ -170,14 +170,15 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
 
         private void Update()
         {
-            AbilityClock.Tick(Time.deltaTime);
+            float deltaTime = Time.deltaTime;
 
-            // Tick special ability cooldowns
-            foreach (var ability in specialAbilities)
-                ability.TickCooldown(Time.deltaTime);
+            SpecialAbilityCooldown.Tick(deltaTime);
 
-            // Update current state
-            CurrentState?.UpdateState(Time.deltaTime);
+            foreach (var ability in GetComponentsInChildren<ISpecialAbility>())
+            {
+                ability.TickCooldown(deltaTime);
+            }
+            CurrentState.UpdateState(deltaTime);
         }
         public void OnControllerColliderHit(ControllerColliderHit hit)
         {

@@ -1,12 +1,13 @@
-﻿using Assets.Scripts.Enemies.Abilities;
-using Assets.Scripts.Enemies.Abilities.Interfaces;
+﻿using Assets.Scripts.Enemies.Abilities.Interfaces;
 using System.Linq;
 using UnityEngine;
+
 namespace Assets.Scripts.State_Machine.Enemy_State_Machine
 {
     public class EnemySpecialAbilityState : EnemyBaseState
     {
         private ISpecialAbility chosenAbility;
+        private ISpecialAbility[] abilities;
 
         public EnemySpecialAbilityState(EnemyStateMachine stateMachine) : base(stateMachine) { }
 
@@ -14,47 +15,56 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
         {
             base.EnterState();
             _enemyStateMachine.Agent.isStopped = true;
-            var abilities = _enemyStateMachine.GetComponentsInChildren<ISpecialAbility>().ToArray();
-            var readyAbilities = abilities.Where(a => a.IsReady).ToArray();
-
-            if (readyAbilities.Length > 0)
-            {
-                chosenAbility = readyAbilities.OrderByDescending(a => a.Priority).First();
-                chosenAbility.StartAbility();
-                _enemyStateMachine.SpecialAbilityCooldown.Start(_enemyStateMachine.SpecialAbilityCooldownDuration);
-            }
-            else
-            {
-                _enemyStateMachine.ChangeState(new EnemyChaseState(_enemyStateMachine));
-            }
             RotateToPlayer();
-            
+
+            abilities = _enemyStateMachine.GetComponentsInChildren<ISpecialAbility>().ToArray();
         }
 
         public override void UpdateState(float deltaTime)
         {
-            //CheckForGlobalTransitions();
-            if(_enemyStateMachine.ShouldDie)
+            if (_enemyStateMachine.ShouldDie)
             {
                 _enemyStateMachine.ChangeState(new EnemyDeathState(_enemyStateMachine));
                 return;
             }
-            if (chosenAbility == null) return;
-            if (!chosenAbility.IsActive)
+
+            // Tick all abilities
+            foreach (var ability in abilities)
             {
-                if (_enemyStateMachine.PreviousCombatState != null)
+                ability.TickCooldown(deltaTime);
+            }
+
+            if (chosenAbility == null)
+            {
+                // Global cooldown must be ready
+                if (_enemyStateMachine.SpecialAbilityCooldown.IsReady)
                 {
-                    _enemyStateMachine.ChangeState(_enemyStateMachine.PreviousCombatState);
-                    _enemyStateMachine.PreviousCombatState = null;
+                    var readyAbilities = abilities.Where(a => a.IsReady).ToArray();
+                    if (readyAbilities.Length > 0)
+                    {
+                        chosenAbility = readyAbilities.OrderByDescending(a => a.Priority).First();
+                        chosenAbility.StartAbility();
+                        _enemyStateMachine.SpecialAbilityCooldown.Start(_enemyStateMachine.SpecialAbilityCooldownDuration);
+                    }
+                    else
+                    {
+                        ExitOrReturnToPreviousState();
+                        return;
+                    }
                 }
                 else
                 {
-                    _enemyStateMachine.ChangeState(new EnemyChaseState(_enemyStateMachine));
+                    return;
                 }
             }
 
+            if (chosenAbility != null && !chosenAbility.IsActive)
+            {
+                ExitOrReturnToPreviousState();
+                return;
+            }
 
-            if (chosenAbility.ShouldRotateToPlayer())
+            if (chosenAbility != null && chosenAbility.ShouldRotateToPlayer())
             {
                 RotateToPlayer(deltaTime);
             }
@@ -64,6 +74,19 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
         {
             chosenAbility?.StopAbility();
             _enemyStateMachine.Agent.isStopped = false;
+        }
+
+        private void ExitOrReturnToPreviousState()
+        {
+            if (_enemyStateMachine.PreviousCombatState != null)
+            {
+                _enemyStateMachine.ChangeState(_enemyStateMachine.PreviousCombatState);
+                _enemyStateMachine.PreviousCombatState = null;
+            }
+            else
+            {
+                _enemyStateMachine.ChangeState(new EnemyChaseState(_enemyStateMachine));
+            }
         }
     }
 }
