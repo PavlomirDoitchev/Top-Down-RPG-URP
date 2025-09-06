@@ -6,8 +6,13 @@ using System.Collections.Generic;
 using UnityEngine;
 using DamageNumbersPro;
 
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
+
 namespace Assets.Scripts.Enemies.Abilities
 {
+    [RequireComponent(typeof(SphereCollider))]
     public class EnemyFlamethrower : SpecialAbilityBase
     {
         [Header("Ability Info")]
@@ -29,11 +34,10 @@ namespace Assets.Scripts.Enemies.Abilities
 
         private EnemyStateMachine stateMachine;
         private float durationTimer;
-        private float tickTimer;
+        private SphereCollider sphereCollider;
 
-        private readonly List<Collider> hitCache = new();
+        private readonly Dictionary<Collider, float> lastHitTimes = new();
 
-        // Implement abstract members
         public override string AbilityName => abilityName;
         public override float Duration => duration;
         public override int Priority => priority;
@@ -42,6 +46,24 @@ namespace Assets.Scripts.Enemies.Abilities
         private void Awake()
         {
             stateMachine = GetComponentInParent<EnemyStateMachine>();
+            sphereCollider = GetComponent<SphereCollider>();
+            ConfigureCollider();
+        }
+
+        private void OnValidate()
+        {
+            if (sphereCollider == null)
+                sphereCollider = GetComponent<SphereCollider>();
+
+            ConfigureCollider();
+        }
+
+        private void ConfigureCollider()
+        {
+            if (sphereCollider == null) return;
+            sphereCollider.isTrigger = true;
+            sphereCollider.radius = maxRange;
+            sphereCollider.center = new Vector3(0f, 1f, 0f);
         }
 
         public override void StartAbility()
@@ -50,9 +72,8 @@ namespace Assets.Scripts.Enemies.Abilities
 
             IsActive = true;
             durationTimer = Duration;
-            tickTimer = 0f;
 
-            ResetCooldown(); 
+            ResetCooldown();
 
             if (flameVFX != null && !flameVFX.isPlaying)
                 flameVFX.Play();
@@ -62,19 +83,11 @@ namespace Assets.Scripts.Enemies.Abilities
 
         public override void TickCooldown(float deltaTime)
         {
-            base.TickCooldown(deltaTime); 
+            base.TickCooldown(deltaTime);
 
             if (!IsActive) return;
 
             durationTimer -= deltaTime;
-            tickTimer -= deltaTime;
-
-            if (tickTimer <= 0f)
-            {
-                ApplyDamageCone();
-                tickTimer = tickInterval;
-            }
-
             if (durationTimer <= 0f)
             {
                 StopAbility();
@@ -84,59 +97,79 @@ namespace Assets.Scripts.Enemies.Abilities
         public override void StopAbility()
         {
             IsActive = false;
+
             if (flameVFX != null && flameVFX.isPlaying)
                 flameVFX.Stop();
+
+            lastHitTimes.Clear();
         }
 
         public override bool ShouldRotateToPlayer() => rotateToPlayer;
 
-       
-
-        private void ApplyDamageCone()
+        private void OnTriggerStay(Collider other)
         {
-            Vector3 origin = transform.position + Vector3.up * 1.2f;
+            if (!IsActive) return;
+
+            Vector3 origin = transform.position; /*+ Vector3.up*/
             Vector3 forward = transform.forward;
+            Vector3 dirToTarget = (other.transform.position - origin).normalized;
 
-            hitCache.Clear();
-            Collider[] hits = Physics.OverlapSphere(origin, maxRange, 1 << LayerMask.NameToLayer("MyOutlines"));
+            float angle = Vector3.Angle(forward, dirToTarget);
+            if (angle > coneAngle * 0.5f) return;
 
-            foreach (Collider hit in hits)
+            if (other.TryGetComponent<IDamagable>(out var damagable) && other.gameObject.layer == LayerMask.NameToLayer("MyOutlines"))
             {
-                Vector3 dirToTarget = (hit.transform.position - origin).normalized;
-                float angle = Vector3.Angle(forward, dirToTarget);
-
-                if (angle <= coneAngle * 0.5f)
+                if (!lastHitTimes.TryGetValue(other, out float lastHit) || Time.time - lastHit >= tickInterval)
                 {
-                    if (hit.TryGetComponent<IDamagable>(out var damagable))
-                    {
-                        damagable.TakeDamage(baseDamage, false);
+                    damagable.TakeDamage(baseDamage, false);
 
-                        if (damageNumberPrefab != null)
-                            damageNumberPrefab.Spawn(hit.transform.position + Vector3.up * 2f, baseDamage);
+                    if (damageNumberPrefab != null)
+                        damageNumberPrefab.Spawn(other.transform.position + Vector3.up * 2f, baseDamage);
 
-                        if (burnEffect != null && hit.TryGetComponent<IEffectable>(out var effectable))
-                            effectable.ApplyEffect(burnEffect);
-                    }
+                    if (burnEffect != null && other.TryGetComponent<IEffectable>(out var effectable))
+                        effectable.ApplyEffect(burnEffect);
+
+                    lastHitTimes[other] = Time.time;
                 }
             }
         }
 
+#if UNITY_EDITOR
         private void OnDrawGizmos()
         {
             if (!IsActive) return;
 
-            Vector3 origin = transform.position + Vector3.up * 1.2f;
+            Vector3 origin = transform.position + Vector3.up;
             Vector3 forward = transform.forward;
 
-            Gizmos.color = new Color(1f, 0.5f, 0f, 0.25f);
+            Gizmos.color = new Color(1f, 0.5f, 0f, 0.15f);
             Gizmos.DrawWireSphere(origin, maxRange);
 
+            Handles.color = new Color(1f, 0.5f, 0f, 0.2f);
+            Handles.DrawSolidArc(
+                origin,
+                Vector3.up,
+                Quaternion.Euler(0, -coneAngle * 0.5f, 0) * forward,
+                coneAngle,
+                maxRange
+            );
+
+            Gizmos.color = new Color(1f, 0.5f, 0f, 0.6f);
             Vector3 rightBoundary = Quaternion.Euler(0, coneAngle * 0.5f, 0) * forward;
             Vector3 leftBoundary = Quaternion.Euler(0, -coneAngle * 0.5f, 0) * forward;
-
-            Gizmos.color = new Color(1f, 0.5f, 0f, 0.5f);
             Gizmos.DrawLine(origin, origin + rightBoundary * maxRange);
             Gizmos.DrawLine(origin, origin + leftBoundary * maxRange);
+
+            GUIStyle labelStyle = new GUIStyle
+            {
+                normal = new GUIStyleState { textColor = Color.red },
+                fontStyle = FontStyle.Bold,
+                alignment = TextAnchor.MiddleCenter
+            };
+
+            Vector3 labelPos = origin + Vector3.up * 2f;
+            //Handles.Label(labelPos, $"{abilityName}\n{coneAngle:0}° / {maxRange:0.0}m", labelStyle);
         }
+#endif
     }
 }

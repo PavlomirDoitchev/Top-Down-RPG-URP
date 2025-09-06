@@ -15,11 +15,12 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
         {
             base.EnterState();
 
-            // Spawn health pickup with chance
+            
             if (_enemyStateMachine.HealthPickup != null && Random.value < _enemyStateMachine.HealthPickupChance)
             {
-                Vector3 spawnPosition = _enemyStateMachine.transform.position + Vector3.up * 0.5f; // spawn slightly above ground
-                GameObject pickupInstance = GameObject.Instantiate(_enemyStateMachine.HealthPickup, spawnPosition, Quaternion.identity);
+                Vector3 spawnPosition = _enemyStateMachine.transform.position + Vector3.up * 0.5f; 
+                GameObject pickup = GameObject.Instantiate(_enemyStateMachine.HealthPickup, spawnPosition, Quaternion.identity);
+                GameObject pickupInstance = pickup;
 
                // pickupInstance.SetActive(true);
             }
