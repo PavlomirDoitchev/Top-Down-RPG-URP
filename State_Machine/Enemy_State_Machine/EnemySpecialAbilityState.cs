@@ -6,8 +6,10 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
 {
     public class EnemySpecialAbilityState : EnemyBaseState
     {
-        private ISpecialAbility chosenAbility;
-        private ISpecialAbility[] abilities;
+        private ISpecialAbility currentAbility;
+        private ISpecialAbility[] allAbilities;
+        private float stateTimer = 0f;
+        private float maxStateDuration = 5f; // optional cap to prevent being stuck
 
         public EnemySpecialAbilityState(EnemyStateMachine stateMachine) : base(stateMachine) { }
 
@@ -16,49 +18,74 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
             base.EnterState();
             _enemyStateMachine.Agent.isStopped = true;
 
-            var abilities = _enemyStateMachine.GetComponentsInChildren<ISpecialAbility>()
-                                             .Where(a => a.IsReady)
-                                             .OrderByDescending(a => a.Priority)
-                                             .ToArray();
+            stateTimer = 0f;
+            allAbilities = _enemyStateMachine.GetComponentsInChildren<ISpecialAbility>()
+                                           .OrderByDescending(a => a.Priority).ToArray();
 
-            if (abilities.Length == 0 || !_enemyStateMachine.SpecialAbilityCooldown.IsReady)
-            {
-                _enemyStateMachine.ChangeState(new EnemyChaseState(_enemyStateMachine));
-                return;
-            }
-
-            chosenAbility = abilities.First();
-            chosenAbility.StartAbility();
-            _enemyStateMachine.SpecialAbilityCooldown.Start(_enemyStateMachine.SpecialAbilityCooldownDuration);
-
+            StartNextAbility();
             RotateToPlayer();
         }
 
         public override void UpdateState(float deltaTime)
         {
+            stateTimer += deltaTime;
+
             if (_enemyStateMachine.ShouldDie)
             {
                 _enemyStateMachine.ChangeState(new EnemyDeathState(_enemyStateMachine));
                 return;
             }
 
-            if (chosenAbility == null) return;
-
-            if (!chosenAbility.IsActive)
+            // Tick all abilities' cooldowns
+            foreach (var ability in allAbilities)
             {
-                ExitOrReturnToPreviousState();
+                ability.TickCooldown(deltaTime);
             }
 
-            if (chosenAbility.ShouldRotateToPlayer())
-                RotateToPlayer(deltaTime);
+            // Handle the currently active ability
+            if (currentAbility != null)
+            {
+                if (currentAbility.ShouldRotateToPlayer())
+                    RotateToPlayer(deltaTime);
+
+                if (!currentAbility.IsActive)
+                {
+                    StartNextAbility();
+                }
+            }
+            else
+            {
+                // No active ability, try to start the next ready one
+                StartNextAbility();
+
+                // Exit if nothing is ready
+                if (currentAbility == null)
+                {
+                    ReturnToPreviousState();
+                }
+            }
+
+            // Safety exit in case stuck
+            if (stateTimer > maxStateDuration)
+            {
+                ReturnToPreviousState();
+            }
         }
+
 
         public override void ExitState()
         {
-            chosenAbility?.StopAbility();
+            currentAbility?.StopAbility();
             _enemyStateMachine.Agent.isStopped = false;
         }
-        private void ExitOrReturnToPreviousState()
+
+        private void StartNextAbility()
+        {
+            currentAbility = allAbilities.FirstOrDefault(a => a.IsReady && !a.IsActive);
+            currentAbility?.StartAbility();
+        }
+
+        private void ReturnToPreviousState()
         {
             if (_enemyStateMachine.PreviousCombatState != null)
             {

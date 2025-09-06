@@ -70,7 +70,7 @@ namespace Assets.Scripts.Combat_Logic
 				if(spellHitPrefab != null)
 					Instantiate(spellHitPrefab, this.transform.position, Quaternion.identity); //Spell hit effect. Needs to be removed later and added to a pool
 				damagable.TakeDamage(projectileData.damage, false);
-				//projectileData.damageNumberPrefab.Spawn(other.transform.position, projectileData.damage);
+				projectileData.damageNumberPrefab.Spawn(other.transform.position, projectileData.damage);
 				gameObject.SetActive(false);
 			}
 		}
