@@ -52,8 +52,8 @@ namespace Assets.Scripts.Player
         [Header("Secondary Stats")]
         [SerializeField] int maxHealth = 100;
         [SerializeField] int currentHealth;
-        [SerializeField] int defense;
-        [SerializeField] int resistance;
+        [Tooltip("Reduce direct damage")][SerializeField] int defense;
+        [Tooltip("Reduce DoT damage")][SerializeField] int resistance;
         [field: SerializeField] public float AttackSpeed { get; private set; }
         [field: SerializeField]
         [field: Range(0, 1)] public float CriticalChance { get; private set; }
@@ -307,6 +307,10 @@ namespace Assets.Scripts.Player
                     TakeDOTDamage(totalDamage);
                     if (totalDamage > 0)
                         effect.Data.DamageNumberPrefab.Spawn(transform.position, totalDamage);
+                    else
+                    {
+                        effect.Data.DamageNumberPrefab.Spawn(transform.position, "Resisted");
+                    }
 
                 }
                 NotifyObservers();
