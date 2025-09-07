@@ -2,10 +2,12 @@
 
 namespace Assets.Scripts.State_Machine.Player_State_Machine
 {
-    internal class PlayerStunnedState : PlayerBaseState
+    public class PlayerStunnedState : PlayerBaseState
     {
-        public PlayerStunnedState(PlayerStateMachine stateMachine) : base(stateMachine)
+        float _stunDuration = 2f;
+        public PlayerStunnedState(PlayerStateMachine stateMachine, float stunDuration) : base(stateMachine)
         {
+            _stunDuration = stunDuration;
         }
 
         public override void EnterState()

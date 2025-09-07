@@ -65,7 +65,7 @@ namespace Assets.Scripts.Enemies.Abilities
             if (meteorPrefab != null)
             {
                 Vector3 spawnPosition = targetPosition;// meteor falls from height
-                GameObject meteor = Instantiate(meteorPrefab, spawnPosition, Quaternion.identity);
+                /*GameObject meteor =*/ Instantiate(meteorPrefab, spawnPosition, Quaternion.identity);
             }
 
             ApplyExplosionDamage();

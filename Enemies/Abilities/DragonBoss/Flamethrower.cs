@@ -167,7 +167,7 @@ namespace Assets.Scripts.Enemies.Abilities
                 alignment = TextAnchor.MiddleCenter
             };
 
-            Vector3 labelPos = origin + Vector3.up * 2f;
+            //Vector3 labelPos = origin + Vector3.up * 2f;
             //Handles.Label(labelPos, $"{abilityName}\n{coneAngle:0}° / {maxRange:0.0}m", labelStyle);
         }
 #endif

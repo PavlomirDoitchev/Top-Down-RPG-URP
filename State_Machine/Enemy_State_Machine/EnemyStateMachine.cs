@@ -2,6 +2,7 @@
 using Assets.Scripts.Enemies;
 using Assets.Scripts.Enemies.Abilities.Interfaces;
 using Assets.Scripts.Player;
+using Assets.Scripts.Enemies.Utility;  
 using System;
 using UnityEngine;
 using UnityEngine.AI;
@@ -12,6 +13,7 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
         public PlayerManager Player => PlayerManager.Instance;
         public EnemyType EnemyType;
         public EnemyStateTypes EnemyStateTypes;
+        public EnemyClassification EnemyClassification;
 
         [field: SerializeField] public GameObject HealthPickup { get; set; }
         [field: SerializeField] public float HealthPickupChance { get; private set; } = 0.1f;
@@ -21,7 +23,7 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
         [field: SerializeField] public Animator Animator { get; private set; }
         [field: SerializeField] public NavMeshAgent Agent { get; private set; }
         [field: SerializeField] public ParticleSystem CastingVFX { get; private set; }
-
+        [field: SerializeField] public BossPhaseSwitcher BossPhases { get; set; }
 
 
         #region Patrol Logic
@@ -88,7 +90,7 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
         [field: SerializeField] public int MaxHealth { get; private set; } = 100;
         [field: SerializeField] public int CurrentHealth { get; set; }
         [field: SerializeField] public int XpReward { get; private set; } = 1;
-        [field: SerializeField]
+        [field: SerializeField] public float[] BossHealthThreshold { get; private set; }
         [field: Range(0, 1)] public float CriticalChance { get; private set; }
         [field: SerializeField]
         [field: Range(1, 5)] public float CriticalModifier { get; private set; }
@@ -137,7 +139,7 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
         public bool IsFlying { get; set; } = false;
         [field: SerializeField] public bool CanBeCrowdControlled { get; set; } = true;
 
-
+        public event Action<int> OnPhaseThresholdReached;
         // Just for testing purposes
         public event Action OnDeath;
         public void RaiseDeathEvent()
@@ -180,7 +182,6 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
                 ability.TickCooldown(deltaTime);
             }
 
-            // Update current state
             CurrentState.UpdateState(deltaTime);
         }
         public void OnControllerColliderHit(ControllerColliderHit hit)
@@ -190,15 +191,27 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
                 ChangeState(new EnemyStunnedState(this, 1f));
             }
         }
+        private int lastPhaseReached = 0;
         public void TakeDamage(int damage, bool applyImpulse)
         {
             if (CurrentHealth == MaxHealth)
                 ShouldStartAttacking = true;
 
-
+            Debug.Log(CurrentHealth + "/" + MaxHealth);
             applyImpulse = false;
             CurrentHealth -= damage;
-            //IsTakingDamage = true;
+            if (EnemyClassification == EnemyClassification.Boss)
+            {
+                for (int i = 0; i < BossHealthThreshold.Length; i++)
+                {
+                    int phaseNumber = i + 1;
+                    if (CurrentHealth <= MaxHealth * BossHealthThreshold[i] && phaseNumber > lastPhaseReached)
+                    {
+                        lastPhaseReached = phaseNumber;
+                        OnPhaseThresholdReached?.Invoke(phaseNumber);
+                    }
+                }
+            }
             AggrevateNearbyEnemies();
             if (CurrentHealth <= Mathf.RoundToInt(MaxHealth * EnrageThreshold) && CanBecomeEnraged)
                 IsEnraged = true;

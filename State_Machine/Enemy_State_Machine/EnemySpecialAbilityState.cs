@@ -9,7 +9,7 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
         private ISpecialAbility currentAbility;
         private ISpecialAbility[] allAbilities;
         private float stateTimer = 0f;
-        private float maxStateDuration = 5f; // optional cap to prevent being stuck
+        private float maxStateDuration = 5f; 
 
         public EnemySpecialAbilityState(EnemyStateMachine stateMachine) : base(stateMachine) { }
 
@@ -36,13 +36,11 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
                 return;
             }
 
-            // Tick all abilities' cooldowns
             foreach (var ability in allAbilities)
             {
                 ability.TickCooldown(deltaTime);
             }
 
-            // Handle the currently active ability
             if (currentAbility != null)
             {
                 if (currentAbility.ShouldRotateToPlayer())
@@ -55,17 +53,13 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
             }
             else
             {
-                // No active ability, try to start the next ready one
                 StartNextAbility();
 
-                // Exit if nothing is ready
                 if (currentAbility == null)
                 {
                     ReturnToPreviousState();
                 }
             }
-
-            // Safety exit in case stuck
             if (stateTimer > maxStateDuration)
             {
                 ReturnToPreviousState();
