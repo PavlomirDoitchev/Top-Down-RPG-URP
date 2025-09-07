@@ -6,6 +6,7 @@ using Assets.Scripts.Enemies.Utility;
 using System;
 using UnityEngine;
 using UnityEngine.AI;
+using System.Linq;
 namespace Assets.Scripts.State_Machine.Enemy_State_Machine
 {
     public class EnemyStateMachine : StateMachine, IDamagable
@@ -23,7 +24,7 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
         [field: SerializeField] public Animator Animator { get; private set; }
         [field: SerializeField] public NavMeshAgent Agent { get; private set; }
         [field: SerializeField] public ParticleSystem CastingVFX { get; private set; }
-        [field: SerializeField] public BossPhaseSwitcher BossPhases { get; set; }
+        //[field: SerializeField] public BossPhaseSwitcher BossPhases { get; set; }
 
 
         #region Patrol Logic
@@ -39,7 +40,7 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
         [SerializeField] private MonoBehaviour[] specialAbilitiesMonoBehaviours;
 
         private ISpecialAbility[] specialAbilities;
-
+        public ISpecialAbility[] SpecialAbilities => specialAbilities;
         #endregion
 
         #region Enemy AI Behaviour
@@ -176,14 +177,15 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
             SpecialAbilityCooldown.Tick(deltaTime);
             AbilityClock.Tick(deltaTime);
 
-            // Tick individual abilities
-            foreach (var ability in GetComponentsInChildren<ISpecialAbility>())
+            // Tick individual abilities (all abilities, regardless of active state)
+            foreach (var ability in SpecialAbilities)
             {
                 ability.TickCooldown(deltaTime);
             }
 
             CurrentState.UpdateState(deltaTime);
         }
+       
         public void OnControllerColliderHit(ControllerColliderHit hit)
         {
             if (IsKnockedBack && hit.gameObject.layer == LayerMask.NameToLayer("Wall"))
@@ -197,9 +199,9 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
             if (CurrentHealth == MaxHealth)
                 ShouldStartAttacking = true;
 
-            Debug.Log(CurrentHealth + "/" + MaxHealth);
             applyImpulse = false;
             CurrentHealth -= damage;
+            Debug.Log(CurrentHealth + "/" + MaxHealth);
             if (EnemyClassification == EnemyClassification.Boss)
             {
                 for (int i = 0; i < BossHealthThreshold.Length; i++)
@@ -247,7 +249,10 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
                 Animator.CrossFadeInFixedTime(AttackAnimationName[AttackIndex], .1f);
             }
         }
-
+        public void SetActiveAbilities(ISpecialAbility[] abilities)
+        {
+            specialAbilities = abilities;
+        }
         public void OnDrawGizmosSelected()
         {
             //Gizmos.color = Color.red;

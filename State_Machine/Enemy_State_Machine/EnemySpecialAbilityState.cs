@@ -9,7 +9,7 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
         private ISpecialAbility currentAbility;
         private ISpecialAbility[] allAbilities;
         private float stateTimer = 0f;
-        private float maxStateDuration = 5f; 
+        private float maxStateDuration = 5f;
 
         public EnemySpecialAbilityState(EnemyStateMachine stateMachine) : base(stateMachine) { }
 
@@ -17,10 +17,18 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
         {
             base.EnterState();
             _enemyStateMachine.Agent.isStopped = true;
-
             stateTimer = 0f;
-            allAbilities = _enemyStateMachine.GetComponentsInChildren<ISpecialAbility>()
-                                           .OrderByDescending(a => a.Priority).ToArray();
+
+            // Always use the abilities from the state machine
+            allAbilities = _enemyStateMachine.SpecialAbilities
+                .OrderByDescending(a => a.Priority)
+                .ToArray();
+
+            if (allAbilities == null || allAbilities.Length == 0)
+            {
+                ReturnToPreviousState();
+                return;
+            }
 
             StartNextAbility();
             RotateToPlayer();
@@ -37,9 +45,7 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
             }
 
             foreach (var ability in allAbilities)
-            {
                 ability.TickCooldown(deltaTime);
-            }
 
             if (currentAbility != null)
             {
@@ -47,25 +53,18 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
                     RotateToPlayer(deltaTime);
 
                 if (!currentAbility.IsActive)
-                {
                     StartNextAbility();
-                }
             }
             else
             {
                 StartNextAbility();
-
                 if (currentAbility == null)
-                {
                     ReturnToPreviousState();
-                }
             }
-            if (stateTimer > maxStateDuration)
-            {
-                ReturnToPreviousState();
-            }
-        }
 
+            if (stateTimer > maxStateDuration)
+                ReturnToPreviousState();
+        }
 
         public override void ExitState()
         {
@@ -78,7 +77,7 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
             currentAbility = allAbilities.FirstOrDefault(a => a.IsReady && !a.IsActive);
             currentAbility?.StartAbility();
         }
-
+      
         private void ReturnToPreviousState()
         {
             if (_enemyStateMachine.PreviousCombatState != null)
