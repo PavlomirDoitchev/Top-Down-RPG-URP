@@ -22,6 +22,7 @@ namespace Assets.Scripts.Enemies.Abilities
         [SerializeField] private GameObject groundMarkerPrefab;
         [SerializeField] private GameObject meteorPrefab;
         [SerializeField] private DamageNumber damageNumberPrefab;
+        [SerializeField] private StatusEffectData effectData;
 
         [Header("Ability Settings")]
         [SerializeField] private int priority = 2;
@@ -65,7 +66,9 @@ namespace Assets.Scripts.Enemies.Abilities
             if (meteorPrefab != null)
             {
                 Vector3 spawnPosition = targetPosition;// meteor falls from height
-                /*GameObject meteor =*/ Instantiate(meteorPrefab, spawnPosition, Quaternion.identity);
+                /*GameObject meteor =*/
+                Instantiate(meteorPrefab, spawnPosition, Quaternion.identity);
+                PlayerManager.Instance.PlayerStateMachine.CinemachineImpulseSource.GenerateImpulse();
             }
 
             ApplyExplosionDamage();
@@ -87,6 +90,10 @@ namespace Assets.Scripts.Enemies.Abilities
 
                     if (damageNumberPrefab != null)
                         damageNumberPrefab.Spawn(hit.transform.position + Vector3.up * 2f, baseDamage);
+                    if (effectData != null && hit.TryGetComponent<IEffectable>(out var effectable))
+                    {
+                        effectable.ApplyEffect(effectData);
+                    }
                 }
             }
         }
@@ -108,7 +115,7 @@ namespace Assets.Scripts.Enemies.Abilities
         {
             Gizmos.color = Color.red;
             Gizmos.DrawWireSphere(targetPosition, explosionRadius);
-           
+
 
 
         }

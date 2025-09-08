@@ -57,7 +57,6 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
         }
         public override void ExitState()
         {
-            //_enemyStateMachine.OnAbilityCheck -= HandleAbilityCheck;
             ResetAnimationSpeed();
             MovementSpeedRunning();
         }

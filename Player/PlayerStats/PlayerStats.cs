@@ -2,6 +2,7 @@ using Assets.Scripts.Combat_Logic;
 using Assets.Scripts.Save_Manager;
 using Assets.Scripts.State_Machine.Player_State_Machine;
 using Assets.Scripts.Utility.UI;
+using MasterFX;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -54,6 +55,8 @@ namespace Assets.Scripts.Player
         [SerializeField] int currentHealth;
         [Tooltip("Reduce direct damage")][SerializeField] int defense;
         [Tooltip("Reduce DoT damage")][SerializeField] int resistance;
+        [Tooltip("Reduce Poison/Bleed DoT damage")][SerializeField] int toughness;
+        [Tooltip("Reduce Burn/Freeze DoT damage & effect")][SerializeField] int elementsProtection;
         [field: SerializeField] public float AttackSpeed { get; private set; }
         [field: SerializeField]
         [field: Range(0, 1)] public float CriticalChance { get; private set; }
@@ -71,7 +74,7 @@ namespace Assets.Scripts.Player
 
         [Header("Resource Info")]
         private CharacterLevelSO.ResourceType resourceType;
-        private CharacterLevelSO.CharacterClass characterClass;
+        private readonly CharacterLevelSO.CharacterClass characterClass;
         [SerializeField] private int maxResource;
         [SerializeField] private int currentResource;
 
@@ -277,9 +280,21 @@ namespace Assets.Scripts.Player
                     Data = data,
                     StackCount = 1,
                     ElapsedTime = 0f,
-                    NextTickTime = 0f
-                };
+                    NextTickTime = 0f,
+
+            };
             }
+            
+
+            if (data.statusEffectType == StatusEffectData.StatusEffectType.Freeze)
+                data.DamageNumberPrefab.Spawn(transform.position + Vector3.up * 2f, "Frozen");
+
+            else if (data.statusEffectType == StatusEffectData.StatusEffectType.Slow)
+                data.DamageNumberPrefab.Spawn(transform.position + Vector3.up * 2f, "Slowed");
+
+            else if (data.statusEffectType == StatusEffectData.StatusEffectType.Stun)
+                data.DamageNumberPrefab.Spawn(transform.position + Vector3.up * 2f, "Stunned");
+
             NotifyObservers();
         }
 
@@ -304,6 +319,17 @@ namespace Assets.Scripts.Player
 
                     effect.NextTickTime += effect.Data.DOTInterval;
                     int totalDamage = (effect.Data.DOTDamage * effect.StackCount) - resistance;
+                    if (effect.Data.statusEffectType == StatusEffectData.StatusEffectType.Poison
+                        || effect.Data.statusEffectType == StatusEffectData.StatusEffectType.Bleed)
+                    { 
+                        totalDamage -= toughness;
+                    }
+                    else if (effect.Data.statusEffectType == StatusEffectData.StatusEffectType.Burn) 
+                    {
+                        totalDamage -= elementsProtection;
+                    }
+                    
+                   
                     TakeDOTDamage(totalDamage);
                     if (totalDamage > 0)
                         effect.Data.DamageNumberPrefab.Spawn(transform.position, totalDamage);
