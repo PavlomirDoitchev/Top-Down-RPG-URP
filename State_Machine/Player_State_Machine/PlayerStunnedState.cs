@@ -15,12 +15,15 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
         public override void EnterState()
         {
             Debug.Log("Stunned State");
+            base.EnterState();
+            //TransitionToDeathState();
             _playerStateMachine.Animator.CrossFadeInFixedTime("Unarmed-Stunned", 0.1f);
             elapsedTime = 0f;
         }
 
         public override void UpdateState(float deltaTime)
         {
+            //TransitionToDeathState();
             Move(deltaTime);
             elapsedTime += deltaTime;
             if(elapsedTime >= _stunDuration)
@@ -32,6 +35,14 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
 
         public override void ExitState()
         {
+        }
+        void TransitionToDeathState() 
+        {
+            if (_playerStateMachine.PlayerStats.GetCurrentHealth() <= 0)
+            {
+                _playerStateMachine.ChangeState(new PlayerDeathState(_playerStateMachine));
+                return;
+            }
         }
     }
 

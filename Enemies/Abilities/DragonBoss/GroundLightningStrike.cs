@@ -5,6 +5,7 @@ using System.Collections;
 using UnityEngine;
 using DamageNumbersPro;
 using Assets.Scripts.State_Machine.Enemy_State_Machine;
+using Assets.Scripts.State_Machine.Player_State_Machine;
 
 namespace Assets.Scripts.Enemies.Abilities
 {
@@ -93,6 +94,7 @@ namespace Assets.Scripts.Enemies.Abilities
                     if (effectData != null && hit.TryGetComponent<IEffectable>(out var effectable))
                     {
                         effectable.ApplyEffect(effectData);
+                        PlayerManager.Instance.PlayerStateMachine.ChangeState(new PlayerStunnedState(PlayerManager.Instance.PlayerStateMachine, effectData.DOTDuration));
                     }
                 }
             }
