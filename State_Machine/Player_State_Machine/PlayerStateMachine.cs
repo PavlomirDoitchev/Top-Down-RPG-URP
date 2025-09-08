@@ -51,6 +51,10 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
         public PlayerStats PlayerStats { get; private set; }
         public Transform MainCameraTransform { get; private set; }
         [field: SerializeField] public CinemachineImpulseSource CinemachineImpulseSource { get; private set; }
+
+        //Quick VFX Test
+        [field: SerializeField] public ParticleSystem AbilityOneVFX { get; private set; }
+        [field: SerializeField] public ParticleSystem[] MainAttacks { get; private set; }
         private void Awake()
         {
             MapManeger.SetPlayer(this.transform);

@@ -17,6 +17,7 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
             int rank = _playerStateMachine.BasicAttackRank;
             _playerStateMachine.Animator.speed = _playerStateMachine.PlayerStats.TotalAttackSpeed;
             _playerStateMachine.Animator.Play("2Hand-Sword-Attack2");
+            _playerStateMachine.MainAttacks[1].Play();
             SetAttackSpeed();
         }
         public override void UpdateState(float deltaTime)

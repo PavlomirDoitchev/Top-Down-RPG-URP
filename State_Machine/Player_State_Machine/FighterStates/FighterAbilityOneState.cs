@@ -14,7 +14,8 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
             base.EnterState();
             SkillManager.Instance.FighterAbilityOne.UseSkill();
             _playerStateMachine.Animator.Play("ARPG_Dual_Wield_Attack_Heavy1");
-            
+            _playerStateMachine.AbilityOneVFX.Play();
+
         }
         
         public override void UpdateState(float deltaTime)
