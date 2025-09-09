@@ -29,6 +29,7 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
                 _playerStateMachine.ForceReceiver.AddForce(-_playerStateMachine.transform.forward * _playerStateMachine.BasicAttackData[_playerStateMachine.BasicAttackRank].force);
                 _playerStateMachine.ChangeState(new FighterBasicAttackChainThree(_playerStateMachine));
             }
+            // Move anitamion to this state
 
             if (!rotationLocked)
             {
