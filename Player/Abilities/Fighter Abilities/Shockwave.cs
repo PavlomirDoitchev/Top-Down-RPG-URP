@@ -39,8 +39,15 @@ public class Shockwave : MonoBehaviour
             isEmpowered = true;
         }
 
-        if (shouldShakeCamera)
-			PlayerManager.Instance.PlayerStateMachine.CinemachineImpulseSource.GenerateImpulse();
+		if (shouldShakeCamera) 
+		{
+            //PlayerManager.Instance.PlayerStateMachine.CinemachineImpulseSource.GenerateImpulse();
+            ImpulseManager.GenerateImpulse(
+				Random.insideUnitSphere * 0.5f,     // positional shake
+				new Vector3(2f, 0f, 0f),            // rotational shake
+				0.3f                                // duration
+    );
+        }
 	}
 
 	private void Update()
