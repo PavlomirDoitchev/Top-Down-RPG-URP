@@ -191,18 +191,18 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
         private Vector3 CalculateMovement()
 		{
 
-			//Vector3 forward = _playerStateMachine.MainCameraTransform.forward;
-			//Vector3 right = _playerStateMachine.MainCameraTransform.right;
+			Vector3 forward = _playerStateMachine.MainCameraTransform.forward;
+			Vector3 right = _playerStateMachine.MainCameraTransform.right;
 
-			//forward.y = 0;
-			//right.y = 0;
+			forward.y = 0;
+			right.y = 0;
 
-			//forward.Normalize();
-			//right.Normalize();
+			forward.Normalize();
+			right.Normalize();
 
 			Vector2 moveInput = _playerStateMachine.InputManager.MovementInput();
-            Vector3 moveDirection = new Vector3(moveInput.x, 0, moveInput.y);
-			//Vector3 moveDirection = forward moveInput.y + right moveInput.x;
+            //Vector3 moveDirection = new Vector3(moveInput.x, 0, moveInput.y);
+			Vector3 moveDirection = forward * moveInput.y + right * moveInput.x;
 			return moveDirection.normalized;
 		}
 	}

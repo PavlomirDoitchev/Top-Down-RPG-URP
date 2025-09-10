@@ -55,6 +55,7 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
         //Quick VFX Test
         [field: SerializeField] public ParticleSystem AbilityOneVFX { get; private set; }
         [field: SerializeField] public ParticleSystem[] MainAttacks { get; private set; }
+
         private void Awake()
         {
             MapManeger.SetPlayer(this.transform);
