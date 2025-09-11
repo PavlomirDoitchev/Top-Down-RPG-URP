@@ -223,5 +223,30 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
                 );
             }
         }
+		/// <summary>
+		/// Handles both free look and character + camera rotation
+		/// </summary>
+		/// <param name="deltaTime"></param>
+        protected void HandleRotation(float deltaTime)
+        {
+            // If free look is active, rotate by movement input only
+            if ((_playerStateMachine.MainCamera.GetComponent<ThirdPersonCamera>().IsFreeLook))
+            {
+                Vector3 movement = CalculateMovement();
+                if (movement != Vector3.zero)
+                {
+                    _playerStateMachine.transform.rotation = Quaternion.Slerp(
+                        _playerStateMachine.transform.rotation,
+                        Quaternion.LookRotation(movement),
+                        _playerStateMachine.PlayerStats.RotationSpeed * deltaTime
+                    );
+                }
+            }
+            else
+            {
+                // Otherwise, character always faces camera direction
+                RotateWithCamera(deltaTime);
+            }
+        }
     }
 }

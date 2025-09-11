@@ -50,6 +50,7 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
         [field: SerializeField] public DamageNumber[] DamageText { get; private set; }
         public PlayerStats PlayerStats { get; private set; }
         public Transform MainCameraTransform { get; private set; }
+        [field: SerializeField] public Camera MainCamera { get; private set; }
         [field: SerializeField] public CinemachineImpulseSource CinemachineImpulseSource { get; private set; }
 
         //Quick VFX Test

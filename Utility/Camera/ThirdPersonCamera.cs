@@ -27,7 +27,7 @@ public class ThirdPersonCamera : MonoBehaviour
     private float currentXVelocity;
     private float currentYVelocity;
     private float currentZVelocity;
-
+    public bool IsFreeLook { get; private set; }
     private Vector3 CameraHalfExtends
     {
         get
@@ -66,7 +66,8 @@ public class ThirdPersonCamera : MonoBehaviour
     {
         UpdateFocusPoint();
         Quaternion lookRotation = _transform.localRotation;
-        Cursor.visible = !Input.GetMouseButton(1);
+        IsFreeLook = Input.GetMouseButton(2);
+        Cursor.visible = !Input.GetMouseButton(1) && !IsFreeLook;
 
         if (ManualRotation())
         {
