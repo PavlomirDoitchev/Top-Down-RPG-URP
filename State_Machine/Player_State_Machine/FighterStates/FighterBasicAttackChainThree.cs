@@ -21,21 +21,34 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
         }
 		public override void UpdateState(float deltaTime)
 		{
-			Move(deltaTime);
-			if (_playerStateMachine.InputManager.BasicAttackInput()
+			PlayerMove(deltaTime);
+			RotateWithCamera(deltaTime);
+            if (_playerStateMachine.InputManager.PlayerDodgeInput()
+                        && _playerStateMachine.CharacterController.isGrounded
+                        && SkillManager.Instance.Dodge.CanUseSkill()
+                        && (_playerStateMachine.CharacterController.velocity.x != 0
+                        || _playerStateMachine.CharacterController.velocity.z != 0))
+            {
+                _playerStateMachine.ChangeState(new FighterDodgeState(_playerStateMachine));
+            }
+            if (_playerStateMachine.InputManager.PlayerJumpInput() && _playerStateMachine.CharacterController.isGrounded)
+            {
+                _playerStateMachine.ChangeState(new PlayerJumpState(_playerStateMachine));
+            }
+            if (_playerStateMachine.InputManager.BasicAttackInput()
 				&& _playerStateMachine.Animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= .6f)
 			{
 				_playerStateMachine.ForceReceiver.AddForce(-_playerStateMachine.transform.forward * _playerStateMachine.BasicAttackData[_playerStateMachine.BasicAttackRank].force);
 				_playerStateMachine.ChangeState(new FighterBasicAttackChainOne(_playerStateMachine));
 			}
-			if (!rotationLocked)
-			{
-				RotateToMouse(deltaTime);
-			}
-			else
-			{
-				LockRotation();
-			}
+			//if (!rotationLocked)
+			//{
+			//	RotateToMouse(deltaTime);
+			//}
+			//else
+			//{
+			//	LockRotation();
+			//}
 			if (!rotationLocked && _playerStateMachine.Animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 0.2f)
 			{
 				_playerStateMachine.ForceReceiver.AddForce(_playerStateMachine.transform.forward * _playerStateMachine.BasicAttackData[_playerStateMachine.BasicAttackRank].force);

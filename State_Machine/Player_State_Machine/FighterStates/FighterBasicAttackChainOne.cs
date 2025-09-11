@@ -22,7 +22,20 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
         }
         public override void UpdateState(float deltaTime)
         {
-			Move(deltaTime);
+			PlayerMove(deltaTime);
+            RotateWithCamera(deltaTime);
+            if (_playerStateMachine.InputManager.PlayerDodgeInput()
+                        && _playerStateMachine.CharacterController.isGrounded
+                        && SkillManager.Instance.Dodge.CanUseSkill()
+                        && (_playerStateMachine.CharacterController.velocity.x != 0
+                        || _playerStateMachine.CharacterController.velocity.z != 0))
+            {
+                _playerStateMachine.ChangeState(new FighterDodgeState(_playerStateMachine));
+            }
+            if (_playerStateMachine.InputManager.PlayerJumpInput() && _playerStateMachine.CharacterController.isGrounded)
+            {
+                _playerStateMachine.ChangeState(new PlayerJumpState(_playerStateMachine));
+            }
             if (_playerStateMachine.InputManager.BasicAttackInput()
 				&& _playerStateMachine.Animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= .75f)
             {
@@ -31,14 +44,14 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
                 _playerStateMachine.ChangeState(new FighterBasicAttackChainTwo(_playerStateMachine));
             }
 
-            if (!rotationLocked)
-            {
-                RotateToMouse(deltaTime);
-            }
-            else
-            {
-                LockRotation();
-            }
+            //if (!rotationLocked)
+            //{
+            //    RotateToMouse(deltaTime);
+            //}
+            //else
+            //{
+            //    LockRotation();
+            //}
 
             if (!rotationLocked && _playerStateMachine.Animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 0.2f)
             {

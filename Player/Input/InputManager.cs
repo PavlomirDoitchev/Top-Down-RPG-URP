@@ -136,7 +136,7 @@ public class InputManager : MonoBehaviour
     }
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Tab))WorldMap.SetActive(!WorldMap.activeSelf);
+        if (Input.GetKeyDown(KeyCode.M))WorldMap.SetActive(!WorldMap.activeSelf);
         
         
     }

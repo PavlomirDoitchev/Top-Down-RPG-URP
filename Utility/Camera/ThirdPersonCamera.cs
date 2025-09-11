@@ -125,6 +125,7 @@ public class ThirdPersonCamera : MonoBehaviour
             -Input.GetAxis("Mouse Y"),
             Input.GetAxis("Mouse X")
         );
+        
         const float e = 0.001f;
         if (input.x < -e || input.x > e || input.y < -e || input.y > e)
         {

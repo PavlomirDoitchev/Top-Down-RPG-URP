@@ -205,5 +205,23 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
 			Vector3 moveDirection = forward * moveInput.y + right * moveInput.x;
 			return moveDirection.normalized;
 		}
-	}
+		/// <summary>
+		/// Basic calculation for rotation based on camera
+		/// </summary>
+		/// <param name="deltaTime"></param>
+        protected void RotateWithCamera(float deltaTime)
+        {
+            Vector3 forward = _playerStateMachine.MainCameraTransform.forward;
+            forward.y = 0f; 
+            if (forward.sqrMagnitude > 0f)
+            {
+                Quaternion targetRotation = Quaternion.LookRotation(forward);
+                _playerStateMachine.transform.rotation = Quaternion.Slerp(
+                    _playerStateMachine.transform.rotation,
+                    targetRotation,
+                    _playerStateMachine.PlayerStats.RotationSpeed * deltaTime
+                );
+            }
+        }
+    }
 }
