@@ -216,8 +216,22 @@ public class ThirdPersonCamera : MonoBehaviour
     {
         UpdateFocusPoint();
         Quaternion lookRotation = _transform.localRotation;
-        Cursor.visible = !Input.GetMouseButton(1);
-
+        //Cursor.visible = !Input.GetMouseButton(1);
+        if (Input.GetMouseButton(1))
+        {
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
+            if (ManualRotation())
+            {
+                ConstrainAngles();
+                lookRotation = Quaternion.Euler(orbitAngles);
+            }
+        }
+        else
+        {
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
+        }
         if (ManualRotation())
         {
             ConstrainAngles();
