@@ -23,7 +23,7 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
         public override void UpdateState(float deltaTime)
         {
             PlayerMove(deltaTime);
-            RotateWithCamera(deltaTime);
+            //RotateWithCamera(deltaTime);
             if (_playerStateMachine.InputManager.PlayerDodgeInput()
                         && _playerStateMachine.CharacterController.isGrounded
                         && SkillManager.Instance.Dodge.CanUseSkill()
@@ -44,14 +44,14 @@ namespace Assets.Scripts.State_Machine.Player_State_Machine
             }
             // Move anitamion to this state
 
-            //if (!rotationLocked)
-            //{
-            //    RotateToMouse(deltaTime);
-            //}
-            //else
-            //{
-            //    LockRotation();
-            //}
+            if (!rotationLocked)
+            {
+                RotateToMouse(deltaTime);
+            }
+            else
+            {
+                LockRotation();
+            }
             if (!rotationLocked && _playerStateMachine.Animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 0.2f)
             {
                 _playerStateMachine.ForceReceiver.AddForce(_playerStateMachine.transform.forward * _playerStateMachine.BasicAttackData[_playerStateMachine.BasicAttackRank].force);

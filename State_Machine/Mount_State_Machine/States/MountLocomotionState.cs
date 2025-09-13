@@ -25,8 +25,8 @@ namespace Assets.Scripts.State_Machine.Mount_State_Machine.States
             // Note: we use sign so backwards input doesn't make the horse run backward; adjust if you need reverse movement.
 
             ApplyMovement(forward, deltaTime);
-
-            RotateMountToMouse(deltaTime);
+            RotateMountWithCamera(deltaTime);
+            //RotateMountToMouse(deltaTime);
         }
 
         public override void ExitState() { }

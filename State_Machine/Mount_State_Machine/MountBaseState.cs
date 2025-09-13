@@ -1,4 +1,5 @@
 ﻿using Assets.Scripts.State_Machine;
+using Assets.Scripts.State_Machine.Player_State_Machine;
 using UnityEngine;
 
 namespace Assets.Scripts.State_Machine.Mount_State_Machine
@@ -39,11 +40,26 @@ namespace Assets.Scripts.State_Machine.Mount_State_Machine
             Vector3 moveThisFrame = (horizontalMove + verticalMove) * deltaTime;
             stateMachine.CharacterController.Move(moveThisFrame);
         }
+        protected void RotateMountWithCamera(float deltaTime, float rotationMultiplier = 0.5f) 
+        {
+            Vector3 forward = stateMachine.MainCameraTransform.forward;
+            Vector3 right = stateMachine.MainCameraTransform.right;
+            forward.y = 0;
+            right.y = 0;
 
+            forward.Normalize();
+            right.Normalize();
+           stateMachine.transform.rotation = Quaternion.Slerp(
+                stateMachine.transform.rotation,
+                Quaternion.LookRotation(forward),
+                stateMachine.RotationSpeed * rotationMultiplier * deltaTime
+            );
+
+        }
         protected void RotateMountToMouse(float deltaTime, float rotationMultiplier = 0.5f)
         {
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            int layerMask = LayerMask.GetMask("Ground", "Enemy");
+            int layerMask = LayerMask.GetMask("Ground", "Enemy", "Default", "Wall");
 
             if (Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity, layerMask))
             {

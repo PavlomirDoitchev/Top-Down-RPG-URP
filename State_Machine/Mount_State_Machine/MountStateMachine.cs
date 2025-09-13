@@ -10,6 +10,7 @@ namespace Assets.Scripts.State_Machine.Mount_State_Machine
         public CharacterController CharacterController { get; private set; }
         [field: SerializeField] public MountInputManager InputManager { get; private set; }
         [field: SerializeField] public ForceReceiver ForceReceiver { get; private set; }
+        public Transform MainCameraTransform { get; private set; }
 
         [Header("Stats")]
         public float MaxSpeed = 6f;
@@ -25,6 +26,7 @@ namespace Assets.Scripts.State_Machine.Mount_State_Machine
             CharacterController = GetComponent<CharacterController>();
             ForceReceiver = GetComponent<ForceReceiver>();
             InputManager = GetComponent<MountInputManager>();
+            MainCameraTransform = Camera.main.transform;
         }
 
         private void Start()
