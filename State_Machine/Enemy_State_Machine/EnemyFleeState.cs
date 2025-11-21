@@ -6,7 +6,7 @@ public class EnemyFleeState : EnemyBaseState
 {
 	float fleeRange;
 	float fleeTimer = 5f;
-	float fleeRepathInterval = .4f;
+	float fleeRepathInterval = .8f;
 	float repathTimer;
     public EnemyFleeState(EnemyStateMachine stateMachine) : base(stateMachine) { }
 
