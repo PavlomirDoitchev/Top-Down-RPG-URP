@@ -12,10 +12,13 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
         {
             base.EnterState();
             _enemyStateMachine.AggrevateNearbyEnemies();
+            if (!_enemyStateMachine.MeleeAttackCooldown.IsReady)
+            {
+                _enemyStateMachine.Animator.CrossFadeInFixedTime(_enemyStateMachine.ChannelAnimationName, .1f);
+            }
             _enemyStateMachine.Agent.isStopped = false;
             _enemyStateMachine.Animator.CrossFadeInFixedTime(_enemyStateMachine.AttackAnimationName[0], .1f);
             RotateToPlayer();
-
             if (_enemyStateMachine.IsEnraged)
             {
                 SetAttackSpeed(_enemyStateMachine.EnragedAttackSpeed);
@@ -31,12 +34,13 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
 
         public override void UpdateState(float deltaTime)
         {
+            _enemyStateMachine.MeleeAttackCooldown.Tick(deltaTime);
             if (CheckForGlobalTransitions()) return;
 
             _enemyStateMachine.AbilityClock.Tick(deltaTime);
 
             if (_enemyStateMachine.AbilityClock.TimeElapsed >= _enemyStateMachine.SpecialAbilityThreshold &&
-                _enemyStateMachine.SpecialAbilityCooldown.IsReady)
+                _enemyStateMachine.SpecialAbilityCooldown.IsReady && _enemyStateMachine.SpecialAbilities.Length > 0)
             {
                 _enemyStateMachine.PreviousCombatState = this;
                 _enemyStateMachine.ChangeState(new EnemySpecialAbilityState(_enemyStateMachine));
@@ -54,9 +58,18 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
             else if (Vector3.Distance(PlayerManager.Instance.PlayerStateMachine.transform.position, _enemyStateMachine.transform.position)
                 > _enemyStateMachine.AttackRange && _enemyStateMachine.EnemyType == EnemyType.MeleeRanged)
                 _enemyStateMachine.ChangeState(new EnemyRangedAttackState(_enemyStateMachine));
+
+            if (_enemyStateMachine.MeleeAttackCooldown.IsReady)
+            {
+                RotateToPlayer();
+                _enemyStateMachine.Animator.CrossFadeInFixedTime(_enemyStateMachine.AttackAnimationName[_enemyStateMachine.AttackIndex], .1f);
+                _enemyStateMachine.MeleeAttackCooldown.Start(_enemyStateMachine.MeleeAttackCooldownDuration);
+            }
+            
         }
         public override void ExitState()
         {
+            Debug.Log("Exited Melee Attack State");
             ResetAnimationSpeed();
             MovementSpeedRunning();
         }

@@ -47,6 +47,7 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
         [Header("AI Behaviour")]
         [Space(10)]
         public string enemyAIName = "Enemy AI";
+        public Cooldown MeleeAttackCooldown = new();
         public Cooldown RangedAttackCooldown = new(); //create a new instance of this if you want to track a different ability CD
         public Cooldown SpecialAbilityCooldown = new();
         public float SpecialAbilityThreshold = 5f;
@@ -73,6 +74,7 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
         [field: SerializeField] public float FleeingThreshold { get; private set; } = .1f; //sample new position every 0.4 seconds
         [field: SerializeField] public bool ShouldFleeWhenLowHealth { get; set; } = false;
         [field: SerializeField] public bool ShouldFleeFromDamage { get; set; } = false;
+        [field: SerializeField] public float MeleeAttackCooldownDuration { get; private set; } = 2f;
         [field: SerializeField] public float RangedAttackCooldownDuration { get; private set; } = 2f;
         [field: SerializeField] public int AttackIndex { get; private set; } = 0; //used to determine which attack animation to play
         [field: SerializeField]

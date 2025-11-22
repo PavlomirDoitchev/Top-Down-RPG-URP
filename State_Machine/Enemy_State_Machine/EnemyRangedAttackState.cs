@@ -35,7 +35,7 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
 				return;
 			}
             if (_enemyStateMachine.AbilityClock.TimeElapsed >= _enemyStateMachine.SpecialAbilityThreshold &&
-				_enemyStateMachine.SpecialAbilityCooldown.IsReady)
+				_enemyStateMachine.SpecialAbilityCooldown.IsReady && _enemyStateMachine.SpecialAbilities.Length > 0)
             {
                 _enemyStateMachine.PreviousCombatState = this;
                 _enemyStateMachine.ChangeState(new EnemySpecialAbilityState(_enemyStateMachine));
@@ -67,7 +67,8 @@ namespace Assets.Scripts.State_Machine.Enemy_State_Machine
 
 		public override void ExitState()
 		{
-			if(_enemyStateMachine.CastingVFX != null && _enemyStateMachine.CastingVFX.gameObject.activeSelf == true)
+
+            if (_enemyStateMachine.CastingVFX != null && _enemyStateMachine.CastingVFX.gameObject.activeSelf == true)
 				_enemyStateMachine.CastingVFX.gameObject.SetActive(false);
 			ResetAnimationSpeed();
             //_enemyStateMachine.OnAbilityCheck -= HandleAbilityCheck;

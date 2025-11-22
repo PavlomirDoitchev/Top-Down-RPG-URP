@@ -239,7 +239,7 @@ public class ThirdPersonCamera : MonoBehaviour
         }
 
         if (Input.mouseScrollDelta.y != 0)
-            targetDistance = Mathf.Clamp(targetDistance - Input.mouseScrollDelta.y / 5, minDistance, maxDistance);
+            targetDistance = Mathf.Clamp(targetDistance - Input.mouseScrollDelta.y / 2, minDistance, maxDistance);
 
         distance = Mathf.SmoothDamp(distance, targetDistance, ref zoomVelocity, 0.3f);
 
